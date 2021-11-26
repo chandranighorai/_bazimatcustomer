@@ -247,19 +247,23 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                 //height: 420,
                 color: Colors.white,
                 width: MediaQuery.of(context).size.width,
-                child: Expanded(
-                  child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: 4,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: (MediaQuery.of(context).size.width /
-                              MediaQuery.of(context).size.height /
-                              0.55)),
-                      itemBuilder: (BuildContext context, int index) {
-                        return Recommended();
-                      }),
+                child: Flex(
+                  direction: Axis.vertical,
+                  children: [
+                    GridView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: 4,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio:
+                                (MediaQuery.of(context).size.width /
+                                    MediaQuery.of(context).size.height /
+                                    0.55)),
+                        itemBuilder: (BuildContext context, int index) {
+                          return Recommended();
+                        })
+                  ],
                 ),
               )
             ],
