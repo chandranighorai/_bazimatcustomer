@@ -260,7 +260,7 @@ class _HomeState extends State<Home> {
                     borderRadius: BorderRadius.all(Radius.circular(
                         MediaQuery.of(context).size.width * 50))),
                 child: Text(
-                  "See All Resturents".toUpperCase(),
+                  "See All Resturants".toUpperCase(),
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),

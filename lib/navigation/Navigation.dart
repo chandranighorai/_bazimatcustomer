@@ -1,8 +1,11 @@
+import 'package:bazimat/address%20book/AddressBook.dart';
 import 'package:bazimat/favourites/Favourites.dart';
 import 'package:bazimat/more/More.dart';
 import 'package:bazimat/notification/Notification.dart';
 import 'package:bazimat/order/Order.dart';
+import 'package:bazimat/profile/Profile.dart';
 import 'package:bazimat/refer&earn/Refer&Earn.dart';
+import 'package:bazimat/sign%20up/SignUp.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:flutter/material.dart';
 
@@ -33,14 +36,18 @@ class _NavigationState extends State<Navigation> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
+                    alignment: Alignment.center,
                     width: MediaQuery.of(context).size.width / 3.5,
                     height: MediaQuery.of(context).size.height,
                     decoration: BoxDecoration(
                         color: Colors.grey[50], shape: BoxShape.circle),
-                    child: Icon(
-                      Icons.person,
-                      size: MediaQuery.of(context).size.width * 0.2,
-                      color: Colors.grey,
+                    child: Text(
+                      "U",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: MediaQuery.of(context).size.width * 0.08),
+                      // size: MediaQuery.of(context).size.width * 0.2,
+                      // color: Colors.grey,
                     ),
                   ),
                   SizedBox(
@@ -51,7 +58,7 @@ class _NavigationState extends State<Navigation> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: MediaQuery.of(context).size.width / 3,
+                        width: MediaQuery.of(context).size.width / 3.2,
                         //color: Colors.amber,
                         child: Text(
                           "User",
@@ -68,9 +75,11 @@ class _NavigationState extends State<Navigation> {
                     ],
                   ),
                   Spacer(),
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
+                  IconButton(
+                    icon: Icon(Icons.arrow_forward_ios_rounded),
                     color: Colors.white,
+                    onPressed: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Profile())),
                   )
                 ],
               )),
@@ -191,6 +200,10 @@ class _NavigationState extends State<Navigation> {
                         Text("Address Book"),
                       ],
                     ),
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => SignUp()));
+                    },
                   ),
                   ListTile(
                     visualDensity: VisualDensity(horizontal: 0, vertical: -4),
