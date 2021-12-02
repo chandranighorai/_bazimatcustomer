@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/shapes/CurvedBottomClipper.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,8 @@ class _SignUpState extends State<SignUp> {
               decoration: BoxDecoration(
                   //color: Colors.lightGreen,
                   image: DecorationImage(
-                      image: AssetImage("images/signupImage.jpg"))),
+                      image: AssetImage("images/signupImage.jpg"),
+                      fit: BoxFit.cover)),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
                 child: Container(
@@ -115,9 +117,15 @@ class _SignUpState extends State<SignUp> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("Already an user? "),
-              Text(
-                "Login",
-                style: TextStyle(fontWeight: FontWeight.bold),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LogIn()));
+                },
+                child: Text(
+                  "Login",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           )
