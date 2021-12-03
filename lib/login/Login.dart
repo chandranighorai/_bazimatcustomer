@@ -1,3 +1,4 @@
+import 'package:bazimat/age%20document/AgeDocument.dart';
 import 'package:bazimat/shapes/ShapeComponent.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/Const.dart';
@@ -93,24 +94,32 @@ class _LogInState extends State<LogIn> {
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                          padding: EdgeInsets.all(
-                              MediaQuery.of(context).size.width * 0.04),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: AppColors.moreText,
-                              borderRadius: BorderRadius.all(Radius.circular(
-                                  MediaQuery.of(context).size.width * 0.06))),
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.05),
-                          )),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AgeDocument()));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Container(
+                            padding: EdgeInsets.all(
+                                MediaQuery.of(context).size.width * 0.04),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: AppColors.moreText,
+                                borderRadius: BorderRadius.all(Radius.circular(
+                                    MediaQuery.of(context).size.width * 0.06))),
+                            child: Text(
+                              "Login",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.05),
+                            )),
+                      ),
                     ),
                   ],
                 ),
