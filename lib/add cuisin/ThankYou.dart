@@ -27,7 +27,7 @@ class _ThankYouState extends State<ThankYou> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.3,
               decoration: BoxDecoration(
-                  color: Colors.red,
+                  //color: Colors.red,
                   image: DecorationImage(
                       image: AssetImage("images/thank.png"), fit: BoxFit.fill)),
             ),

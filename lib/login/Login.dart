@@ -108,7 +108,7 @@ class _LogInState extends State<LogIn> {
                                 MediaQuery.of(context).size.width * 0.04),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: AppColors.moreText,
+                                color: AppColors.loginButtonColor,
                                 borderRadius: BorderRadius.all(Radius.circular(
                                     MediaQuery.of(context).size.width * 0.06))),
                             child: Text(

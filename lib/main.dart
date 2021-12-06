@@ -1,5 +1,6 @@
 import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/login/Login.dart';
+import 'package:bazimat/sign%20up/SignUp.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -38,6 +39,6 @@ class _MyHomePageState extends State<MyHomePage> {
         // appBar: AppBar(
         //   title: Text(widget.title),
         // ),
-        body: Home());
+        body: SignUp());
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:bazimat/age%20document/PhotoView.dart';
+import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
@@ -62,15 +64,20 @@ class _AgeDocumentState extends State<AgeDocument> {
               _image != null
                   ? Stack(
                       children: [
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.35,
-                          width: MediaQuery.of(context).size.width / 3,
-                          decoration: BoxDecoration(
-                              //color: Colors.redAccent,
-                              ),
-                          child: Image.file(
-                            File(_image),
-                            fit: BoxFit.fill,
+                        InkWell(
+                          onTap: () {
+                            _imageView(_image);
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.width * 0.35,
+                            width: MediaQuery.of(context).size.width / 3,
+                            decoration: BoxDecoration(
+                                //color: Colors.redAccent,
+                                ),
+                            child: Image.file(
+                              File(_image),
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         ),
                         Positioned(
@@ -104,15 +111,20 @@ class _AgeDocumentState extends State<AgeDocument> {
               _image1 != null
                   ? Stack(
                       children: [
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.35,
-                          width: MediaQuery.of(context).size.width / 3,
-                          decoration: BoxDecoration(
-                              //color: Colors.redAccent,
-                              ),
-                          child: Image.file(
-                            File(_image1),
-                            fit: BoxFit.fill,
+                        InkWell(
+                          onTap: () {
+                            _imageView(_image1);
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.width * 0.35,
+                            width: MediaQuery.of(context).size.width / 3,
+                            decoration: BoxDecoration(
+                                //color: Colors.redAccent,
+                                ),
+                            child: Image.file(
+                              File(_image1),
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         ),
                         Positioned(
@@ -141,8 +153,12 @@ class _AgeDocumentState extends State<AgeDocument> {
                 child: TextButton(
                     style: TextButton.styleFrom(
                         backgroundColor: AppColors.moreText),
-                    onPressed: null,
-                    child: Text("Login")),
+                    onPressed: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Home())),
+                    child: Text(
+                      "Login",
+                      style: TextStyle(color: Colors.white),
+                    )),
               )
             ],
           ),
@@ -182,5 +198,10 @@ class _AgeDocumentState extends State<AgeDocument> {
       });
       return _image1;
     }
+  }
+
+  void _imageView(var image) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => PhotoView(image)));
   }
 }

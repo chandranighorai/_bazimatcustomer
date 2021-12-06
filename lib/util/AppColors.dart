@@ -7,4 +7,5 @@ class AppColors {
   static Color applyText = Color(0xFFff7800);
   static Color moreText = Color(0xFF056fff);
   static Color iconColor = Color(0xFF334be0);
+  static Color loginButtonColor = Color(0xFF324be0);
 }

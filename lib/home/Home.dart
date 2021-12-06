@@ -1,3 +1,4 @@
+import 'package:bazimat/all%20resturant/AllResturent.dart';
 import 'package:bazimat/home/Couponlist.dart';
 import 'package:bazimat/home/Cuisin.dart';
 import 'package:bazimat/home/ListData.dart';
@@ -252,17 +253,19 @@ class _HomeState extends State<Home> {
               // ),
               Container(
                 alignment: Alignment.center,
-                padding:
-                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
+                // padding:
+                //     EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
                 //width: MediaQuery.of(context).size.width / 1.5,
                 decoration: BoxDecoration(
                     color: AppColors.buttonColor,
                     borderRadius: BorderRadius.all(Radius.circular(
                         MediaQuery.of(context).size.width * 50))),
-                child: Text(
-                  "See All Resturants".toUpperCase(),
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                child: TextButton(
+                  child: Text("See All Resturants".toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
+                  onPressed: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AllResturant())),
                 ),
               )
             ],
