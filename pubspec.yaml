@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   carousel_slider: ^4.0.0
   image_picker_gallery_camera: ^0.2.2
+  fluttertoast: ^8.0.8
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +85,8 @@ flutter:
     - images/earn.png
     - images/signupImage.jpg
     - images/login.png
+    - images/facebook.png
+    - images/google.png
     #- images/screen-1.jpg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

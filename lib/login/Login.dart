@@ -121,6 +121,36 @@ class _LogInState extends State<LogIn> {
                             )),
                       ),
                     ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.03,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.width * 0.15,
+                          width: MediaQuery.of(context).size.width / 9,
+                          decoration: BoxDecoration(
+                              //color: Colors.red,
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: AssetImage("images/facebook.png"))),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.15,
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.width * 0.15,
+                          width: MediaQuery.of(context).size.width / 9,
+                          decoration: BoxDecoration(
+                              //color: Colors.red,
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: AssetImage("images/google.png"))),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ),

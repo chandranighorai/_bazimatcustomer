@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/shapes/CurvedBottomClipper.dart';
+import 'package:bazimat/sign%20up/Otp.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,6 +16,17 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  TextEditingController _firstName, _lastName, _email, _phone, _password;
+  @override
+  void initState() {
+    super.initState();
+    _firstName = new TextEditingController();
+    _lastName = new TextEditingController();
+    _email = new TextEditingController();
+    _phone = new TextEditingController();
+    _password = new TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +37,7 @@ class _SignUpState extends State<SignUp> {
           ClipPath(
             clipper: CurvedBottomClipper(),
             child: Container(
-              height: MediaQuery.of(context).size.width * 0.65,
+              height: MediaQuery.of(context).size.width * 0.60,
               decoration: BoxDecoration(
                   //color: Colors.lightGreen,
                   image: DecorationImage(
@@ -33,8 +46,8 @@ class _SignUpState extends State<SignUp> {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
                 child: Container(
-                  decoration:
-                      BoxDecoration(color: AppColors.moreText.withOpacity(0.7)),
+                  decoration: BoxDecoration(
+                      color: AppColors.loginButtonColor.withOpacity(0.7)),
                   child: Center(
                       child: Text(
                     "Register".toUpperCase(),
@@ -56,27 +69,14 @@ class _SignUpState extends State<SignUp> {
                 left: MediaQuery.of(context).size.width * 0.07,
                 right: MediaQuery.of(context).size.width * 0.07),
             child: TextFormField(
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                  hintText: "Enter Mobile Number", border: InputBorder.none),
-            ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.width * 0.05,
-          ),
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.only(
-                left: MediaQuery.of(context).size.width * 0.07,
-                right: MediaQuery.of(context).size.width * 0.07),
-            child: TextFormField(
+              controller: _firstName,
               keyboardType: TextInputType.name,
               decoration: InputDecoration(
-                  hintText: "Enter Your Name", border: InputBorder.none),
+                  hintText: "First Name", border: InputBorder.none),
             ),
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.width * 0.05,
+            height: MediaQuery.of(context).size.width * 0.03,
           ),
           Container(
             color: Colors.white,
@@ -84,30 +84,74 @@ class _SignUpState extends State<SignUp> {
                 left: MediaQuery.of(context).size.width * 0.07,
                 right: MediaQuery.of(context).size.width * 0.07),
             child: TextFormField(
-              obscureText: true,
+              controller: _lastName,
+              keyboardType: TextInputType.name,
               decoration: InputDecoration(
-                  hintText: "Create password", border: InputBorder.none),
+                  hintText: "Last Name", border: InputBorder.none),
             ),
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.width * 0.2,
+            height: MediaQuery.of(context).size.width * 0.03,
           ),
           Container(
-              padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.width * 0.04,
-                  left: MediaQuery.of(context).size.width * 0.15,
-                  right: MediaQuery.of(context).size.width * 0.15,
-                  bottom: MediaQuery.of(context).size.width * 0.04),
+            color: Colors.white,
+            padding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.07,
+                right: MediaQuery.of(context).size.width * 0.07),
+            child: TextFormField(
+              controller: _email,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                  hintText: "Email Id", border: InputBorder.none),
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.width * 0.03,
+          ),
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.07,
+                right: MediaQuery.of(context).size.width * 0.07),
+            child: TextFormField(
+              controller: _phone,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                  hintText: "Mobile Number", border: InputBorder.none),
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.width * 0.03,
+          ),
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.07,
+                right: MediaQuery.of(context).size.width * 0.07),
+            child: TextFormField(
+              controller: _password,
+              obscureText: true,
+              decoration: InputDecoration(
+                  hintText: "Password", border: InputBorder.none),
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.width * 0.02,
+          ),
+          Container(
               alignment: Alignment.center,
               width: MediaQuery.of(context).size.width / 2,
               decoration: BoxDecoration(
-                  color: AppColors.moreText,
+                  color: AppColors.loginButtonColor,
                   borderRadius: BorderRadius.all(Radius.circular(
                       MediaQuery.of(context).size.width * 0.6))),
-              child: Text(
-                "Submit".toUpperCase(),
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              child: TextButton(
+                child: Text(
+                  "Submit".toUpperCase(),
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                onPressed: () => _submit(),
               )),
           SizedBox(
             height: MediaQuery.of(context).size.width * 0.02,
@@ -132,5 +176,15 @@ class _SignUpState extends State<SignUp> {
         ],
       ),
     ));
+  }
+
+  _submit() async {
+    if (_firstName.text.isEmpty ||
+        _lastName.text.isEmpty ||
+        _email.text.isEmpty ||
+        _phone.text.isEmpty ||
+        _password.text.isEmpty) {
+      showCustomToast("Field should not empty");
+    }
   }
 }

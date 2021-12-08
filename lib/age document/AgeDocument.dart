@@ -20,7 +20,7 @@ class _AgeDocumentState extends State<AgeDocument> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.moreText,
+        backgroundColor: AppColors.loginButtonColor,
         title: Text("Additional Information"),
       ),
       body: SingleChildScrollView(
@@ -152,7 +152,7 @@ class _AgeDocumentState extends State<AgeDocument> {
                 width: MediaQuery.of(context).size.width,
                 child: TextButton(
                     style: TextButton.styleFrom(
-                        backgroundColor: AppColors.moreText),
+                        backgroundColor: AppColors.loginButtonColor),
                     onPressed: () => Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Home())),
                     child: Text(
