@@ -8,6 +8,7 @@ import 'package:bazimat/home/TopPick.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -18,6 +19,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   GlobalKey<ScaffoldState> scaffFoldState = GlobalKey<ScaffoldState>();
+
   final bannerList = [
     "images/banner.jpg",
     "images/banner2.jpg",
@@ -56,6 +58,13 @@ class _HomeState extends State<Home> {
     {"pic": "images/pizza.jpg", "name": "Pizza"},
     {"pic": "images/fries.jpg", "name": "French Fries"}
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -302,5 +311,13 @@ class _HomeState extends State<Home> {
               ))
           .toList(),
     );
+  }
+
+  void _getToken() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var response = preferences.getString("token");
+    print("Latitude..." + preferences.getString("latitude"));
+    print("Longitude..." + preferences.getString("longitude"));
+    print("Token..." + response.toString());
   }
 }

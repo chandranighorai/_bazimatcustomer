@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/sign%20up/SignUp.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,6 +36,28 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  Geolocator _geolocator;
+  Position _position;
+
+  @override
+  void initState() {
+    super.initState();
+    _geolocator = Geolocator();
+    LocationOptions locationOptions =
+        LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 1);
+    checkPermission();
+    updateLocation();
+    StreamSubscription positionStream = _geolocator
+        .getPositionStream(locationOptions)
+        .listen((Position position) {
+      setState(() {
+        _position = position;
+      });
+      //print("Position...in current...$_position");
+    });
+
+    print("Position...in current...$_position");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,5 +66,40 @@ class _MyHomePageState extends State<MyHomePage> {
         //   title: Text(widget.title),
         // ),
         body: SignUp());
+  }
+
+  void checkPermission() {
+    _geolocator.checkGeolocationPermissionStatus().then((status) {
+      print("Status..." + status.toString());
+    });
+    _geolocator
+        .checkGeolocationPermissionStatus(
+            locationPermission: GeolocationPermission.locationAlways)
+        .then((value) {
+      print("Value..." + value.toString());
+    });
+    _geolocator.checkGeolocationPermissionStatus(
+        locationPermission: GeolocationPermission.locationWhenInUse)
+      ..then((value) {
+        print("Value..." + value.toString());
+      });
+  }
+
+  updateLocation() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    try {
+      Position newPosition = await Geolocator()
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+          .timeout(new Duration(seconds: 5));
+      setState(() {
+        _position = newPosition;
+        print("Error...$newPosition");
+        sharedPreferences.setString("latitude", _position.latitude.toString());
+        sharedPreferences.setString(
+            "longitude", _position.longitude.toString());
+      });
+    } catch (e) {
+      print("Error...." + e.toString());
+    }
   }
 }

@@ -1,5 +1,8 @@
 import 'package:bazimat/home/Home.dart';
+import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/AppConst.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class OTP extends StatefulWidget {
@@ -10,6 +13,14 @@ class OTP extends StatefulWidget {
 }
 
 class _OTPState extends State<OTP> {
+  TextEditingController _otpText;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _otpText = new TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,14 +40,16 @@ class _OTPState extends State<OTP> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextFormField(
+              controller: _otpText,
               decoration: InputDecoration(hintText: 'Enter Otp'),
             ),
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.06,
             ),
             TextButton(
-                onPressed: () => Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Home())),
+                onPressed: () {
+                  _sendButton();
+                },
                 child: Container(
                     padding: EdgeInsets.all(
                         MediaQuery.of(context).size.width * 0.03),
@@ -52,5 +65,21 @@ class _OTPState extends State<OTP> {
         ),
       ),
     );
+  }
+
+  void _sendButton() async {
+    try {
+      print("otpText..." + _otpText.text.toString());
+      if (_otpText.text.isEmpty) {
+        showCustomToast("Field should not empty");
+      } else if (_otpText.text == "123456") {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LogIn()));
+      } else {
+        showCustomToast("Otp is incorrect");
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }

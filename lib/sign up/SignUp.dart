@@ -205,6 +205,7 @@ class _SignUpState extends State<SignUp> {
         print("FormData..." + formData.toString());
         print("FormData..." + Uri.parse(Const.registration).toString());
         var response = await dio.post(Const.registration, data: formData);
+
         // print("response statusCode..." + response.statusCode.toString());
         // print("response body..." + response.data.toString());
         // print("state..." + response.data["state"].toString());
@@ -213,7 +214,7 @@ class _SignUpState extends State<SignUp> {
         if (response.data["state"] == 0) {
           showCustomToast("Registration successfully");
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LogIn()));
+              context, MaterialPageRoute(builder: (context) => OTP()));
         } else {
           print("response body..." + response.data["errors"].toString());
           showCustomToast(response.data["errors"][0]["message"].toString());

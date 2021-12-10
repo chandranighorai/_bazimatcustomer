@@ -1,7 +1,11 @@
 import 'package:bazimat/age%20document/AgeDocument.dart';
+import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/shapes/ShapeComponent.dart';
+import 'package:bazimat/sign%20up/userPreferences.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class LogIn extends StatefulWidget {
@@ -12,6 +16,18 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
+  TextEditingController _phoneText, _passText;
+  bool _isHidden;
+  var dio = Dio();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _isHidden = true;
+    _phoneText = new TextEditingController();
+    _passText = new TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,36 +77,22 @@ class _LogInState extends State<LogIn> {
               child: Container(
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        color: Colors.white,
-                        padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.03,
-                            right: MediaQuery.of(context).size.width * 0.03),
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              hintText: "Enter Mobile Number",
-                              border: InputBorder.none),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        color: Colors.white,
-                        padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.03,
-                            right: MediaQuery.of(context).size.width * 0.03),
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              hintText: "Enter Password",
-                              border: InputBorder.none),
-                        ),
-                      ),
-                    ),
+                    buildText("Mobile Number"),
+                    buildText("Password"),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(10.0),
+                    //   child: Container(
+                    //     color: Colors.white,
+                    //     padding: EdgeInsets.only(
+                    //         left: MediaQuery.of(context).size.width * 0.03,
+                    //         right: MediaQuery.of(context).size.width * 0.03),
+                    //     child: TextFormField(
+                    //       keyboardType: TextInputType.number,
+                    //       decoration: InputDecoration(
+                    //           hintText: "Password", border: InputBorder.none),
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
@@ -104,20 +106,24 @@ class _LogInState extends State<LogIn> {
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Container(
-                            padding: EdgeInsets.all(
-                                MediaQuery.of(context).size.width * 0.04),
+                            // padding: EdgeInsets.all(
+                            //     MediaQuery.of(context).size.width * 0.04),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: AppColors.loginButtonColor,
                                 borderRadius: BorderRadius.all(Radius.circular(
                                     MediaQuery.of(context).size.width * 0.06))),
-                            child: Text(
-                              "Login",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.05),
+                            child: TextButton(
+                              child: Text(
+                                "Login",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.05),
+                              ),
+                              onPressed: _login,
                             )),
                       ),
                     ),
@@ -163,5 +169,69 @@ class _LogInState extends State<LogIn> {
         ),
       ),
     );
+  }
+
+  buildText(String hintText) {
+    print("HintText..." + hintText.toString());
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.only(
+            left: MediaQuery.of(context).size.width * 0.03,
+            right: MediaQuery.of(context).size.width * 0.03),
+        child: TextFormField(
+          controller: hintText == "Mobile Number" ? _phoneText : _passText,
+          keyboardType: hintText == "Mobile Number"
+              ? TextInputType.number
+              : TextInputType.text,
+          obscureText: hintText == "Password" ? _isHidden : false,
+          decoration: InputDecoration(
+              hintText: hintText,
+              border: InputBorder.none,
+              suffixIcon: hintText == "Password"
+                  ? IconButton(
+                      icon: _isHidden
+                          ? Icon(Icons.visibility_off)
+                          : Icon(Icons.visibility),
+                      onPressed: _onToggleButton)
+                  : null),
+        ),
+      ),
+    );
+  }
+
+  void _onToggleButton() {
+    setState(() {
+      _isHidden = !_isHidden;
+    });
+  }
+
+  void _login() async {
+    try {
+      print("Mobile Text..." + _phoneText.text.toString());
+      print("Mobile Text..." + _passText.text.toString());
+      if (_phoneText.text.isEmpty || _passText.text.isEmpty) {
+        showCustomToast("Field should not empty");
+      } else if (_phoneText.text.length != 10) {
+        showCustomToast("Give 10 digit phone number");
+      } else {
+        var formData = {"phone": _phoneText.text, "password": _passText.text};
+        print("FormData..." + formData.toString());
+        var response = await dio.post(Const.login, data: formData);
+        print("responsestatusCode..." + response.statusCode.toString());
+        print("responseBody..." + response.data.toString());
+        if (response.data["state"] == 1) {
+          showCustomToast(response.data["errors"][0]["message"]);
+        } else {
+          saveUserPref(response.data["token"]);
+          showCustomToast("Login Successful");
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Home()));
+        }
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }
