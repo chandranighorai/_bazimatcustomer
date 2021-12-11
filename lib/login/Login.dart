@@ -97,12 +97,12 @@ class _LogInState extends State<LogIn> {
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
                     InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AgeDocument()));
-                      },
+                      // onTap: () {
+                      //   Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //           builder: (context) => AgeDocument()));
+                      // },
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Container(
