@@ -214,7 +214,9 @@ class _SignUpState extends State<SignUp> {
         if (response.data["state"] == 0) {
           showCustomToast("Registration successfully");
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => OTP()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => OTP(phone: _phone.text.trim())));
         } else {
           print("response body..." + response.data["errors"].toString());
           showCustomToast(response.data["errors"][0]["message"].toString());

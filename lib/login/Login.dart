@@ -1,6 +1,7 @@
 import 'package:bazimat/age%20document/AgeDocument.dart';
 import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/shapes/ShapeComponent.dart';
+import 'package:bazimat/sign%20up/Otp.dart';
 import 'package:bazimat/sign%20up/userPreferences.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/AppConst.dart';
@@ -52,14 +53,14 @@ class _LogInState extends State<LogIn> {
                 //right: MediaQuery.of(context).size.width * 0.07,
                 child: Row(
                   children: [
-                    IconButton(
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
+                    // IconButton(
+                    //     icon: Icon(
+                    //       Icons.arrow_back_ios,
+                    //       color: Colors.white,
+                    //     ),
+                    //     onPressed: () {
+                    //       Navigator.pop(context);
+                    //     }),
                     Text(
                       "Login".toUpperCase(),
                       style: TextStyle(
@@ -224,10 +225,20 @@ class _LogInState extends State<LogIn> {
         if (response.data["state"] == 1) {
           showCustomToast(response.data["errors"][0]["message"]);
         } else {
-          saveUserPref(response.data["token"]);
-          showCustomToast("Login Successful");
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Home()));
+          if (response.data["is_phone_verified"] == 1) {
+            saveUserPref(response.data["token"]);
+            showCustomToast("Login Successful");
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+                (route) => false);
+            //context, MaterialPageRoute(builder: (context) => Home()));
+          } else {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => OTP(phone: _phoneText.text)));
+          }
         }
       }
     } on DioError catch (e) {

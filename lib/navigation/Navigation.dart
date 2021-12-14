@@ -1,5 +1,6 @@
 import 'package:bazimat/address%20book/AddressBook.dart';
 import 'package:bazimat/favourites/Favourites.dart';
+import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/more/More.dart';
 import 'package:bazimat/notification/Notification.dart';
 import 'package:bazimat/order/Order.dart';
@@ -7,6 +8,7 @@ import 'package:bazimat/profile/Profile.dart';
 import 'package:bazimat/refer&earn/Refer&Earn.dart';
 import 'package:bazimat/sign%20up/SignUp.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:flutter/material.dart';
 
 class Navigation extends StatefulWidget {
@@ -287,6 +289,27 @@ class _NavigationState extends State<Navigation> {
                           MaterialPageRoute(builder: (context) => More()));
                     },
                   ),
+                  ListTile(
+                    visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                    title: Row(
+                      children: [
+                        Container(
+                            height: MediaQuery.of(context).size.width * 0.05,
+                            width: MediaQuery.of(context).size.width * 0.05,
+                            child: Icon(
+                              Icons.logout,
+                              color: AppColors.iconColor,
+                            )),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.04,
+                        ),
+                        Text("Logout"),
+                      ],
+                    ),
+                    onTap: () {
+                      _logout(context);
+                    },
+                  ),
                 ],
               ),
             )
@@ -294,5 +317,14 @@ class _NavigationState extends State<Navigation> {
         ),
       ),
     );
+  }
+
+  void _logout(BuildContext context) {
+    print("logout...");
+    showAlertDialogWithCancel(context, "Are you sure?", () async {
+      Navigator.pop(context);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LogIn()));
+    });
   }
 }

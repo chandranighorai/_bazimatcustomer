@@ -2,11 +2,13 @@ import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/AppConst.dart';
+import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class OTP extends StatefulWidget {
-  const OTP({Key key}) : super(key: key);
+  var phone;
+  OTP({this.phone});
 
   @override
   _OTPState createState() => _OTPState();
@@ -14,6 +16,7 @@ class OTP extends StatefulWidget {
 
 class _OTPState extends State<OTP> {
   TextEditingController _otpText;
+  var dio = Dio();
   @override
   void initState() {
     // TODO: implement initState
@@ -68,15 +71,30 @@ class _OTPState extends State<OTP> {
   }
 
   void _sendButton() async {
+    print("phone" + widget.phone.toString());
+    print("otp" + _otpText.text.toString());
+
     try {
       print("otpText..." + _otpText.text.toString());
       if (_otpText.text.isEmpty) {
         showCustomToast("Field should not empty");
-      } else if (_otpText.text == "123456") {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LogIn()));
-      } else {
-        showCustomToast("Otp is incorrect");
+      }
+      // else if (_otpText.text == "123456") {
+      //   Navigator.push(
+      //       context, MaterialPageRoute(builder: (context) => LogIn()));
+      // }
+      else {
+        var formData = {"phone": widget.phone, "otp": _otpText.text.toString()};
+        var responseOtp = await dio.post(Const.verifyPhone, data: formData);
+        print("responseData...." + responseOtp.data.toString());
+        if (responseOtp.data["state"] == 1) {
+          showCustomToast(responseOtp.data["errors"][0]["message"]);
+        } else {
+          showCustomToast(responseOtp.data["message"]);
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LogIn()));
+        }
+        //showCustomToast("Otp is incorrect");
       }
     } on DioError catch (e) {
       print(e.toString());

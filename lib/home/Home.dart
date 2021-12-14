@@ -2,6 +2,7 @@ import 'package:bazimat/all%20resturant/AllResturent.dart';
 import 'package:bazimat/home/Couponlist.dart';
 import 'package:bazimat/home/Cuisin.dart';
 import 'package:bazimat/home/ListData.dart';
+import 'package:bazimat/home/OfferModel.dart';
 import 'package:bazimat/navigation/Navigation.dart';
 import 'package:bazimat/home/Resturent.dart';
 import 'package:bazimat/home/TopPick.dart';
@@ -12,6 +13,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -25,8 +27,9 @@ class _HomeState extends State<Home> {
   var dio = Dio();
   bool _serviceAvailable;
   var zone;
+  bool _bannerLoad;
 
-  var bannerList = [];
+  List<String> bannerList = [];
   final offerList = [
     "images/banner1.png",
     "images/banner2.jpg",
@@ -65,6 +68,7 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
     _serviceAvailable = true;
+    _bannerLoad = false;
     _getZoneId();
   }
 
@@ -132,7 +136,7 @@ class _HomeState extends State<Home> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    bannerList.length == 0
+                    _bannerLoad == false
                         ? Center(
                             child: CircularProgressIndicator(),
                           )
@@ -309,12 +313,14 @@ class _HomeState extends State<Home> {
         print("Items..." + items.toString());
         Container(
           decoration: BoxDecoration(
-              color: Colors.red,
+              //color: Colors.red,
               borderRadius: BorderRadius.all(
                   Radius.circular(MediaQuery.of(context).size.width * 0.02)),
               image: DecorationImage(
-                  image: NetworkImage(items.toString()), fit: BoxFit.fill)),
-          //child: Image.network(items),
+                  image: NetworkImage(items), fit: BoxFit.fill)),
+          // child: CachedNetworkImage(
+          //   Placeholder:(context,url)=> CircularProgressIndicator(),imageUrl:items
+          // ),
         );
       }).toList(),
     );
@@ -369,15 +375,28 @@ class _HomeState extends State<Home> {
       var bannerResponse = await dio.get(Const.banner,
           options: Options(headers: {"zoneId": zoneId}));
       print("banner Data..." + bannerResponse.data.toString());
-      var banners = bannerResponse.data["banners"];
-      for (int i = 0; i < banners.length; i++) {
-        var bannerImage =
-            bannerResponse.data["bannerimgpath"] + banners[i]["image"];
+      if (bannerResponse.data["state"] == 0) {
+        var banners = bannerResponse.data["banners"];
+        for (int i = 0; i < banners.length; i++) {
+          print("bannerImage...1.." +
+              bannerResponse.data["bannerimgpath"].toString());
+          var bannerImage =
+              bannerResponse.data["bannerimgpath"] + banners[i]["image"];
+          print("bannerImage..." + bannerImage.toString());
+          // var dd = bannerImage.toString().replaceAll("https", "http");
+          // print("DD..." + dd.toString());
+          setState(() {
+            bannerList.add(bannerImage.toString());
+          });
+        }
+        print("bannerList..." + bannerList.toString());
         setState(() {
-          bannerList.add(bannerImage.toString());
+          _bannerLoad = true;
         });
+        return OffersModel.fromJson(bannerResponse.data);
+      } else {
+        showCustomToast("No Banner");
       }
-      print("bannerList..." + bannerList.toString());
     } on DioError catch (e) {
       print(e.toString());
     }
