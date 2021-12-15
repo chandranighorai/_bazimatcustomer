@@ -10,4 +10,6 @@ class Const {
   static String login = appUrl + "auth/login";
   static String zoneId = appUrl + "config/get-zone-id";
   static String banner = appUrl + "banners";
+  static String forgetPassword = appUrl + "auth/forgot-password";
+  static String resetPassword = appUrl + "auth/reset-password";
 }

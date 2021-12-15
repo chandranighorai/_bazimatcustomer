@@ -1,3 +1,4 @@
+import 'package:bazimat/forget%20password/ResetPassword.dart';
 import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/util/AppColors.dart';
@@ -7,8 +8,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class OTP extends StatefulWidget {
-  var phone;
-  OTP({this.phone});
+  var phone, forgetPass;
+  OTP({this.phone, this.forgetPass});
 
   @override
   _OTPState createState() => _OTPState();
@@ -25,7 +26,14 @@ class _OTPState extends State<OTP> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print("forgetPAss..." + widget.forgetPass.toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.loginButtonColor,
@@ -91,8 +99,11 @@ class _OTPState extends State<OTP> {
           showCustomToast(responseOtp.data["errors"][0]["message"]);
         } else {
           showCustomToast(responseOtp.data["message"]);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LogIn()));
+          widget.forgetPass == "ForgetPassword"
+              ? Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ResetPassword(phone:widget.phone,otp:_otpText.text.toString())))
+              : Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => LogIn()));
         }
         //showCustomToast("Otp is incorrect");
       }

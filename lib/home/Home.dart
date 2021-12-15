@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
   var zone;
   bool _bannerLoad;
 
-  List<String> bannerList = [];
+  List<Banners> bannerList = [];
   final offerList = [
     "images/banner1.png",
     "images/banner2.jpg",
@@ -140,7 +140,7 @@ class _HomeState extends State<Home> {
                         ? Center(
                             child: CircularProgressIndicator(),
                           )
-                        : carouselSlider(),
+                        : carouselSlider1(),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
@@ -305,19 +305,21 @@ class _HomeState extends State<Home> {
           );
   }
 
-  CarouselSlider carouselSlider() {
+  CarouselSlider carouselSlider1() {
     return CarouselSlider(
       options: CarouselOptions(
-          autoPlay: true, viewportFraction: 1.0, enlargeCenterPage: true),
+          autoPlay: false, viewportFraction: 1.0, enlargeCenterPage: true),
       items: bannerList.map((items) {
-        print("Items..." + items.toString());
+        //print("Items..." + items.image.toString());
         Container(
           decoration: BoxDecoration(
-              //color: Colors.red,
-              borderRadius: BorderRadius.all(
-                  Radius.circular(MediaQuery.of(context).size.width * 0.02)),
-              image: DecorationImage(
-                  image: NetworkImage(items), fit: BoxFit.fill)),
+            color: Colors.amber,
+            borderRadius: BorderRadius.all(
+                Radius.circular(MediaQuery.of(context).size.width * 0.02)),
+            // image: DecorationImage(
+            //     image: NetworkImage(items.image), fit: BoxFit.fill)
+          ),
+          child: GestureDetector(child: Image.network(items.image)),
           // child: CachedNetworkImage(
           //   Placeholder:(context,url)=> CircularProgressIndicator(),imageUrl:items
           // ),
@@ -378,15 +380,21 @@ class _HomeState extends State<Home> {
       if (bannerResponse.data["state"] == 0) {
         var banners = bannerResponse.data["banners"];
         for (int i = 0; i < banners.length; i++) {
-          print("bannerImage...1.." +
-              bannerResponse.data["bannerimgpath"].toString());
-          var bannerImage =
+          Banners banner = new Banners();
+          banner.id = banners[i]["id"];
+          banner.title = banners[i]["title"];
+          banner.image =
               bannerResponse.data["bannerimgpath"] + banners[i]["image"];
-          print("bannerImage..." + bannerImage.toString());
+          banner.type = banners[i]["type"];
+          // print("bannerImage...1.." +
+          //     bannerResponse.data["bannerimgpath"].toString());
+          // var bannerImage = bannerResponse.data["bannerimgpath"] +
+          //     banners[i]["restaurant"]["cover_photo"];
+          // print("bannerImage..." + bannerImage.toString());
           // var dd = bannerImage.toString().replaceAll("https", "http");
           // print("DD..." + dd.toString());
           setState(() {
-            bannerList.add(bannerImage.toString());
+            bannerList.add(banner);
           });
         }
         print("bannerList..." + bannerList.toString());
@@ -401,4 +409,10 @@ class _HomeState extends State<Home> {
       print(e.toString());
     }
   }
+
+  // Future<bool> _onBackPressed() {
+  //   showAlertDialogWithCancel(context, "Are you sure?", () async {
+  //     Navigator.pop(context);
+  //   });
+  // }
 }

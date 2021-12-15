@@ -1,4 +1,5 @@
 import 'package:bazimat/age%20document/AgeDocument.dart';
+import 'package:bazimat/forget%20password/ForgetPassword.dart';
 import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/shapes/ShapeComponent.dart';
 import 'package:bazimat/sign%20up/Otp.dart';
@@ -19,6 +20,7 @@ class LogIn extends StatefulWidget {
 class _LogInState extends State<LogIn> {
   TextEditingController _phoneText, _passText;
   bool _isHidden;
+  bool _buttonDisable;
   var dio = Dio();
   @override
   void initState() {
@@ -27,6 +29,13 @@ class _LogInState extends State<LogIn> {
     _isHidden = true;
     _phoneText = new TextEditingController();
     _passText = new TextEditingController();
+    _buttonDisable = false;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -98,6 +107,20 @@ class _LogInState extends State<LogIn> {
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
                     InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ForgetPassword()));
+                      },
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text("Forget Password?")),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    InkWell(
                       // onTap: () {
                       //   Navigator.push(
                       //       context,
@@ -111,21 +134,39 @@ class _LogInState extends State<LogIn> {
                             //     MediaQuery.of(context).size.width * 0.04),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: AppColors.loginButtonColor,
+                                color: _buttonDisable
+                                    ? AppColors.loginButtonColor
+                                        .withOpacity(0.2)
+                                    : AppColors.loginButtonColor,
                                 borderRadius: BorderRadius.all(Radius.circular(
                                     MediaQuery.of(context).size.width * 0.06))),
-                            child: TextButton(
-                              child: Text(
-                                "Login",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.05),
-                              ),
-                              onPressed: _login,
-                            )),
+                            child: _buttonDisable
+                                ? TextButton(
+                                    child: Text(
+                                      "Login",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.05),
+                                    ),
+                                    onPressed: null,
+                                  )
+                                : TextButton(
+                                    child: Text(
+                                      "Login",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.05),
+                                    ),
+                                    onPressed: _login,
+                                  )),
                       ),
                     ),
                     SizedBox(
@@ -217,6 +258,9 @@ class _LogInState extends State<LogIn> {
       } else if (_phoneText.text.length != 10) {
         showCustomToast("Give 10 digit phone number");
       } else {
+        setState(() {
+          _buttonDisable = true;
+        });
         var formData = {"phone": _phoneText.text, "password": _passText.text};
         print("FormData..." + formData.toString());
         var response = await dio.post(Const.login, data: formData);
@@ -224,6 +268,9 @@ class _LogInState extends State<LogIn> {
         print("responseBody..." + response.data.toString());
         if (response.data["state"] == 1) {
           showCustomToast(response.data["errors"][0]["message"]);
+          setState(() {
+            _buttonDisable = false;
+          });
         } else {
           if (response.data["is_phone_verified"] == 1) {
             saveUserPref(response.data["token"]);

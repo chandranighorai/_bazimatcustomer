@@ -60,6 +60,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    checkPermission();
+    updateLocation();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         // appBar: AppBar(
