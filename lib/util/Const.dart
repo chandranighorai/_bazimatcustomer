@@ -12,4 +12,6 @@ class Const {
   static String banner = appUrl + "banners";
   static String forgetPassword = appUrl + "auth/forgot-password";
   static String resetPassword = appUrl + "auth/reset-password";
+  static String geoLocation = appUrl + "config/geocode-api";
+  static String category = appUrl + "categories";
 }

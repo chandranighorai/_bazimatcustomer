@@ -1,4 +1,5 @@
 import 'package:bazimat/all%20resturant/AllResturent.dart';
+import 'package:bazimat/home/CategoryModel.dart';
 import 'package:bazimat/home/Couponlist.dart';
 import 'package:bazimat/home/Cuisin.dart';
 import 'package:bazimat/home/ListData.dart';
@@ -12,8 +13,9 @@ import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+//import 'package:carousel_slider/carousel_options.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -28,8 +30,11 @@ class _HomeState extends State<Home> {
   bool _serviceAvailable;
   var zone;
   bool _bannerLoad;
+  var _shortAddress, _longAddress, latitude, longitude;
 
-  List<Banners> bannerList = [];
+  final bannerList1 = ["images/banner1.png", "images/banner1.png"];
+  Future<CategoryModel> _allCategory;
+  List<Banners> bannerList;
   final offerList = [
     "images/banner1.png",
     "images/banner2.jpg",
@@ -67,9 +72,11 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    bannerList = [];
     _serviceAvailable = true;
     _bannerLoad = false;
     _getZoneId();
+    _allCategory = _getCategoryList();
   }
 
   @override
@@ -86,42 +93,52 @@ class _HomeState extends State<Home> {
               ),
               elevation: 0,
               backgroundColor: Colors.white,
-              title: Container(
-                alignment: Alignment.centerRight,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(
-                          Icons.location_on,
-                          color: AppColors.buttonColor,
-                        ),
-                        Text(
-                          "ndita".toUpperCase(),
-                          textAlign: TextAlign.end,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.05),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      //width: MediaQuery.of(context).size.width * 0.2,
-                      child: Text(
-                        "SDF Building, GP Block, Sector v",
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: MediaQuery.of(context).size.width * 0.03),
+              title: _bannerLoad
+                  ? Container(
+                      alignment: Alignment.centerRight,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: AppColors.buttonColor,
+                              ),
+                              Text(
+                                "$_shortAddress".toUpperCase(),
+                                textAlign: TextAlign.end,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.04),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            //width: MediaQuery.of(context).size.width * 0.2,
+                            child: Text(
+                              "$_longAddress",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.02),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Text(
+                      "...",
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        color: Colors.black,
                       ),
                     ),
-                  ],
-                ),
-              ),
             ),
             body: SingleChildScrollView(
               child: Container(
@@ -140,7 +157,11 @@ class _HomeState extends State<Home> {
                         ? Center(
                             child: CircularProgressIndicator(),
                           )
-                        : carouselSlider1(),
+                        : Container(
+                            color: Colors.red,
+                            height: MediaQuery.of(context).size.width * 0.35,
+                            width: MediaQuery.of(context).size.width,
+                            child: carouselSliderBanner()),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
@@ -148,14 +169,28 @@ class _HomeState extends State<Home> {
                       height: MediaQuery.of(context).size.width * 0.42,
                       width: MediaQuery.of(context).size.width,
                       //color: Colors.amber,
-                      child: ListView.builder(
-                          //padding: EdgeInsets.only(left: 0, right: 0),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: listArr.length,
-                          shrinkWrap: true,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ListData(listArr: listArr[index]);
-                          }),
+                      child: FutureBuilder(
+                        initialData: null,
+                        future: _allCategory,
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            var categories = snapshot.data.errors;
+                            return ListView.builder(
+                                //padding: EdgeInsets.only(left: 0, right: 0),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: categories.length,
+                                shrinkWrap: true,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return ListData(listArr: listArr[index]);
+                                });
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      ),
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
@@ -304,29 +339,38 @@ class _HomeState extends State<Home> {
             ),
           );
   }
-
-  CarouselSlider carouselSlider1() {
-    return CarouselSlider(
-      options: CarouselOptions(
-          autoPlay: false, viewportFraction: 1.0, enlargeCenterPage: true),
-      items: bannerList.map((items) {
-        //print("Items..." + items.image.toString());
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.amber,
-            borderRadius: BorderRadius.all(
-                Radius.circular(MediaQuery.of(context).size.width * 0.02)),
-            // image: DecorationImage(
-            //     image: NetworkImage(items.image), fit: BoxFit.fill)
-          ),
-          child: GestureDetector(child: Image.network(items.image)),
-          // child: CachedNetworkImage(
-          //   Placeholder:(context,url)=> CircularProgressIndicator(),imageUrl:items
-          // ),
-        );
-      }).toList(),
-    );
-  }
+  // CarouselSlider carouselSlider1() {
+  //   return CarouselSlider(
+  //     options: CarouselOptions(
+  //       autoPlay: true,
+  //       reverse: true,
+  //       viewportFraction: 1.0,
+  //       enlargeCenterPage: true,
+  //       //enlargeStrategy: CenterPageEnlargeStrategy.height,
+  //       //aspectRatio: 16 / 9,
+  //       //height: 350,
+  //     ),
+  //     items: bannerList1.map((items) {
+  //       print("Items..." + items.toString());
+  //       Container(
+  //         //height: 120, width: 120,
+  //         // height: MediaQuery.of(context).size.width * 0.3,
+  //         // width: MediaQuery.of(context).size.width,
+  //         decoration: BoxDecoration(
+  //           color: Colors.amber,
+  //           // borderRadius: BorderRadius.all(
+  //           //     Radius.circular(MediaQuery.of(context).size.width * 0.02)),
+  //           // image: DecorationImage(
+  //           //     image: AssetImage(items.toString()), fit: BoxFit.fill)
+  //         ),
+  //         //child: GestureDetector(child: Image.network(items.image)),
+  //         // child: CachedNetworkImage(
+  //         //   Placeholder:(context,url)=> CircularProgressIndicator(),imageUrl:items
+  //         // ),
+  //       );
+  //     }).toList(),
+  //   );
+  // }
 
   CarouselSlider offerSlider1() {
     return CarouselSlider(
@@ -345,8 +389,8 @@ class _HomeState extends State<Home> {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       var response = preferences.getString("token");
-      var latitude = preferences.getString("latitude");
-      var longitude = preferences.getString("longitude");
+      latitude = preferences.getString("latitude");
+      longitude = preferences.getString("longitude");
       print("Latitude..." + preferences.getString("latitude"));
       print("Longitude..." + preferences.getString("longitude"));
       print("Token..." + response.toString());
@@ -374,36 +418,78 @@ class _HomeState extends State<Home> {
     print("Zoneid..." + zoneId.toString());
     try {
       //var formData = {"zoneId": "2"};
-      var bannerResponse = await dio.get(Const.banner,
-          options: Options(headers: {"zoneId": zoneId}));
-      print("banner Data..." + bannerResponse.data.toString());
-      if (bannerResponse.data["state"] == 0) {
-        var banners = bannerResponse.data["banners"];
-        for (int i = 0; i < banners.length; i++) {
-          Banners banner = new Banners();
-          banner.id = banners[i]["id"];
-          banner.title = banners[i]["title"];
-          banner.image =
-              bannerResponse.data["bannerimgpath"] + banners[i]["image"];
-          banner.type = banners[i]["type"];
-          // print("bannerImage...1.." +
-          //     bannerResponse.data["bannerimgpath"].toString());
-          // var bannerImage = bannerResponse.data["bannerimgpath"] +
-          //     banners[i]["restaurant"]["cover_photo"];
-          // print("bannerImage..." + bannerImage.toString());
-          // var dd = bannerImage.toString().replaceAll("https", "http");
-          // print("DD..." + dd.toString());
-          setState(() {
-            bannerList.add(banner);
-          });
-        }
+      var latLng = "?lat=" + "22.5697569" + "&lng=" + "88.4320485";
+      var geoLocation = Const.geoLocation + latLng;
+      print("GeoLocation..." + geoLocation.toString());
+      var bannerResponse = await Future.wait([
+        dio.get(Const.banner, options: Options(headers: {"zoneId": zoneId})),
+        dio.get(geoLocation.toString())
+      ]);
+      // print("banner Data..." + bannerResponse[0].data.toString());
+      // print("banner Data..." + bannerResponse[1].data.toString());
+      // print("Address..." +
+      //     bannerResponse[1].data["results"][0]["formatted_address"].toString());
+      var addr =
+          bannerResponse[1].data["results"][0]["formatted_address"].toString();
+      _shortAddress = addr.toString().substring(0, addr.indexOf(","));
+      print("_shortAddr..." + _shortAddress.toString());
+      _longAddress =
+          addr.toString().substring(addr.indexOf(", ") + 1).toString();
+      print("newString..." + _longAddress.toString());
+
+      // _shortAddress = _longAddress;
+      // print("_longAddr..." + _shortAddress.toString());
+      // _shortAddress = _longAddress.removeAt(0);
+      // print("_longAddr..." + _shortAddress.toString());
+      // print("_shortAddr..." + _longAddress.toString());
+      if (bannerResponse[0].data["state"] == 0) {
+        var banners = bannerResponse[0].data["banners"];
+        // for (int i = 0; i < banners.length; i++) {
+        //   Banners banner = new Banners();
+        //   banner.id = banners[i]["id"];
+        //   banner.title = banners[i]["title"];
+        //   banner.image =
+        //       bannerResponse[0].data["bannerimgpath"] + banners[i]["image"];
+        //   banner.type = banners[i]["type"];
+        //   bannerList.add(banner);
+        // }
         print("bannerList..." + bannerList.toString());
         setState(() {
           _bannerLoad = true;
         });
-        return OffersModel.fromJson(bannerResponse.data);
+        //return OffersModel.fromJson(bannerResponse.data);
       } else {
         showCustomToast("No Banner");
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  carouselSliderBanner() {
+    return CarouselSlider(
+        items: bannerList1.map((item) {
+          print("Items..." + item.toString());
+          Container(
+            decoration:
+                BoxDecoration(image: DecorationImage(image: AssetImage(item))),
+          );
+        }).toList(),
+        options: CarouselOptions(
+          autoPlay: true,
+          reverse: true,
+          viewportFraction: 1.0,
+        ));
+  }
+
+  Future<CategoryModel> _getCategoryList() async {
+    try {
+      var response = await dio.get(Const.category);
+      print("response body..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        var error = response.data["errors"];
+        print("Errors..." + error.length.toString());
+        CategoryModel.fromJson(response.data);
       }
     } on DioError catch (e) {
       print(e.toString());
