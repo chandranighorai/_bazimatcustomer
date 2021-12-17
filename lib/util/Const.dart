@@ -14,4 +14,5 @@ class Const {
   static String resetPassword = appUrl + "auth/reset-password";
   static String geoLocation = appUrl + "config/geocode-api";
   static String category = appUrl + "categories";
+  static String subCategory = appUrl + "categories/childes/";
 }

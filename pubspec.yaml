@@ -36,6 +36,7 @@ dependencies:
   geolocator: ^3.0.1
   cached_network_image: ^3.2.0
   package_info: ^2.0.2
+  carousel_pro: ^1.0.0
 
 dev_dependencies:
   flutter_test:

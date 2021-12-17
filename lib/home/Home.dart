@@ -16,6 +16,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 //import 'package:carousel_slider/carousel_options.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -158,8 +159,7 @@ class _HomeState extends State<Home> {
                             child: CircularProgressIndicator(),
                           )
                         : Container(
-                            color: Colors.red,
-                            height: MediaQuery.of(context).size.width * 0.35,
+                            height: MediaQuery.of(context).size.width * 0.45,
                             width: MediaQuery.of(context).size.width,
                             child: carouselSliderBanner()),
                     SizedBox(
@@ -174,15 +174,23 @@ class _HomeState extends State<Home> {
                         future: _allCategory,
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
+                          print("Snapshot..." + snapshot.hasData.toString());
                           if (snapshot.hasData) {
                             var categories = snapshot.data.errors;
+                            var imagePath = snapshot.data.categoryimgpath;
+                            print("Categories...." + categories.toString());
+                            print(
+                                "imagepath..." + snapshot.data.categoryimgpath);
                             return ListView.builder(
-                                //padding: EdgeInsets.only(left: 0, right: 0),
                                 scrollDirection: Axis.horizontal,
                                 itemCount: categories.length,
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return ListData(listArr: listArr[index]);
+                                  print("categories index..." +
+                                      categories[index].toString());
+                                  return ListData(
+                                      listArr: categories[index],
+                                      imageUrl: imagePath);
                                 });
                           } else {
                             return Center(
@@ -444,15 +452,15 @@ class _HomeState extends State<Home> {
       // print("_shortAddr..." + _longAddress.toString());
       if (bannerResponse[0].data["state"] == 0) {
         var banners = bannerResponse[0].data["banners"];
-        // for (int i = 0; i < banners.length; i++) {
-        //   Banners banner = new Banners();
-        //   banner.id = banners[i]["id"];
-        //   banner.title = banners[i]["title"];
-        //   banner.image =
-        //       bannerResponse[0].data["bannerimgpath"] + banners[i]["image"];
-        //   banner.type = banners[i]["type"];
-        //   bannerList.add(banner);
-        // }
+        for (int i = 0; i < banners.length; i++) {
+          Banners banner = new Banners();
+          banner.id = banners[i]["id"];
+          banner.title = banners[i]["title"];
+          banner.image =
+              bannerResponse[0].data["bannerimgpath"] + banners[i]["image"];
+          banner.type = banners[i]["type"];
+          bannerList.add(banner);
+        }
         print("bannerList..." + bannerList.toString());
         setState(() {
           _bannerLoad = true;
@@ -467,19 +475,17 @@ class _HomeState extends State<Home> {
   }
 
   carouselSliderBanner() {
-    return CarouselSlider(
-        items: bannerList1.map((item) {
-          print("Items..." + item.toString());
-          Container(
-            decoration:
-                BoxDecoration(image: DecorationImage(image: AssetImage(item))),
+    return Carousel(
+        showIndicator: false,
+        autoplay: true,
+        images: List.generate(bannerList.length, (index) {
+          return Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: NetworkImage(bannerList[index].image.toString()),
+                    fit: BoxFit.fill)),
           );
-        }).toList(),
-        options: CarouselOptions(
-          autoPlay: true,
-          reverse: true,
-          viewportFraction: 1.0,
-        ));
+        }));
   }
 
   Future<CategoryModel> _getCategoryList() async {
@@ -489,7 +495,7 @@ class _HomeState extends State<Home> {
       if (response.data["state"] == 0) {
         var error = response.data["errors"];
         print("Errors..." + error.length.toString());
-        CategoryModel.fromJson(response.data);
+        return CategoryModel.fromJson(response.data);
       }
     } on DioError catch (e) {
       print(e.toString());
