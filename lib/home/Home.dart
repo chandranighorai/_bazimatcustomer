@@ -4,6 +4,7 @@ import 'package:bazimat/home/Couponlist.dart';
 import 'package:bazimat/home/Cuisin.dart';
 import 'package:bazimat/home/ListData.dart';
 import 'package:bazimat/home/OfferModel.dart';
+import 'package:bazimat/home/ResturentModel.dart';
 import 'package:bazimat/navigation/Navigation.dart';
 import 'package:bazimat/home/Resturent.dart';
 import 'package:bazimat/home/TopPick.dart';
@@ -30,11 +31,16 @@ class _HomeState extends State<Home> {
   var dio = Dio();
   bool _serviceAvailable;
   var zone;
+  int zoneId;
   bool _bannerLoad;
   var _shortAddress, _longAddress, latitude, longitude;
+  var _resturentData;
+  var resturentList;
+  bool _resturentLoad;
 
-  final bannerList1 = ["images/banner1.png", "images/banner1.png"];
+  //final bannerList1 = ["images/banner1.png", "images/banner1.png"];
   Future<CategoryModel> _allCategory;
+  Future<ResturentModel> _resturentList;
   List<Banners> bannerList;
   final offerList = [
     "images/banner1.png",
@@ -76,6 +82,7 @@ class _HomeState extends State<Home> {
     bannerList = [];
     _serviceAvailable = true;
     _bannerLoad = false;
+    _resturentLoad = false;
     _getZoneId();
     _allCategory = _getCategoryList();
   }
@@ -305,37 +312,74 @@ class _HomeState extends State<Home> {
                       //height: MediaQuery.of(context).size.width * 0.75,
                       width: MediaQuery.of(context).size.width,
                       //color: Colors.amber,
-                      child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: 2,
-                          shrinkWrap: true,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Resturent();
-                          }),
+                      child: FutureBuilder(
+                        initialData: null,
+                        future: _resturentList,
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          print("snapshot..." + snapshot.hasData.toString());
+                          if (snapshot.hasData) {
+                            _resturentData = snapshot.data.errors.restaurants;
+                            var _coverImage = snapshot.data.coverimgpath;
+                            print(
+                                "ResturentData..." + _resturentData.toString());
+                            return ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: 2,
+                                shrinkWrap: true,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Resturent(
+                                      resturentData: _resturentData[index],
+                                      coverimgpath: _coverImage,
+                                      latitude: latitude,
+                                      longitude: longitude);
+                                });
+                          } else {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                        },
+                        //child: ,
+                      ),
                     ),
                     // SizedBox(
                     //   height: MediaQuery.of(context).size.width * 0.02,
                     // ),
-                    Container(
-                      alignment: Alignment.center,
-                      // padding:
-                      //     EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                      //width: MediaQuery.of(context).size.width / 1.5,
-                      decoration: BoxDecoration(
-                          color: AppColors.buttonColor,
-                          borderRadius: BorderRadius.all(Radius.circular(
-                              MediaQuery.of(context).size.width * 50))),
-                      child: TextButton(
-                        child: Text("See All Resturants".toUpperCase(),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
-                        onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AllResturant())),
-                      ),
-                    )
+                    // _bannerLoad == false
+                    //     ? Center(
+                    //         child: CircularProgressIndicator(),
+                    //       )
+                    //     : resturentList.length > 1
+                    //         ?
+                    _resturentLoad == false
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : resturentList.length > 1
+                            ? Container(
+                                alignment: Alignment.center,
+                                // padding:
+                                //     EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                //width: MediaQuery.of(context).size.width / 1.5,
+                                decoration: BoxDecoration(
+                                    color: AppColors.buttonColor,
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            MediaQuery.of(context).size.width *
+                                                50))),
+                                child: TextButton(
+                                  child: Text(
+                                      "See All Resturants".toUpperCase(),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
+                                  onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AllResturant())),
+                                ),
+                              )
+                            : SizedBox()
                   ],
                 ),
               ),
@@ -415,14 +459,17 @@ class _HomeState extends State<Home> {
           _serviceAvailable = !_serviceAvailable;
         });
       } else {
-        _getBanner(zone.data["zone_id"]);
+        zoneId = zone.data["zone_id"];
+        print("ZoneId.... in home..." + zoneId.toString());
+        _getBanner();
+        _resturentList = _getResturentList();
       }
     } on DioError catch (e) {
       print(e.toString());
     }
   }
 
-  _getBanner(int zoneId) async {
+  _getBanner() async {
     print("Zoneid..." + zoneId.toString());
     try {
       //var formData = {"zoneId": "2"};
@@ -501,6 +548,40 @@ class _HomeState extends State<Home> {
       print(e.toString());
     }
   }
+
+  Future<ResturentModel> _getResturentList() async {
+    print("zoneId in resturent List in..." + zoneId.toString());
+    try {
+      var response = await dio.get(Const.allResturent,
+          options: Options(headers: {"zoneId": zoneId}));
+      print("response statusCode..." + response.statusCode.toString());
+      print("response body in resturent List..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        resturentList = response.data["errors"]["restaurants"];
+        print("00..." + resturentList.length.toString());
+        setState(() {
+          _resturentLoad = true;
+        });
+        return ResturentModel.fromJson(response.data);
+      }
+      // _getDistance(response.data["errors"]["restaurants"][0]["latitude"],
+      //     response.data["errors"]["restaurants"][0]["longitude"]);
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  // _getDistance(String lat, String lng) async {
+  //   try {
+  //     var params = "?";
+  //     params += "origin_lat=" + latitude + "&origin_lng=" + longitude;
+  //     params += "&destination_lat=" + lat + "&destination_lng=" + lng;
+  //     var url = Const.distanceApi + params;
+  //     print("url..." + url.toString());
+  //   } on DioError catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 
   // Future<bool> _onBackPressed() {
   //   showAlertDialogWithCancel(context, "Are you sure?", () async {
