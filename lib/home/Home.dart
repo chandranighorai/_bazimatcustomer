@@ -42,6 +42,7 @@ class _HomeState extends State<Home> {
   Future<CategoryModel> _allCategory;
   Future<ResturentModel> _resturentList;
   List<Banners> bannerList;
+  var _coverImage;
   final offerList = [
     "images/banner1.png",
     "images/banner2.jpg",
@@ -317,12 +318,15 @@ class _HomeState extends State<Home> {
                         future: _resturentList,
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
-                          print("snapshot..." + snapshot.hasData.toString());
+                          print("snapshot... in resturent..." +
+                              snapshot.hasData.toString());
                           if (snapshot.hasData) {
                             _resturentData = snapshot.data.errors.restaurants;
-                            var _coverImage = snapshot.data.coverimgpath;
-                            print(
-                                "ResturentData..." + _resturentData.toString());
+                            _coverImage = snapshot.data.coverimgpath;
+                            print("ResturentData...in future..." +
+                                _resturentData.toString());
+                            // print("ResturentData...in future...all..." +
+                            //     _allResturent.toString());
                             return ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
                                 itemCount: 2,
@@ -335,6 +339,8 @@ class _HomeState extends State<Home> {
                                       longitude: longitude);
                                 });
                           } else {
+                            // _resturentData = snapshot.data.errors.restaurants;
+                            // print("resturent...." + _resturentData.toString());
                             return Center(child: CircularProgressIndicator());
                           }
                         },
@@ -375,8 +381,11 @@ class _HomeState extends State<Home> {
                                   onPressed: () => Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              AllResturant())),
+                                          builder: (context) => AllResturant(
+                                              allResturentData: _resturentData,
+                                              coverimgpath: _coverImage,
+                                              latitude: latitude,
+                                              longitude: longitude))),
                                 ),
                               )
                             : SizedBox()
@@ -550,7 +559,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<ResturentModel> _getResturentList() async {
-    print("zoneId in resturent List in..." + zoneId.toString());
+    print("zoneId intur resent List in..." + zoneId.toString());
     try {
       var response = await dio.get(Const.allResturent,
           options: Options(headers: {"zoneId": zoneId}));

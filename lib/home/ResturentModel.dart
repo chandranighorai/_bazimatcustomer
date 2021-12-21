@@ -89,6 +89,8 @@ class Restaurants {
   int selfDeliverySystem;
   bool posSystem;
   int deliveryCharge;
+  String description;
+  String offerprice;
   int open;
   String availableTimeStarts;
   String availableTimeEnds;
@@ -96,7 +98,7 @@ class Restaurants {
   int ratingCount;
   bool gstStatus;
   String gstCode;
-  Null discount;
+  String discount;
 
   Restaurants(
       {this.id,
@@ -128,6 +130,8 @@ class Restaurants {
       this.selfDeliverySystem,
       this.posSystem,
       this.deliveryCharge,
+      this.description,
+      this.offerprice,
       this.open,
       this.availableTimeStarts,
       this.availableTimeEnds,
@@ -167,6 +171,8 @@ class Restaurants {
     selfDeliverySystem = json['self_delivery_system'];
     posSystem = json['pos_system'];
     deliveryCharge = json['delivery_charge'];
+    description = json['description'];
+    offerprice = json['offerprice'];
     open = json['open'];
     availableTimeStarts = json['available_time_starts'];
     availableTimeEnds = json['available_time_ends'];
@@ -208,6 +214,8 @@ class Restaurants {
     data['self_delivery_system'] = this.selfDeliverySystem;
     data['pos_system'] = this.posSystem;
     data['delivery_charge'] = this.deliveryCharge;
+    data['description'] = this.description;
+    data['offerprice'] = this.offerprice;
     data['open'] = this.open;
     data['available_time_starts'] = this.availableTimeStarts;
     data['available_time_ends'] = this.availableTimeEnds;
