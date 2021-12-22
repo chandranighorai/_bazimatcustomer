@@ -3,6 +3,7 @@ import 'package:bazimat/forget%20password/ForgetPassword.dart';
 import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/shapes/ShapeComponent.dart';
 import 'package:bazimat/sign%20up/Otp.dart';
+import 'package:bazimat/sign%20up/SignUp.dart';
 import 'package:bazimat/sign%20up/userPreferences.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/AppConst.dart';
@@ -168,6 +169,28 @@ class _LogInState extends State<LogIn> {
                                     onPressed: _login,
                                   )),
                       ),
+                    ),
+                    // SizedBox(
+                    //   height: MediaQuery.of(context).size.width * 0.01,
+                    // ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Are You a New User? "),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SignUp()));
+                          },
+                          child: Text(
+                            "Sign Up",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.03,

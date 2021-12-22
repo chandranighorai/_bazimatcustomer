@@ -1,19 +1,43 @@
 import 'package:bazimat/sub%20list/SubListModel.dart';
+import 'package:bazimat/util/Const.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class SubListItem extends StatefulWidget {
-  Errors listData;
-  var listImageUrl;
-  SubListItem({this.listData, this.listImageUrl, Key key}) : super(key: key);
+  Restaurants listData;
+  var listImageUrl, latitude, longitude;
+  SubListItem(
+      {this.listData,
+      this.listImageUrl,
+      this.latitude,
+      this.longitude,
+      Key key})
+      : super(key: key);
 
   @override
   _SubListItemState createState() => _SubListItemState();
 }
 
 class _SubListItemState extends State<SubListItem> {
+  var dio = Dio();
+  bool _distanceLoad;
+  var getDistanceResponse;
+  @override
+  void initState() {
+    super.initState();
+    _distanceLoad = false;
+    _getDistance();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var imageUrl = widget.listImageUrl + widget.listData.image;
+    var imageUrl = widget.listImageUrl + widget.listData.coverPhoto;
     print("imageUrl..." + imageUrl.toString());
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -26,8 +50,9 @@ class _SubListItemState extends State<SubListItem> {
               width: MediaQuery.of(context).size.width / 3.5,
               height: MediaQuery.of(context).size.height * 0.16,
               decoration: BoxDecoration(
-                  color: Colors.red,
-                  image: DecorationImage(image: NetworkImage(imageUrl))),
+                  //color: Colors.red,
+                  image: DecorationImage(
+                      image: NetworkImage(imageUrl), fit: BoxFit.cover)),
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.02,
@@ -46,14 +71,16 @@ class _SubListItemState extends State<SubListItem> {
                   SizedBox(
                     height: MediaQuery.of(context).size.width * 0.02,
                   ),
-                  Text("SaltLake, Sector v"),
+                  Text("${widget.listData.address}"),
                   SizedBox(
                     height: MediaQuery.of(context).size.width * 0.01,
                   ),
                   RichText(
                       text: TextSpan(children: [
                     TextSpan(
-                        text: "1kms",
+                        text: _distanceLoad == false
+                            ? "..."
+                            : "${getDistanceResponse.data["rows"][0]["elements"][0]["distance"]["text"]}",
                         style: TextStyle(
                             fontSize: MediaQuery.of(context).size.width * 0.030,
                             color: Colors.black)),
@@ -67,7 +94,9 @@ class _SubListItemState extends State<SubListItem> {
                       ),
                     )),
                     TextSpan(
-                        text: "30-45 mins",
+                        text: _distanceLoad == false
+                            ? "..."
+                            : "${getDistanceResponse.data["rows"][0]["elements"][0]["duration"]["text"]}",
                         style: TextStyle(
                             fontSize: MediaQuery.of(context).size.width * 0.030,
                             color: Colors.black))
@@ -75,23 +104,44 @@ class _SubListItemState extends State<SubListItem> {
                   SizedBox(
                     height: MediaQuery.of(context).size.width * 0.01,
                   ),
-                  Row(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.width * 0.04,
-                        width: MediaQuery.of(context).size.width / 20,
-                        decoration: BoxDecoration(
-                            //color: Colors.red,
-                            image: DecorationImage(
-                                image: AssetImage("images/discount.png"))),
-                      ),
-                      Text(
-                        "50% off on delivery".toUpperCase(),
-                        style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.03),
-                      )
-                    ],
+                  Text(
+                    "Opening Time: ${widget.listData.availableTimeStarts}",
+                    style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.03),
                   ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.01,
+                  ),
+                  Text(
+                    "Closing Time: ${widget.listData.availableTimeEnds}",
+                    style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.03),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.01,
+                  ),
+                  widget.listData.discount.length == 0
+                      ? SizedBox()
+                      : Row(
+                          children: [
+                            Container(
+                              height: MediaQuery.of(context).size.width * 0.04,
+                              width: MediaQuery.of(context).size.width / 20,
+                              decoration: BoxDecoration(
+                                  //color: Colors.red,
+                                  image: DecorationImage(
+                                      image:
+                                          AssetImage("images/discount.png"))),
+                            ),
+                            Text(
+                              "${widget.listData.discount} off on delivery"
+                                  .toUpperCase(),
+                              style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.03),
+                            )
+                          ],
+                        ),
                   SizedBox(
                     height: MediaQuery.of(context).size.width * 0.01,
                   ),
@@ -111,7 +161,7 @@ class _SubListItemState extends State<SubListItem> {
                             fontSize: MediaQuery.of(context).size.width * 0.03),
                       )
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -119,5 +169,26 @@ class _SubListItemState extends State<SubListItem> {
         ),
       ),
     );
+  }
+
+  _getDistance() async {
+    try {
+      var params = "?";
+      params +=
+          "origin_lat=" + widget.latitude + "&origin_lng=" + widget.longitude;
+      params += "&destination_lat=" +
+          widget.listData.latitude +
+          "&destination_lng=" +
+          widget.listData.longitude;
+      var url = Const.distanceApi + params;
+      print("Url..." + url.toString());
+      getDistanceResponse = await dio.get(url);
+      print("distance..." + getDistanceResponse.data.toString());
+      setState(() {
+        _distanceLoad = true;
+      });
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }

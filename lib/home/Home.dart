@@ -198,7 +198,10 @@ class _HomeState extends State<Home> {
                                       categories[index].toString());
                                   return ListData(
                                       listArr: categories[index],
-                                      imageUrl: imagePath);
+                                      imageUrl: imagePath,
+                                      zoneIdVal: zoneId,
+                                      latitude:latitude,
+                                      longitude:longitude);
                                 });
                           } else {
                             return Center(

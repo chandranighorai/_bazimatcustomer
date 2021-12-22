@@ -1,3 +1,4 @@
+import 'package:bazimat/age%20document/AgeDocument.dart';
 import 'package:bazimat/sub%20list/SubList.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
@@ -5,8 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ListData extends StatefulWidget {
-  var listArr, imageUrl;
-  ListData({this.listArr, this.imageUrl, Key key}) : super(key: key);
+  var listArr, imageUrl, zoneIdVal, latitude, longitude;
+  ListData(
+      {this.listArr,
+      this.imageUrl,
+      this.zoneIdVal,
+      this.latitude,
+      this.longitude,
+      Key key})
+      : super(key: key);
 
   @override
   _ListDataState createState() => _ListDataState();
@@ -14,6 +22,21 @@ class ListData extends StatefulWidget {
 
 class _ListDataState extends State<ListData> {
   var dio = Dio();
+  bool _distanceLoad;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _distanceLoad = false;
+    //_getDistance();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     //print("ListArr..." + widget.listArr.image.toString());
@@ -25,12 +48,7 @@ class _ListDataState extends State<ListData> {
         if (widget.listArr.name.toLowerCase().toString() == "liquor") {
           _getCustomerInfo();
         } else {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SubList(
-                      listId: widget.listArr.id,
-                      listName: widget.listArr.name)));
+          _goToSubList();
         }
       },
       child: Padding(
@@ -72,7 +90,11 @@ class _ListDataState extends State<ListData> {
       print("Token..." + token.toString());
       print("Token..." + Const.customerInfo.toString());
       var response = await dio.get(Const.customerInfo,
-          options: Options(headers: {"Authorization": "Bearer Token " + token})
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            //'Accept': 'application/json',
+            "Authorization": "Bearer $token"
+          })
           // queryParameters: {
           //   "Authorization": {
           //     {"Bearer Token": token.toString()}
@@ -84,8 +106,30 @@ class _ListDataState extends State<ListData> {
           // )
           );
       print("response body..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        print("response body...0.." +
+            response.data["error"]["agestatus"].toString());
+        if (response.data["error"]["agestatus"] == 0) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => AgeDocument()));
+        } else {
+          _goToSubList();
+        }
+      } else {}
     } on DioError catch (e) {
       print(e.toString());
     }
+  }
+
+  _goToSubList() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SubList(
+                listId: widget.listArr.id,
+                listName: widget.listArr.name,
+                zoneId: widget.zoneIdVal,
+                latitude:widget.latitude,
+                longitude:widget.longitude)));
   }
 }

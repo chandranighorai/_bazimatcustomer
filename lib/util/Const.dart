@@ -15,6 +15,7 @@ class Const {
   static String geoLocation = appUrl + "config/geocode-api";
   static String category = appUrl + "categories";
   static String subCategory = appUrl + "categories/childes/";
+  static String subCatList = appUrl + "restaurants/cat";
   static String resturentList = appUrl + "restaurants/latest";
   static String allResturent = appUrl + "restaurants/get-restaurants/all";
   static String distanceApi = appUrl + "config/distance-api";
