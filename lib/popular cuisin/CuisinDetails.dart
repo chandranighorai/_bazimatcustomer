@@ -1,16 +1,37 @@
+import 'package:bazimat/home/ResturentModel.dart';
 import 'package:bazimat/popular%20cuisin/Recomended.dart';
+import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
+import 'package:bazimat/sub%20list/SubListModel.dart';
+import 'package:bazimat/util/Const.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class CuisinDetails extends StatefulWidget {
-  const CuisinDetails({Key key}) : super(key: key);
+  Restaurants resturentData;
+  RestaurantsSub listData;
+  var distance, duration;
+  CuisinDetails(
+      {this.resturentData, this.listData, this.distance, this.duration});
 
   @override
   _CuisinDetailsState createState() => _CuisinDetailsState();
 }
 
 class _CuisinDetailsState extends State<CuisinDetails> {
+  Future<RecommendedModel> _recommendedProduct;
+  var dio = Dio();
+  @override
+  void initState() {
+    super.initState();
+    _recommendedProduct = _getAllRecommendedProduct();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("ResturentName..." + widget.resturentData.name.toString());
+    print("ResturentName..." + widget.resturentData.id.toString());
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -63,7 +84,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      "So Southy",
+                      "${widget.resturentData.name}",
                       style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.06,
                           fontWeight: FontWeight.bold),
@@ -72,7 +93,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                       height: MediaQuery.of(context).size.width * 0.03,
                     ),
                     Text(
-                      "South Indian, Jain, Dessert, Beverages",
+                      "${widget.resturentData.description}",
                       style: TextStyle(color: Colors.grey),
                     ),
                     SizedBox(
@@ -82,14 +103,14 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                       child: Row(
                         children: [
                           Text(
-                            "Bidhannagar",
+                            "${widget.resturentData.address}",
                             style: TextStyle(color: Colors.grey),
                           ),
                           VerticalDivider(
                             thickness: 1,
                           ),
                           Text(
-                            "2.2 kms",
+                            "${widget.distance}",
                             style: TextStyle(color: Colors.grey),
                           )
                         ],
@@ -119,11 +140,11 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                                         0.05,
                                   )),
                                   TextSpan(
-                                      text: "4.0",
+                                      text: "${widget.resturentData.avgRating}",
                                       style: TextStyle(color: Colors.black))
                                 ])),
                                 Text(
-                                  "100+ ratings",
+                                  "${widget.resturentData.ratingCount}+ ratings",
                                   style: TextStyle(color: Colors.grey),
                                 )
                               ],
@@ -135,7 +156,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                             //color: Colors.white,
                             child: Column(
                               children: [
-                                Text("42 mins"),
+                                Text("${widget.duration}"),
                                 Text(
                                   "Delivery Time",
                                   style: TextStyle(color: Colors.grey),
@@ -149,11 +170,14 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                             //color: Colors.amber,
                             child: Column(
                               children: [
-                                Text("\u20B9300"),
                                 Text(
-                                  "For Two",
-                                  style: TextStyle(color: Colors.grey),
-                                )
+                                  "${widget.resturentData.offerprice}",
+                                  textAlign: TextAlign.center,
+                                ),
+                                // Text(
+                                //   "For Two",
+                                //   style: TextStyle(color: Colors.grey),
+                                // )
                               ],
                             ),
                           )
@@ -250,19 +274,43 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                 child: Flex(
                   direction: Axis.vertical,
                   children: [
-                    GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: 4,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio:
-                                (MediaQuery.of(context).size.width /
-                                    MediaQuery.of(context).size.height /
-                                    0.55)),
-                        itemBuilder: (BuildContext context, int index) {
-                          return Recommended();
-                        })
+                    FutureBuilder(
+                      initialData: null,
+                      future: _recommendedProduct,
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          var products = snapshot.data.errors.products;
+                          var imagePath = snapshot.data.proimgpath;
+                          return products.length == 0
+                              ? Center(
+                                  child: Text("No Iteams available now"),
+                                )
+                              : GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: products.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          childAspectRatio:
+                                              (MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  0.55)),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Recommended(
+                                        productList: products[index],
+                                        imageUrl: imagePath);
+                                  });
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    )
                   ],
                 ),
               )
@@ -271,5 +319,19 @@ class _CuisinDetailsState extends State<CuisinDetails> {
         ),
       ),
     );
+  }
+
+  Future<RecommendedModel> _getAllRecommendedProduct() async {
+    try {
+      var params = "?restaurant_id=" + widget.resturentData.id.toString();
+      var url = Const.resturentDetails + params;
+      var response = await dio.get(url);
+      print("response Body... in rrecommeded" + response.data.toString());
+      if (response.data["state"] == 0) {
+        return RecommendedModel.fromJson(response.data);
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }

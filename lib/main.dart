@@ -55,7 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       //print("Position...in current...$_position");
     });
-
     print("Position...in current...$_position");
   }
 

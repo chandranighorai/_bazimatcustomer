@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:bazimat/home/ResturentModel.dart';
 
 class AllResturentList extends StatefulWidget {
-  var resturent, coverImage, latitude, longitude;
+  Restaurants resturent;
+  var coverImage, latitude, longitude;
   AllResturentList(
       {this.resturent,
       this.coverImage,
@@ -36,7 +37,14 @@ class _AllResturentListState extends State<AllResturentList> {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => CuisinDetails()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => CuisinDetails(
+                    resturentData: widget.resturent,
+                    distance: getDistanceResponse.data["rows"][0]["elements"][0]
+                        ["distance"]["text"],
+                    duration: getDistanceResponse.data["rows"][0]["elements"][0]
+                        ["duration"]["text"])));
       },
       child: Stack(
         children: [

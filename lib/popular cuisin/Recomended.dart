@@ -1,9 +1,12 @@
 import 'package:bazimat/add%20cuisin/AddCuisin.dart';
+import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:flutter/material.dart';
 
 class Recommended extends StatefulWidget {
-  const Recommended({Key key}) : super(key: key);
+  Products productList;
+  var imageUrl;
+  Recommended({this.productList, this.imageUrl, Key key});
 
   @override
   _RecommendedState createState() => _RecommendedState();
@@ -12,6 +15,8 @@ class Recommended extends StatefulWidget {
 class _RecommendedState extends State<Recommended> {
   @override
   Widget build(BuildContext context) {
+    var image = widget.imageUrl + widget.productList.image;
+    print("Image..." + image.toString());
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -31,23 +36,26 @@ class _RecommendedState extends State<Recommended> {
                 //color: Colors.red,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage("images/recommended.jpg"),
-                        fit: BoxFit.cover)),
+                        image: NetworkImage(image), fit: BoxFit.cover)),
               ),
               Container(
                 padding: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width * 0.01,
                     right: MediaQuery.of(context).size.width * 0.01),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Rava Masala Dosa No Onion- No Garlic"),
+                    Text(
+                      "${widget.productList.name}",
+                      textAlign: TextAlign.start,
+                    ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.01,
                     ),
                     Row(
                       children: [
                         Text(
-                          "\u20B9140",
+                          "\u20B9${widget.productList.price}",
                           style: TextStyle(color: Colors.grey),
                         ),
                         Spacer(),

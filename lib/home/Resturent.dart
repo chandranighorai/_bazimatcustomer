@@ -46,7 +46,14 @@ class _ResturentState extends State<Resturent> {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => CuisinDetails()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => CuisinDetails(
+                    resturentData: widget.resturentData,
+                    distance: getDistanceResponse.data["rows"][0]["elements"][0]
+                        ["distance"]["text"],
+                    duration: getDistanceResponse.data["rows"][0]["elements"][0]
+                        ["duration"]["text"])));
       },
       child: Stack(
         children: [

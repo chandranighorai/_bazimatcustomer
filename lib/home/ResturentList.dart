@@ -23,7 +23,10 @@ class _ResturentListState extends State<ResturentList> {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => CuisinDetails()));
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    CuisinDetails(resturentData: widget.resturentData)));
       },
       child: Stack(
         children: [
@@ -72,7 +75,7 @@ class _ResturentListState extends State<ResturentList> {
                           height: MediaQuery.of(context).size.width * 0.02,
                         ),
                         Text(
-                          "South indian, Jain, Dessert, Beverages",
+                          "${widget.resturentData.description}",
                           style: TextStyle(
                               color: Colors.grey,
                               fontSize:

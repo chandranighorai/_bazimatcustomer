@@ -1,10 +1,11 @@
+import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
 import 'package:bazimat/sub%20list/SubListModel.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class SubListItem extends StatefulWidget {
-  Restaurants listData;
+  RestaurantsSub listData;
   var listImageUrl, latitude, longitude;
   SubListItem(
       {this.listData,
@@ -39,133 +40,151 @@ class _SubListItemState extends State<SubListItem> {
   Widget build(BuildContext context) {
     var imageUrl = widget.listImageUrl + widget.listData.coverPhoto;
     print("imageUrl..." + imageUrl.toString());
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        color: Colors.white,
-        child: Row(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width / 3.5,
-              height: MediaQuery.of(context).size.height * 0.16,
-              decoration: BoxDecoration(
-                  //color: Colors.red,
-                  image: DecorationImage(
-                      image: NetworkImage(imageUrl), fit: BoxFit.cover)),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.02,
-            ),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.listData.name,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: MediaQuery.of(context).size.width * 0.045),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.02,
-                  ),
-                  Text("${widget.listData.address}"),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.01,
-                  ),
-                  RichText(
-                      text: TextSpan(children: [
-                    TextSpan(
-                        text: _distanceLoad == false
-                            ? "..."
-                            : "${getDistanceResponse.data["rows"][0]["elements"][0]["distance"]["text"]}",
-                        style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.030,
-                            color: Colors.black)),
-                    WidgetSpan(
-                        child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 5.0, bottom: 5.0, left: 4.0, right: 4.0),
-                      child: Icon(
-                        Icons.circle,
-                        size: MediaQuery.of(context).size.width * 0.01,
-                      ),
-                    )),
-                    TextSpan(
-                        text: _distanceLoad == false
-                            ? "..."
-                            : "${getDistanceResponse.data["rows"][0]["elements"][0]["duration"]["text"]}",
-                        style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.030,
-                            color: Colors.black))
-                  ])),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.01,
-                  ),
-                  Text(
-                    "Opening Time: ${widget.listData.availableTimeStarts}",
-                    style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.03),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.01,
-                  ),
-                  Text(
-                    "Closing Time: ${widget.listData.availableTimeEnds}",
-                    style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.03),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.01,
-                  ),
-                  widget.listData.discount.length == 0
-                      ? SizedBox()
-                      : Row(
-                          children: [
-                            Container(
-                              height: MediaQuery.of(context).size.width * 0.04,
-                              width: MediaQuery.of(context).size.width / 20,
-                              decoration: BoxDecoration(
-                                  //color: Colors.red,
-                                  image: DecorationImage(
-                                      image:
-                                          AssetImage("images/discount.png"))),
-                            ),
-                            Text(
-                              "${widget.listData.discount} off on delivery"
-                                  .toUpperCase(),
-                              style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.03),
-                            )
-                          ],
-                        ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.01,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.width * 0.04,
-                        width: MediaQuery.of(context).size.width / 20,
-                        decoration: BoxDecoration(
-                            //color: Colors.red,
-                            image: DecorationImage(
-                                image: AssetImage("images/discount.png"))),
-                      ),
-                      Text(
-                        "200 items available",
-                        style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.03),
-                      )
-                    ],
-                  ),
-                ],
+    return InkWell(
+      onTap: () {
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => CuisinDetails(
+        //             listData: widget.listData,
+        //             distance: getDistanceResponse.data["rows"][0]["elements"][0]
+        //                 ["distance"]["text"],
+        //             duration: getDistanceResponse.data["rows"][0]["elements"][0]
+        //                 ["duration"]["text"])));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          color: Colors.white,
+          child: Row(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width / 3.5,
+                height: MediaQuery.of(context).size.height * 0.16,
+                decoration: BoxDecoration(
+                    //color: Colors.red,
+                    image: DecorationImage(
+                        image: NetworkImage(imageUrl), fit: BoxFit.cover)),
               ),
-            ),
-          ],
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.02,
+              ),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.listData.name,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.045),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    Text("${widget.listData.address}"),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.01,
+                    ),
+                    RichText(
+                        text: TextSpan(children: [
+                      TextSpan(
+                          text: _distanceLoad == false
+                              ? "..."
+                              : "${getDistanceResponse.data["rows"][0]["elements"][0]["distance"]["text"]}",
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.030,
+                              color: Colors.black)),
+                      WidgetSpan(
+                          child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 5.0, bottom: 5.0, left: 4.0, right: 4.0),
+                        child: Icon(
+                          Icons.circle,
+                          size: MediaQuery.of(context).size.width * 0.01,
+                        ),
+                      )),
+                      TextSpan(
+                          text: _distanceLoad == false
+                              ? "..."
+                              : "${getDistanceResponse.data["rows"][0]["elements"][0]["duration"]["text"]}",
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.030,
+                              color: Colors.black))
+                    ])),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.01,
+                    ),
+                    Text(
+                      "Opening Time: ${widget.listData.availableTimeStarts}",
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.03),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.01,
+                    ),
+                    Text(
+                      "Closing Time: ${widget.listData.availableTimeEnds}",
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.03),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.01,
+                    ),
+                    widget.listData.discount.length == 0
+                        ? SizedBox()
+                        : Row(
+                            children: [
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.width * 0.04,
+                                width: MediaQuery.of(context).size.width / 20,
+                                decoration: BoxDecoration(
+                                    //color: Colors.red,
+                                    image: DecorationImage(
+                                        image:
+                                            AssetImage("images/discount.png"))),
+                              ),
+                              Text(
+                                "${widget.listData.discount} off on delivery"
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.03),
+                              )
+                            ],
+                          ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.01,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.width * 0.04,
+                          width: MediaQuery.of(context).size.width / 20,
+                          decoration: BoxDecoration(
+                              //color: Colors.red,
+                              image: DecorationImage(
+                                  image: AssetImage("images/discount.png"))),
+                        ),
+                        Text(
+                          "200 items available",
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.03),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

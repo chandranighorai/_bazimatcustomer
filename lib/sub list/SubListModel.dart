@@ -27,15 +27,15 @@ class SubListModel {
 }
 
 class Errors {
-  List<Restaurants> restaurants;
+  List<RestaurantsSub> restaurants;
 
   Errors({this.restaurants});
 
   Errors.fromJson(Map<String, dynamic> json) {
     if (json['restaurants'] != null) {
-      restaurants = new List<Restaurants>();
+      restaurants = new List<RestaurantsSub>();
       json['restaurants'].forEach((v) {
-        restaurants.add(new Restaurants.fromJson(v));
+        restaurants.add(new RestaurantsSub.fromJson(v));
       });
     }
   }
@@ -49,7 +49,7 @@ class Errors {
   }
 }
 
-class Restaurants {
+class RestaurantsSub {
   int id;
   String name;
   String phone;
@@ -89,7 +89,7 @@ class Restaurants {
   bool gstStatus;
   String gstCode;
 
-  Restaurants(
+  RestaurantsSub(
       {this.id,
       this.name,
       this.phone,
@@ -129,7 +129,7 @@ class Restaurants {
       this.gstStatus,
       this.gstCode});
 
-  Restaurants.fromJson(Map<String, dynamic> json) {
+  RestaurantsSub.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     phone = json['phone'];
