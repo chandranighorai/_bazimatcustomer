@@ -65,7 +65,7 @@ class _SubListItemState extends State<SubListItem> {
                 decoration: BoxDecoration(
                     //color: Colors.red,
                     image: DecorationImage(
-                        image: NetworkImage(imageUrl), fit: BoxFit.cover)),
+                        image: NetworkImage(imageUrl), fit: BoxFit.contain)),
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.02,

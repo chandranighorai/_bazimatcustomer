@@ -37,6 +37,8 @@ class _HomeState extends State<Home> {
   var _resturentData;
   var resturentList;
   bool _resturentLoad;
+  var popularList, cuisinImagePath;
+  bool _popularLoad;
 
   //final bannerList1 = ["images/banner1.png", "images/banner1.png"];
   Future<CategoryModel> _allCategory;
@@ -84,6 +86,7 @@ class _HomeState extends State<Home> {
     _serviceAvailable = true;
     _bannerLoad = false;
     _resturentLoad = false;
+    _popularLoad = false;
     _getZoneId();
     _allCategory = _getCategoryList();
   }
@@ -200,8 +203,8 @@ class _HomeState extends State<Home> {
                                       listArr: categories[index],
                                       imageUrl: imagePath,
                                       zoneIdVal: zoneId,
-                                      latitude:latitude,
-                                      longitude:longitude);
+                                      latitude: latitude,
+                                      longitude: longitude);
                                 });
                           } else {
                             return Center(
@@ -282,13 +285,20 @@ class _HomeState extends State<Home> {
                       height: MediaQuery.of(context).size.width * 0.38,
                       width: MediaQuery.of(context).size.width,
                       //color: Colors.amber,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          itemCount: cuisin.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return CuisinList(cuisin: cuisin[index]);
-                          }),
+                      child: _popularLoad == false
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: popularList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return CuisinList(
+                                    cuisin: popularList[index],
+                                    cuisinPath: cuisinImagePath,
+                                    zoneId:zoneId);
+                              }),
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.03,
@@ -474,6 +484,7 @@ class _HomeState extends State<Home> {
         zoneId = zone.data["zone_id"];
         print("ZoneId.... in home..." + zoneId.toString());
         _getBanner();
+        _popularCuisin();
         _resturentList = _getResturentList();
       }
     } on DioError catch (e) {
@@ -578,6 +589,25 @@ class _HomeState extends State<Home> {
       }
       // _getDistance(response.data["errors"]["restaurants"][0]["latitude"],
       //     response.data["errors"]["restaurants"][0]["longitude"]);
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _popularCuisin() async {
+    try {
+      var response = await dio.get(Const.popularCuisin,
+          options: Options(headers: {"zoneId": zoneId}));
+      print("Responsebody... in popular" + response.data.toString());
+      if (response.data["state"] == 0) {
+        popularList = response.data["errors"]["products"];
+        cuisinImagePath = response.data["errors"]["imgpath"];
+        setState(() {
+          _popularLoad = true;
+        });
+      } else {
+        showCustomToast(response.data["errors"][0]["message"].toString());
+      }
     } on DioError catch (e) {
       print(e.toString());
     }

@@ -1,10 +1,12 @@
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
+import 'package:bazimat/popular%20cuisin/PopularCuisinResturentModel.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:flutter/material.dart';
 
 class PopularCuisinList extends StatefulWidget {
-  var cuisinList;
-  PopularCuisinList({this.cuisinList, Key key}) : super(key: key);
+  Restaurants cuisinList;
+  var image;
+  PopularCuisinList({this.cuisinList, this.image, Key key}) : super(key: key);
 
   @override
   _PopularCuisinListState createState() => _PopularCuisinListState();
@@ -13,6 +15,8 @@ class PopularCuisinList extends StatefulWidget {
 class _PopularCuisinListState extends State<PopularCuisinList> {
   @override
   Widget build(BuildContext context) {
+    var imagePath = widget.image + widget.cuisinList.coverPhoto;
+    print("imagePath..." + imagePath.toString());
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -49,9 +53,7 @@ class _PopularCuisinListState extends State<PopularCuisinList> {
                                 MediaQuery.of(context).size.width * 0.02)),
                         color: Colors.grey[300],
                         image: DecorationImage(
-                            image:
-                                AssetImage(widget.cuisinList["pic"].toString()),
-                            fit: BoxFit.cover)),
+                            image: NetworkImage(imagePath), fit: BoxFit.cover)),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.02,
@@ -61,11 +63,21 @@ class _PopularCuisinListState extends State<PopularCuisinList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.cuisinList["name"].toString(),
+                          widget.cuisinList.name.toString(),
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
                           height: MediaQuery.of(context).size.width * 0.02,
+                        ),
+                        Text(
+                          "${widget.cuisinList.description}",
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.03,
+                              color: Colors.grey),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.01,
                         ),
                         RichText(
                             text: TextSpan(children: [
@@ -112,22 +124,15 @@ class _PopularCuisinListState extends State<PopularCuisinList> {
                             ),
                           )),
                           TextSpan(
-                              text: '\u20B9300 for two',
+                              text: '${widget.cuisinList.offerprice}',
                               style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: MediaQuery.of(context).size.width *
                                       0.03)),
                         ])),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.width * 0.02,
-                        ),
-                        Text(
-                          "Pizza, Italic Food",
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.03,
-                              color: Colors.grey),
-                        )
+                        // SizedBox(
+                        //   height: MediaQuery.of(context).size.width * 0.02,
+                        // ),
                       ],
                     ),
                   )

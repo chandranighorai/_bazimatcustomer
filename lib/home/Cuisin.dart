@@ -2,8 +2,9 @@ import 'package:bazimat/popular%20cuisin/PopularCuisin.dart';
 import 'package:flutter/material.dart';
 
 class CuisinList extends StatefulWidget {
-  var cuisin;
-  CuisinList({this.cuisin, Key key}) : super(key: key);
+  var cuisin, cuisinPath, zoneId;
+  CuisinList({this.cuisin, this.cuisinPath, this.zoneId, Key key})
+      : super(key: key);
 
   @override
   _CuisinListState createState() => _CuisinListState();
@@ -12,10 +13,17 @@ class CuisinList extends StatefulWidget {
 class _CuisinListState extends State<CuisinList> {
   @override
   Widget build(BuildContext context) {
+    print("cuisinList...+++" + widget.cuisin["image"].toString());
+    var image = widget.cuisinPath + widget.cuisin["image"];
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => PopularCuisin(name:widget.cuisin["name"].toString())));
+            context,
+            MaterialPageRoute(
+                builder: (context) => PopularCuisin(
+                    name: widget.cuisin["name"].toString(),
+                    id: widget.cuisin["category_id"],
+                    zoneId:widget.zoneId)));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -29,8 +37,7 @@ class _CuisinListState extends State<CuisinList> {
                   shape: BoxShape.circle,
                   //borderRadius: BorderRadius.all(Radius.circular(100)),
                   image: DecorationImage(
-                      image: AssetImage(widget.cuisin["pic"]),
-                      fit: BoxFit.cover)),
+                      image: NetworkImage(image), fit: BoxFit.contain)),
             ),
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.02,

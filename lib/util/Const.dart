@@ -21,4 +21,7 @@ class Const {
   static String distanceApi = appUrl + "config/distance-api";
   static String customerInfo = appUrl + "customer/info";
   static String resturentDetails = appUrl + "products/latest";
+  static String popularCuisin = appUrl + "products/popular";
+  static String popularCuisinResturentList = appUrl + "restaurants/cat";
+  //static String popular
 }
