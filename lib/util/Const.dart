@@ -23,5 +23,14 @@ class Const {
   static String resturentDetails = appUrl + "products/latest";
   static String popularCuisin = appUrl + "products/popular";
   static String popularCuisinResturentList = appUrl + "restaurants/cat";
-  //static String popular
+  //Top Picks For You section
+  static String popularResturent = appUrl + "restaurants/popular";
+  //campaign Banner
+  static String campaignBasic = appUrl + "campaigns/basic";
+  //campaign Details
+  static String campaignDetails = appUrl + "campaigns/basic-campaign-details";
+  static String ageSubmit = appUrl + "customer/age";
+  static String ageDetails = appUrl + "customer/agedetail";
+  static String couponList = appUrl + "coupon/list";
+  static String config = appUrl + "config";
 }

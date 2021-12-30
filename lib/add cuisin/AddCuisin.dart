@@ -3,19 +3,40 @@ import 'dart:ui';
 import 'package:bazimat/add%20cuisin/AddQuantity.dart';
 import 'package:bazimat/add%20cuisin/Cart.dart';
 import 'package:bazimat/coupon/Coupon.dart';
+import 'package:bazimat/home/ConfigModel.dart';
+import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:flutter/material.dart';
 
 class AddCuisin extends StatefulWidget {
-  const AddCuisin({Key key}) : super(key: key);
+  var duration,
+      distance,
+      imageUrl,
+      resturentName,
+      resturenrAddr,
+      resturentPrice;
+  Products product;
+  AddCuisin(
+      {this.duration,
+      this.distance,
+      this.imageUrl,
+      this.resturentName,
+      this.resturenrAddr,
+      this.resturentPrice,
+      this.product,
+      Key key})
+      : super(key: key);
 
   @override
   _AddCuisinState createState() => _AddCuisinState();
 }
 
 class _AddCuisinState extends State<AddCuisin> {
+  Configmodel data;
   @override
   Widget build(BuildContext context) {
+    print("Shipping Charge...." + data.perKmShippingCharge.toString());
+    var image = widget.imageUrl + widget.product.image;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -36,7 +57,12 @@ class _AddCuisinState extends State<AddCuisin> {
           // padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.03),
           child: Column(
             children: [
-              AddQuantity(),
+              AddQuantity(
+                  imageUrl: image,
+                  resturentName: widget.resturentName,
+                  resturentAddr: widget.resturenrAddr,
+                  resturentOffer: widget.resturentPrice,
+                  product: widget.product),
               SizedBox(
                 height: MediaQuery.of(context).size.width * 0.02,
               ),
@@ -117,7 +143,7 @@ class _AddCuisinState extends State<AddCuisin> {
                           VerticalDivider(
                               thickness: 1, color: AppColors.cartPage),
                           Text(
-                            "3.0kms",
+                            "${widget.distance}",
                             style: TextStyle(color: AppColors.cartPage),
                           ),
                           Spacer(),
@@ -251,7 +277,7 @@ class _AddCuisinState extends State<AddCuisin> {
                                             0.04),
                               ),
                               Text(
-                                "37 mins",
+                                "${widget.duration}",
                                 style: TextStyle(
                                     fontSize:
                                         MediaQuery.of(context).size.width *

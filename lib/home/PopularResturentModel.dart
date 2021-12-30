@@ -1,16 +1,20 @@
-class PopularCuisinResturentModel {
+class PopularResturentModel {
   int state;
-  Errors errors;
+  List<PopularResturentErrors> errors;
   String coverimgpath;
   String logoimgpath;
 
-  PopularCuisinResturentModel(
+  PopularResturentModel(
       {this.state, this.errors, this.coverimgpath, this.logoimgpath});
 
-  PopularCuisinResturentModel.fromJson(Map<String, dynamic> json) {
+  PopularResturentModel.fromJson(Map<String, dynamic> json) {
     state = json['state'];
-    errors =
-        json['errors'] != null ? new Errors.fromJson(json['errors']) : null;
+    if (json['errors'] != null) {
+      errors = new List<PopularResturentErrors>();
+      json['errors'].forEach((v) {
+        errors.add(new PopularResturentErrors.fromJson(v));
+      });
+    }
     coverimgpath = json['coverimgpath'];
     logoimgpath = json['logoimgpath'];
   }
@@ -19,7 +23,7 @@ class PopularCuisinResturentModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['state'] = this.state;
     if (this.errors != null) {
-      data['errors'] = this.errors.toJson();
+      data['errors'] = this.errors.map((v) => v.toJson()).toList();
     }
     data['coverimgpath'] = this.coverimgpath;
     data['logoimgpath'] = this.logoimgpath;
@@ -27,30 +31,7 @@ class PopularCuisinResturentModel {
   }
 }
 
-class Errors {
-  List<RestaurantsCuisin> restaurants;
-
-  Errors({this.restaurants});
-
-  Errors.fromJson(Map<String, dynamic> json) {
-    if (json['restaurants'] != null) {
-      restaurants = new List<RestaurantsCuisin>();
-      json['restaurants'].forEach((v) {
-        restaurants.add(new RestaurantsCuisin.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.restaurants != null) {
-      data['restaurants'] = this.restaurants.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class RestaurantsCuisin {
+class PopularResturentErrors {
   int id;
   String name;
   String phone;
@@ -61,7 +42,7 @@ class RestaurantsCuisin {
   String address;
   Null footerText;
   int minimumOrder;
-  Null comission;
+  int comission;
   bool scheduleOrder;
   int status;
   int vendorId;
@@ -82,7 +63,9 @@ class RestaurantsCuisin {
   int deliveryCharge;
   String description;
   String offerprice;
-  String discount;
+  Null discount;
+  int open;
+  int ordersCount;
   String availableTimeStarts;
   String availableTimeEnds;
   int avgRating;
@@ -90,7 +73,7 @@ class RestaurantsCuisin {
   bool gstStatus;
   String gstCode;
 
-  RestaurantsCuisin(
+  PopularResturentErrors(
       {this.id,
       this.name,
       this.phone,
@@ -123,6 +106,8 @@ class RestaurantsCuisin {
       this.description,
       this.offerprice,
       this.discount,
+      this.open,
+      this.ordersCount,
       this.availableTimeStarts,
       this.availableTimeEnds,
       this.avgRating,
@@ -130,7 +115,7 @@ class RestaurantsCuisin {
       this.gstStatus,
       this.gstCode});
 
-  RestaurantsCuisin.fromJson(Map<String, dynamic> json) {
+  PopularResturentErrors.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     phone = json['phone'];
@@ -163,6 +148,8 @@ class RestaurantsCuisin {
     description = json['description'];
     offerprice = json['offerprice'];
     discount = json['discount'];
+    open = json['open'];
+    ordersCount = json['orders_count'];
     availableTimeStarts = json['available_time_starts'];
     availableTimeEnds = json['available_time_ends'];
     avgRating = json['avg_rating'];
@@ -205,6 +192,8 @@ class RestaurantsCuisin {
     data['description'] = this.description;
     data['offerprice'] = this.offerprice;
     data['discount'] = this.discount;
+    data['open'] = this.open;
+    data['orders_count'] = this.ordersCount;
     data['available_time_starts'] = this.availableTimeStarts;
     data['available_time_ends'] = this.availableTimeEnds;
     data['avg_rating'] = this.avgRating;

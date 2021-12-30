@@ -1,6 +1,9 @@
+import 'package:bazimat/home/CampaignDetailsModel.dart';
+import 'package:bazimat/home/PopularResturentModel.dart';
 import 'package:bazimat/home/ResturentModel.dart';
 import 'package:bazimat/popular%20cuisin/Recomended.dart';
 import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
+import 'package:bazimat/popular%20cuisin/PopularCuisinResturentModel.dart';
 import 'package:bazimat/sub%20list/SubListModel.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
@@ -10,9 +13,20 @@ import 'package:flutter/material.dart';
 class CuisinDetails extends StatefulWidget {
   Restaurants resturentData;
   RestaurantsSub listData;
+  RestaurantsCuisin cuisinList;
+  PopularResturentErrors topPickList;
+  CampaignDetailsRestaurants campaignData;
   var distance, duration;
+  String section;
   CuisinDetails(
-      {this.resturentData, this.listData, this.distance, this.duration});
+      {this.resturentData,
+      this.listData,
+      this.cuisinList,
+      this.topPickList,
+      this.campaignData,
+      this.distance,
+      this.duration,
+      this.section});
 
   @override
   _CuisinDetailsState createState() => _CuisinDetailsState();
@@ -21,17 +35,67 @@ class CuisinDetails extends StatefulWidget {
 class _CuisinDetailsState extends State<CuisinDetails> {
   Future<RecommendedModel> _recommendedProduct;
   var dio = Dio();
+  var resturentName,
+      resturentDesc,
+      resturentAddr,
+      resturentAvgRating,
+      resturentRatingCount,
+      resturentOfferPrice;
   @override
   void initState() {
     super.initState();
+    if (widget.section == "cuisin") {
+      resturentName = widget.cuisinList.name;
+      resturentDesc = widget.cuisinList.description;
+      resturentAddr = widget.cuisinList.address;
+      resturentAvgRating = widget.cuisinList.avgRating;
+      resturentRatingCount = widget.cuisinList.ratingCount;
+      resturentOfferPrice = widget.cuisinList.offerprice;
+    } else if (widget.section == "list") {
+      resturentName = widget.listData.name;
+      resturentDesc = widget.listData.description;
+      resturentAddr = widget.listData.address;
+      resturentAvgRating = widget.listData.avgRating;
+      resturentRatingCount = widget.listData.ratingCount;
+      resturentOfferPrice = widget.listData.offerprice;
+    } else if (widget.section == "topPicks") {
+      resturentName = widget.topPickList.name;
+      resturentDesc = widget.topPickList.description;
+      resturentAddr = widget.topPickList.address;
+      resturentAvgRating = widget.topPickList.avgRating;
+      resturentRatingCount = widget.topPickList.ratingCount;
+      resturentOfferPrice = widget.topPickList.offerprice;
+    } else if (widget.section == "campaign") {
+      resturentName = widget.campaignData.name;
+      resturentDesc = widget.campaignData.description;
+      resturentAddr = widget.campaignData.address;
+      resturentAvgRating = widget.campaignData.avgRating;
+      resturentRatingCount = widget.campaignData.ratingCount;
+      resturentOfferPrice = widget.campaignData.offerprice;
+    } else {
+      resturentName = widget.resturentData.name;
+      resturentDesc = widget.resturentData.description;
+      resturentAddr = widget.resturentData.address;
+      resturentAvgRating = widget.resturentData.avgRating;
+      resturentRatingCount = widget.resturentData.ratingCount;
+      resturentOfferPrice = widget.resturentData.offerprice;
+    }
+    // ? "${widget.cuisinList.name}"
+    // : widget.section == "list"
+    //     ? "${widget.listData.name}"
+    //     : widget.section == "topPicks"
+    //         ? "${widget.topPickList.name}"
+    //         : widget.section == "campaign"
+    //             ? "${widget.campaignData.name}"
+    //             : "${widget.resturentData.name}",
     _recommendedProduct = _getAllRecommendedProduct();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("ResturentName..." + widget.resturentData.name.toString());
-    print("ResturentName..." + widget.resturentData.id.toString());
-
+    // print("ResturentName..." + widget.resturentData.name.toString());
+    // print("ResturentName..." + widget.resturentData.id.toString());
+    print("section..." + widget.section.toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -84,7 +148,16 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      "${widget.resturentData.name}",
+                      resturentName.toString(),
+                      // widget.section == "cuisin"
+                      //     ? "${widget.cuisinList.name}"
+                      //     : widget.section == "list"
+                      //         ? "${widget.listData.name}"
+                      //         : widget.section == "topPicks"
+                      //             ? "${widget.topPickList.name}"
+                      //             : widget.section == "campaign"
+                      //                 ? "${widget.campaignData.name}"
+                      //                 : "${widget.resturentData.name}",
                       style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.06,
                           fontWeight: FontWeight.bold),
@@ -93,7 +166,16 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                       height: MediaQuery.of(context).size.width * 0.03,
                     ),
                     Text(
-                      "${widget.resturentData.description}",
+                      resturentDesc.toString(),
+                      // widget.section == "cuisin"
+                      //     ? "${widget.cuisinList.description}"
+                      //     : widget.section == "list"
+                      //         ? "${widget.listData.description}"
+                      //         : widget.section == "topPicks"
+                      //             ? "${widget.topPickList.description}"
+                      //             : widget.section == "campaign"
+                      //                 ? "${widget.campaignData.description}"
+                      //                 : "${widget.resturentData.description}",
                       style: TextStyle(color: Colors.grey),
                     ),
                     SizedBox(
@@ -103,7 +185,16 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                       child: Row(
                         children: [
                           Text(
-                            "${widget.resturentData.address}",
+                            resturentAddr.toString(),
+                            // widget.section == "cuisin"
+                            //     ? "${widget.cuisinList.address}"
+                            //     : widget.section == "list"
+                            //         ? "${widget.listData.address}"
+                            //         : widget.section == "topPicks"
+                            //             ? "${widget.topPickList.address}"
+                            //             : widget.section == "campaign"
+                            //                 ? "${widget.campaignData.address}"
+                            //                 : "${widget.resturentData.address}",
                             style: TextStyle(color: Colors.grey),
                           ),
                           VerticalDivider(
@@ -140,11 +231,29 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                                         0.05,
                                   )),
                                   TextSpan(
-                                      text: "${widget.resturentData.avgRating}",
+                                      text: resturentAvgRating.toString(),
+                                      // widget.section == "cuisin"
+                                      //     ? "${widget.cuisinList.avgRating}"
+                                      //     : widget.section == "list"
+                                      //         ? "${widget.listData.avgRating}"
+                                      //         : widget.section == "topPicks"
+                                      //             ? "${widget.topPickList.avgRating}"
+                                      //             : widget.section == "campaign"
+                                      //                 ? "${widget.campaignData.avgRating}"
+                                      //                 : "${widget.resturentData.avgRating}",
                                       style: TextStyle(color: Colors.black))
                                 ])),
                                 Text(
-                                  "${widget.resturentData.ratingCount}+ ratings",
+                                  resturentRatingCount.toString() + "ratings",
+                                  // widget.section == "cuisin"
+                                  //     ? "${widget.cuisinList.ratingCount}+ ratings"
+                                  //     : widget.section == "list"
+                                  //         ? "${widget.listData.ratingCount}+ raintgs"
+                                  //         : widget.section == "topPicks"
+                                  //             ? "${widget.topPickList.ratingCount}+ raintgs"
+                                  //             : widget.section == "campaign"
+                                  //                 ? "${widget.campaignData.ratingCount}+ raintgs"
+                                  //                 : "${widget.resturentData.ratingCount}+ raintgs",
                                   style: TextStyle(color: Colors.grey),
                                 )
                               ],
@@ -171,7 +280,16 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                             child: Column(
                               children: [
                                 Text(
-                                  "${widget.resturentData.offerprice}",
+                                  resturentOfferPrice.toString(),
+                                  // widget.section == "cuisin"
+                                  //     ? "${widget.cuisinList.offerprice}"
+                                  //     : widget.section == "list"
+                                  //         ? "${widget.listData.offerprice}"
+                                  //         : widget.section == "topPicks"
+                                  //             ? "${widget.topPickList.offerprice}"
+                                  //             : widget.section == "campaign"
+                                  //                 ? "${widget.campaignData.offerprice}"
+                                  //                 : "${widget.resturentData.offerprice}",
                                   textAlign: TextAlign.center,
                                 ),
                                 // Text(
@@ -304,7 +422,13 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                                       (BuildContext context, int index) {
                                     return Recommended(
                                         productList: products[index],
-                                        imageUrl: imagePath);
+                                        imageUrl: imagePath,
+                                        duration: widget.duration,
+                                        distance: widget.distance,
+                                        resturentName: resturentName,
+                                        resturentAddress: resturentAddr,
+                                        resturentOfferPrice:
+                                            resturentOfferPrice);
                                   });
                         } else {
                           return Center(child: CircularProgressIndicator());
@@ -323,8 +447,21 @@ class _CuisinDetailsState extends State<CuisinDetails> {
 
   Future<RecommendedModel> _getAllRecommendedProduct() async {
     try {
-      var params = "?restaurant_id=" + widget.resturentData.id.toString();
+      var dataId;
+      if (widget.section == "cuisin") {
+        dataId = widget.cuisinList.id.toString();
+      } else if (widget.section == "list") {
+        dataId = widget.listData.id.toString();
+      } else if (widget.section == "topPicks") {
+        dataId = widget.topPickList.id.toString();
+      } else if (widget.section == "campaign") {
+        dataId = widget.campaignData.id.toString();
+      } else {
+        dataId = widget.resturentData.id.toString();
+      }
+      var params = "?restaurant_id=" + dataId;
       var url = Const.resturentDetails + params;
+      print("Url..." + url.toString());
       var response = await dio.get(url);
       print("response Body... in rrecommeded" + response.data.toString());
       if (response.data["state"] == 0) {

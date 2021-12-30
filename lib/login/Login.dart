@@ -10,6 +10,7 @@ import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({Key key}) : super(key: key);
@@ -276,6 +277,7 @@ class _LogInState extends State<LogIn> {
     try {
       print("Mobile Text..." + _phoneText.text.toString());
       print("Mobile Text..." + _passText.text.toString());
+      SharedPreferences pref = await SharedPreferences.getInstance();
       if (_phoneText.text.isEmpty || _passText.text.isEmpty) {
         showCustomToast("Field should not empty");
       } else if (_phoneText.text.length != 10) {
@@ -296,7 +298,8 @@ class _LogInState extends State<LogIn> {
           });
         } else {
           if (response.data["is_phone_verified"] == 1) {
-            saveUserPref(response.data["token"]);
+            //saveUserPref(response.data["token"]);
+            pref.setString("token", response.data["token"]);
             showCustomToast("Login Successful");
             Navigator.pushAndRemoveUntil(
                 context,

@@ -1,7 +1,16 @@
+import 'package:bazimat/age%20document/AgeDocument.dart';
+import 'package:bazimat/profile/AdditionalInfo.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key key}) : super(key: key);
+  var fullName, email, phone, firstLetter, ageStatus;
+  Profile(
+      {this.fullName,
+      this.email,
+      this.phone,
+      this.firstLetter,
+      this.ageStatus,
+      Key key});
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -13,11 +22,12 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     _nameText = new TextEditingController();
-    _nameText.text = "User";
+    _nameText.text = widget.fullName;
   }
 
   @override
   Widget build(BuildContext context) {
+    print("ageStatus..." + widget.ageStatus.toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -27,7 +37,7 @@ class _ProfileState extends State<Profile> {
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => _updateProfile(),
         ),
         title: Text(
           "My Profile",
@@ -54,7 +64,7 @@ class _ProfileState extends State<Profile> {
                       decoration: BoxDecoration(
                           color: Colors.grey[200], shape: BoxShape.circle),
                       child: Text(
-                        "U",
+                        "${widget.firstLetter}",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: MediaQuery.of(context).size.width * 0.07),
@@ -85,7 +95,7 @@ class _ProfileState extends State<Profile> {
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
                     Text(
-                      "user@gmail.com",
+                      "${widget.email}",
                       style: TextStyle(
                           //color: Colors.grey,
                           fontSize: MediaQuery.of(context).size.width * 0.04),
@@ -101,7 +111,7 @@ class _ProfileState extends State<Profile> {
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
                     Text(
-                      "+91 9856325698",
+                      "+91 ${widget.phone}",
                       style: TextStyle(
                           //color: Colors.grey,
                           fontSize: MediaQuery.of(context).size.width * 0.04),
@@ -112,102 +122,35 @@ class _ProfileState extends State<Profile> {
               SizedBox(
                 height: MediaQuery.of(context).size.width * 0.02,
               ),
-              ExpansionTile(
-                title: Text("Additional Information"),
-                children: [
-                  SingleChildScrollView(
-                    child: Container(
-                      //height: MediaQuery.of(context).size.width * 0.2,
-                      width: MediaQuery.of(context).size.width,
-                      color: Colors.white,
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.04,
-                          top: MediaQuery.of(context).size.width * 0.02,
-                          bottom: MediaQuery.of(context).size.width * 0.02),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Date Of Birth",
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.width * 0.02,
-                          ),
-                          Text(
-                            "27-12-1996",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.035),
-                          ),
-                          Divider(),
-                          Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Govt. id for age proof(front page)"),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.width * .02,
-                                ),
-                                Container(
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.26,
-                                  width: MediaQuery.of(context).size.width / 4,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[100],
-                                      image: DecorationImage(
-                                          image: AssetImage("images/logo.png")),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.03))),
-                                )
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.width * 0.02,
-                          ),
-                          Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Govt. id for age proof(back page)"),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.width * .02,
-                                ),
-                                Container(
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.26,
-                                  width: MediaQuery.of(context).size.width / 4,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[100],
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.03)),
-                                      image: DecorationImage(
-                                          image:
-                                              AssetImage("images/logo.png"))),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
+              widget.ageStatus == "2"
+                  ? Center(
+                      child: Text(
+                        "Age Documents are under reviewed",
+                        style: TextStyle(color: Colors.red),
                       ),
-                    ),
-                  )
-                ],
-              )
+                    )
+                  : widget.ageStatus == "0"
+                      ? Center(
+                          child: TextButton(
+                          child: Text("Upload Age Documents"),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AgeDocument())),
+                        ))
+                      : AdditionalInfo()
             ],
           ),
         ),
       ),
     );
+  }
+
+  _updateProfile() {
+    return Navigator.of(context).pop({
+      "fullName": _nameText.text.trim().length == 0
+          ? widget.fullName
+          : _nameText.text.trim()
+    });
   }
 }

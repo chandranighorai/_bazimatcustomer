@@ -7,8 +7,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class PopularCuisin extends StatefulWidget {
-  var name, id, zoneId;
-  PopularCuisin({this.name, this.id, this.zoneId, Key key}) : super(key: key);
+  var name, id, latitude, longitude, zoneId;
+  PopularCuisin(
+      {this.name, this.id, this.latitude, this.longitude, this.zoneId, Key key})
+      : super(key: key);
 
   @override
   _PopularCuisinState createState() => _PopularCuisinState();
@@ -65,7 +67,10 @@ class _PopularCuisinState extends State<PopularCuisin> {
                   itemCount: resturentList.length,
                   itemBuilder: (BuildContext context, int index) {
                     return PopularCuisinList(
-                        cuisinList: resturentList[index], image: imagePath);
+                        cuisinList: resturentList[index],
+                        image: imagePath,
+                        latitude: widget.latitude,
+                        longitude: widget.longitude);
                   });
             } else {
               return Center(

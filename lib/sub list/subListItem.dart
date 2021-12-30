@@ -42,15 +42,16 @@ class _SubListItemState extends State<SubListItem> {
     print("imageUrl..." + imageUrl.toString());
     return InkWell(
       onTap: () {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => CuisinDetails(
-        //             listData: widget.listData,
-        //             distance: getDistanceResponse.data["rows"][0]["elements"][0]
-        //                 ["distance"]["text"],
-        //             duration: getDistanceResponse.data["rows"][0]["elements"][0]
-        //                 ["duration"]["text"])));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CuisinDetails(
+                    listData: widget.listData,
+                    distance: getDistanceResponse.data["rows"][0]["elements"][0]
+                        ["distance"]["text"],
+                    duration: getDistanceResponse.data["rows"][0]["elements"][0]
+                        ["duration"]["text"],
+                    section: "list")));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),

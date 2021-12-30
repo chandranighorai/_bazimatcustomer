@@ -1,10 +1,12 @@
 import 'package:bazimat/home/Clipper.dart';
+import 'package:bazimat/home/CouponModel.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 
 class CouponList extends StatefulWidget {
-  var couponL;
-  CouponList({this.couponL, Key key}) : super(key: key);
+  CouponListErrors couponL;
+  var couponImage;
+  CouponList({this.couponL, this.couponImage, Key key}) : super(key: key);
 
   @override
   _CouponListState createState() => _CouponListState();
@@ -13,6 +15,7 @@ class CouponList extends StatefulWidget {
 class _CouponListState extends State<CouponList> {
   @override
   Widget build(BuildContext context) {
+    var image = widget.couponImage + widget.couponL.img;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ClipPath(
@@ -24,8 +27,7 @@ class _CouponListState extends State<CouponList> {
               borderRadius: BorderRadius.all(
                   Radius.circular(MediaQuery.of(context).size.width * 0.01)),
               image: DecorationImage(
-                  image: AssetImage(widget.couponL.toString()),
-                  fit: BoxFit.fill)),
+                  image: NetworkImage(image), fit: BoxFit.fill)),
         ),
       ),
     );

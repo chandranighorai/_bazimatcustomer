@@ -5,8 +5,21 @@ import 'package:flutter/material.dart';
 
 class Recommended extends StatefulWidget {
   Products productList;
-  var imageUrl;
-  Recommended({this.productList, this.imageUrl, Key key});
+  var imageUrl,
+      duration,
+      distance,
+      resturentName,
+      resturentAddress,
+      resturentOfferPrice;
+  Recommended(
+      {this.productList,
+      this.imageUrl,
+      this.duration,
+      this.distance,
+      this.resturentName,
+      this.resturentAddress,
+      this.resturentOfferPrice,
+      Key key});
 
   @override
   _RecommendedState createState() => _RecommendedState();
@@ -15,12 +28,22 @@ class Recommended extends StatefulWidget {
 class _RecommendedState extends State<Recommended> {
   @override
   Widget build(BuildContext context) {
+    print("productDetails..." + widget.productList.taxType.toString());
     var image = widget.imageUrl + widget.productList.image;
     print("Image..." + image.toString());
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => AddCuisin()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddCuisin(
+                    duration: widget.duration,
+                    distance: widget.distance,
+                    product: widget.productList,
+                    imageUrl: widget.imageUrl,
+                    resturentName: widget.resturentName,
+                    resturenrAddr: widget.resturentAddress,
+                    resturentPrice: widget.resturentOfferPrice)));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),

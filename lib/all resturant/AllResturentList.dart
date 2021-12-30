@@ -1,3 +1,4 @@
+import 'package:bazimat/home/CampaignDetailsModel.dart';
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/Const.dart';
@@ -7,12 +8,16 @@ import 'package:bazimat/home/ResturentModel.dart';
 
 class AllResturentList extends StatefulWidget {
   Restaurants resturent;
+  CampaignDetailsRestaurants resturent1;
   var coverImage, latitude, longitude;
+  var section;
   AllResturentList(
       {this.resturent,
+      this.resturent1,
       this.coverImage,
       this.latitude,
       this.longitude,
+      this.section,
       Key key});
 
   @override
@@ -32,19 +37,30 @@ class _AllResturentListState extends State<AllResturentList> {
 
   @override
   Widget build(BuildContext context) {
-    print("name..." + widget.resturent.name.toString());
-    var image = widget.coverImage + widget.resturent.coverPhoto;
+    print("Image..." + widget.section.toString());
+    var photoName = widget.section == "campaign"
+        ? widget.resturent1.coverPhoto
+        : widget.resturent.coverPhoto;
+    var image = widget.coverImage + photoName;
+    print("Image..." + image.toString());
     return InkWell(
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => CuisinDetails(
-                    resturentData: widget.resturent,
-                    distance: getDistanceResponse.data["rows"][0]["elements"][0]
-                        ["distance"]["text"],
-                    duration: getDistanceResponse.data["rows"][0]["elements"][0]
-                        ["duration"]["text"])));
+                      resturentData: widget.section == "campaign"
+                          ? null
+                          : widget.resturent,
+                      campaignData: widget.section == "campaign"
+                          ? widget.resturent1
+                          : null,
+                      distance: getDistanceResponse.data["rows"][0]["elements"]
+                          [0]["distance"]["text"],
+                      duration: getDistanceResponse.data["rows"][0]["elements"]
+                          [0]["duration"]["text"],
+                      section: widget.section,
+                    )));
       },
       child: Stack(
         children: [
@@ -83,7 +99,9 @@ class _AllResturentListState extends State<AllResturentList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${widget.resturent.name}",
+                          widget.section == "campaign"
+                              ? "${widget.resturent1.name}"
+                              : "${widget.resturent.name}",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize:
@@ -93,7 +111,9 @@ class _AllResturentListState extends State<AllResturentList> {
                           height: MediaQuery.of(context).size.width * 0.02,
                         ),
                         Text(
-                          "${widget.resturent.description}",
+                          widget.section == "campaign"
+                              ? "${widget.resturent1.description}"
+                              : "${widget.resturent.description}",
                           style: TextStyle(
                               color: Colors.grey,
                               fontSize:
@@ -106,7 +126,9 @@ class _AllResturentListState extends State<AllResturentList> {
                           child: Row(
                             children: [
                               Text(
-                                "${widget.resturent.address}",
+                                widget.section == "campaign"
+                                    ? "${widget.resturent1.address}"
+                                    : "${widget.resturent.address}",
                                 style: TextStyle(
                                     color: Colors.grey,
                                     fontSize:
@@ -149,7 +171,9 @@ class _AllResturentListState extends State<AllResturentList> {
                             ),
                           )),
                           TextSpan(
-                              text: "${widget.resturent.avgRating}",
+                              text: widget.section == "campaign"
+                                  ? "${widget.resturent1.avgRating}"
+                                  : "${widget.resturent.avgRating}",
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize:
@@ -185,7 +209,9 @@ class _AllResturentListState extends State<AllResturentList> {
                             ),
                           )),
                           TextSpan(
-                              text: "${widget.resturent.offerprice}",
+                              text: widget.section == "campaign"
+                                  ? "${widget.resturent1.offerprice}"
+                                  : "${widget.resturent.offerprice}",
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize:
@@ -199,7 +225,12 @@ class _AllResturentListState extends State<AllResturentList> {
               ),
             ),
           ),
-          widget.resturent.discount == ""
+          // widget.section == "campaign"
+          //     ? widget.resturent1.discount == ""
+          //     :
+          (widget.section == "campaign"
+                  ? widget.resturent1.discount == ""
+                  : widget.resturent.discount == "")
               ? SizedBox()
               : Positioned(
                   top: MediaQuery.of(context).size.height * 0.13,
@@ -218,7 +249,9 @@ class _AllResturentListState extends State<AllResturentList> {
                         top: MediaQuery.of(context).size.width * 0.02,
                         bottom: MediaQuery.of(context).size.width * 0.02),
                     child: Text(
-                      "${widget.resturent.discount} off",
+                      widget.section == "campaign"
+                          ? "${widget.resturent1.discount} off"
+                          : "${widget.resturent.discount} off",
                       style: TextStyle(color: Colors.white),
                     ),
                   )),
@@ -229,14 +262,22 @@ class _AllResturentListState extends State<AllResturentList> {
 
   _getDistance() async {
     print("distanceload..." + _distanceLoad.toString());
+    print("distanceload..." + widget.section.toString());
+
     try {
+      var destinationLat = widget.section == "campaign"
+          ? widget.resturent1.latitude
+          : widget.resturent.latitude;
+      var destinationLng = widget.section == "campaign"
+          ? widget.resturent1.longitude
+          : widget.resturent.longitude;
       var params = "?";
       params +=
           "origin_lat=" + widget.latitude + "&origin_lng=" + widget.longitude;
       params += "&destination_lat=" +
-          widget.resturent.latitude +
+          destinationLat +
           "&destination_lng=" +
-          widget.resturent.longitude;
+          destinationLng;
       var url = Const.distanceApi + params;
       print("url..." + url.toString());
       getDistanceResponse = await dio.get(url);

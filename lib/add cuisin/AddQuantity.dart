@@ -1,16 +1,44 @@
+import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:flutter/material.dart';
 
 class AddQuantity extends StatefulWidget {
-  const AddQuantity({Key key}) : super(key: key);
+  var imageUrl, resturentName, resturentAddr, resturentOffer;
+  Products product;
+  AddQuantity(
+      {this.imageUrl,
+      this.resturentName,
+      this.resturentAddr,
+      this.resturentOffer,
+      this.product,
+      Key key})
+      : super(key: key);
 
   @override
   _AddQuantityState createState() => _AddQuantityState();
 }
 
 class _AddQuantityState extends State<AddQuantity> {
+  int price;
+  int itemCount;
+  int finalPrice;
+  @override
+  void initState() {
+    super.initState();
+    price = widget.product.price;
+    itemCount = 1;
+    finalPrice = price * itemCount;
+  }
+
   @override
   Widget build(BuildContext context) {
+    //print("Price..." + price.runtimeType.toString());
+    // var off = widget.resturentOffer.toString().split(" ");
+    // print("Off..." + off[0].toString());
+    // var offer = int.parse(off[0]);
+    // var price = offer / 2;
+    // print("offerPrice..." + price.toString());
+    // print("offerPrice..." + widget.product.price.toString());
     return Container(
       color: Colors.white,
       width: MediaQuery.of(context).size.width,
@@ -28,7 +56,7 @@ class _AddQuantityState extends State<AddQuantity> {
                 decoration: BoxDecoration(
                     color: Colors.red,
                     image: DecorationImage(
-                        image: AssetImage("images/recommended.jpg"),
+                        image: NetworkImage(widget.imageUrl),
                         fit: BoxFit.fill)),
               ),
               SizedBox(
@@ -38,7 +66,7 @@ class _AddQuantityState extends State<AddQuantity> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "So Southy",
+                    "${widget.resturentName}",
                     style: TextStyle(
                         fontSize: MediaQuery.of(context).size.width * 0.05,
                         fontWeight: FontWeight.bold),
@@ -47,7 +75,7 @@ class _AddQuantityState extends State<AddQuantity> {
                     height: MediaQuery.of(context).size.width * 0.02,
                   ),
                   Text(
-                    "Bidhannagar",
+                    "${widget.resturentAddr}",
                     style: TextStyle(
                         color: Colors.grey,
                         fontSize: MediaQuery.of(context).size.width * 0.03),
@@ -64,7 +92,7 @@ class _AddQuantityState extends State<AddQuantity> {
               Container(
                   width: MediaQuery.of(context).size.width / 1.8,
                   //color: Colors.amber,
-                  child: Text("Rava Masala Dosa No Onion No Garlic")),
+                  child: Text("${widget.product.name}")),
               Spacer(),
               Container(
                 width: MediaQuery.of(context).size.width / 5,
@@ -74,19 +102,40 @@ class _AddQuantityState extends State<AddQuantity> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "- ",
-                      style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.08,
-                          color: AppColors.addTextColor),
+                    InkWell(
+                      onTap: () {
+                        if (itemCount > 1) {
+                          setState(() {
+                            itemCount = itemCount - 1;
+                            finalPrice = price * itemCount;
+                          });
+                        } else {
+                          itemCount = 1;
+                        }
+                      },
+                      child: Text(
+                        "- ",
+                        style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.08,
+                            color: AppColors.addTextColor),
+                      ),
                     ),
                     Text(
-                      " 1 ",
+                      " $itemCount ",
                       style: TextStyle(color: AppColors.addTextColor),
                     ),
-                    Text(
-                      " + ",
-                      style: TextStyle(color: AppColors.addTextColor),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          itemCount = itemCount + 1;
+                          finalPrice = price * itemCount;
+                        });
+                        print("PriceItem...." + price.runtimeType.toString());
+                      },
+                      child: Text(
+                        " + ",
+                        style: TextStyle(color: AppColors.addTextColor),
+                      ),
                     )
                   ],
                 ),
@@ -96,7 +145,7 @@ class _AddQuantityState extends State<AddQuantity> {
                   alignment: Alignment.centerRight,
                   //color: Colors.amber,
                   //width: MediaQuery.of(context).size.width / 5.5,
-                  child: Text("\u20B9300"))
+                  child: Text("\u20B9$finalPrice"))
             ],
           )
         ],

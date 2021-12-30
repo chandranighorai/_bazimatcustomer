@@ -10,6 +10,7 @@ import 'package:bazimat/sign%20up/SignUp.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/AppConst.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key key}) : super(key: key);
@@ -19,8 +20,17 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
+  //CustomerInfoError data;
+  String fullName, phone, firstLetter, email, ageStatus;
+  @override
+  void initState() {
+    super.initState();
+    _getDetails();
+  }
+
   @override
   Widget build(BuildContext context) {
+    //print("fname..." + data.fName);
     return Drawer(
       child: Container(
         height: MediaQuery.of(context).size.height,
@@ -44,7 +54,7 @@ class _NavigationState extends State<Navigation> {
                     decoration: BoxDecoration(
                         color: Colors.grey[50], shape: BoxShape.circle),
                     child: Text(
-                      "U",
+                      "$firstLetter".toUpperCase(),
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: MediaQuery.of(context).size.width * 0.08),
@@ -63,7 +73,7 @@ class _NavigationState extends State<Navigation> {
                         width: MediaQuery.of(context).size.width / 3.2,
                         //color: Colors.amber,
                         child: Text(
-                          "User",
+                          "$fullName",
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -71,7 +81,7 @@ class _NavigationState extends State<Navigation> {
                         height: MediaQuery.of(context).size.width * 0.02,
                       ),
                       Text(
-                        "9876543210",
+                        "$phone",
                         style: TextStyle(color: Colors.white),
                       )
                     ],
@@ -80,8 +90,20 @@ class _NavigationState extends State<Navigation> {
                   IconButton(
                     icon: Icon(Icons.arrow_forward_ios_rounded),
                     color: Colors.white,
-                    onPressed: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Profile())),
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Profile(
+                                fullName: fullName,
+                                email: email,
+                                phone: phone,
+                                firstLetter: firstLetter,
+                                ageStatus:ageStatus))).then((value) {
+                      print("Value of name..." + value.toString());
+                      setState(() {
+                        fullName = value["fullName"];
+                      });
+                    }),
                   )
                 ],
               )),
@@ -325,6 +347,20 @@ class _NavigationState extends State<Navigation> {
       Navigator.pop(context);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LogIn()));
+    });
+  }
+
+  _getDetails() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var firstName = pref.getString("fName");
+    var lastName = pref.getString("lName");
+
+    setState(() {
+      firstLetter = firstName.substring(0, 1);
+      phone = pref.getString("Phone");
+      email = pref.getString("Email");
+      ageStatus = pref.getString("ageStatus");
+      fullName = firstName + " " + lastName;
     });
   }
 }

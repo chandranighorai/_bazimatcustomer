@@ -1,9 +1,17 @@
+import 'package:bazimat/home/GetDistance.dart';
 import 'package:bazimat/popular%20cuisin/PopularCuisin.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class CuisinList extends StatefulWidget {
-  var cuisin, cuisinPath, zoneId;
-  CuisinList({this.cuisin, this.cuisinPath, this.zoneId, Key key})
+  var cuisin, cuisinPath, latitude, longitude, zoneId;
+  CuisinList(
+      {this.cuisin,
+      this.cuisinPath,
+      this.latitude,
+      this.longitude,
+      this.zoneId,
+      Key key})
       : super(key: key);
 
   @override
@@ -12,7 +20,14 @@ class CuisinList extends StatefulWidget {
 
 class _CuisinListState extends State<CuisinList> {
   @override
+  void initState() {
+    super.initState();
+    //_getDistance();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print("cuisinList.." + widget.cuisin.toString());
     print("cuisinList...+++" + widget.cuisin["image"].toString());
     var image = widget.cuisinPath + widget.cuisin["image"];
     return InkWell(
@@ -23,7 +38,9 @@ class _CuisinListState extends State<CuisinList> {
                 builder: (context) => PopularCuisin(
                     name: widget.cuisin["name"].toString(),
                     id: widget.cuisin["category_id"],
-                    zoneId:widget.zoneId)));
+                    latitude: widget.latitude,
+                    longitude: widget.longitude,
+                    zoneId: widget.zoneId)));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -53,4 +70,21 @@ class _CuisinListState extends State<CuisinList> {
       ),
     );
   }
+
+  // void _getDistance() async {
+  //   try {
+  //     var params = "?";
+  //     params += "origin_lat=" +
+  //         widget.latitude +
+  //         "&origin_lng=" +
+  //         widget.longitude +
+  //         "&destination_lat=" +
+  //         widget.cuisin["latitude"].toString() +
+  //         "&destination_lng=" +
+  //         widget.cuisin["longitude"].toString();
+  //     print("Params..." + params.toString());
+  //   } on DioError catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 }

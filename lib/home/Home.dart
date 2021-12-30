@@ -1,13 +1,20 @@
 import 'package:bazimat/all%20resturant/AllResturent.dart';
+import 'package:bazimat/all%20resturant/AllResturentList.dart';
+import 'package:bazimat/home/CampaignBannerModel.dart';
+import 'package:bazimat/home/CampaignDetailsModel.dart';
 import 'package:bazimat/home/CategoryModel.dart';
+import 'package:bazimat/home/ConfigModel.dart';
+import 'package:bazimat/home/CouponModel.dart';
 import 'package:bazimat/home/Couponlist.dart';
 import 'package:bazimat/home/Cuisin.dart';
 import 'package:bazimat/home/ListData.dart';
 import 'package:bazimat/home/OfferModel.dart';
+import 'package:bazimat/home/PopularResturentModel.dart';
 import 'package:bazimat/home/ResturentModel.dart';
 import 'package:bazimat/navigation/Navigation.dart';
 import 'package:bazimat/home/Resturent.dart';
 import 'package:bazimat/home/TopPick.dart';
+import 'package:bazimat/sign%20up/userPreferences.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
@@ -39,11 +46,18 @@ class _HomeState extends State<Home> {
   bool _resturentLoad;
   var popularList, cuisinImagePath;
   bool _popularLoad;
+  bool _campaignLoad;
+  bool _topPicksLoad;
+  var _popularList;
+  List<CampaignDetailsRestaurants> _campaignDetailsList;
 
   //final bannerList1 = ["images/banner1.png", "images/banner1.png"];
   Future<CategoryModel> _allCategory;
   Future<ResturentModel> _resturentList;
+  Future<PopularResturentModel> _popularResturent;
   List<Banners> bannerList;
+  List<CampaignBannerErrors> campaignList;
+  Future<CouponModel> _getCouponList;
   var _coverImage;
   final offerList = [
     "images/banner1.png",
@@ -83,10 +97,14 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
     bannerList = [];
+    campaignList = [];
+    _campaignDetailsList = [];
     _serviceAvailable = true;
     _bannerLoad = false;
     _resturentLoad = false;
     _popularLoad = false;
+    _campaignLoad = false;
+    _topPicksLoad = false;
     _getZoneId();
     _allCategory = _getCategoryList();
   }
@@ -217,35 +235,79 @@ class _HomeState extends State<Home> {
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
-                    Text(
-                      "Top Picks For You",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: MediaQuery.of(context).size.width * 0.05),
-                    ),
+                    _topPicksLoad == true
+                        ? _popularList.length == 0
+                            ? SizedBox()
+                            : Text(
+                                "Top Picks For You",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.05),
+                              )
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.04,
                     ),
-                    Container(
-                      height: MediaQuery.of(context).size.width * 0.45,
-                      width: MediaQuery.of(context).size.width,
-                      //color: Colors.amber,
-                      child: ListView.builder(
-                          //padding: EdgeInsets.only(left: 0, right: 0),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: topArr.length,
-                          shrinkWrap: true,
-                          itemBuilder: (BuildContext context, int index) {
-                            return TopPicks(topArr: topArr[index]);
-                          }),
-                    ),
+                    _topPicksLoad == true
+                        ? _popularList.length == 0
+                            ? SizedBox()
+                            : Container(
+                                height:
+                                    MediaQuery.of(context).size.width * 0.45,
+                                width: MediaQuery.of(context).size.width,
+                                //color: Colors.amber,
+                                child: FutureBuilder(
+                                  initialData: null,
+                                  future: _popularResturent,
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    if (snapshot.hasData) {
+                                      var dataList = snapshot.data.errors;
+                                      print(
+                                          "DAtaList..." + dataList.toString());
+                                      var imagePath =
+                                          snapshot.data.coverimgpath;
+                                      print(
+                                          "Datalist..." + dataList.toString());
+                                      return ListView.builder(
+                                          //padding: EdgeInsets.only(left: 0, right: 0),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: dataList.length,
+                                          shrinkWrap: true,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return TopPicks(
+                                                topArr: dataList[index],
+                                                imgPath: imagePath,
+                                                latitude: latitude,
+                                                longitude: longitude);
+                                          });
+                                    } else {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                  },
+                                ),
+                              )
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
                     Container(
                         height: MediaQuery.of(context).size.width * 0.35,
                         width: MediaQuery.of(context).size.width,
-                        child: offerSlider1()),
+                        child: _campaignLoad == false
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : offerSlider1()),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.04,
                     ),
@@ -262,12 +324,31 @@ class _HomeState extends State<Home> {
                       height: MediaQuery.of(context).size.width * 0.27,
                       width: MediaQuery.of(context).size.width,
                       //color: Colors.amber,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: offerList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return CouponList(couponL: offerList[index]);
-                          }),
+                      child: FutureBuilder(
+                        initialData: null,
+                        future: _getCouponList,
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            var couponListData = snapshot.data.errors;
+                            var couponImage = snapshot.data.coverimg;
+                            print("Coupon in Future..." +
+                                couponListData.toString());
+                            return ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: couponListData.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return CouponList(
+                                      couponL: couponListData[index],
+                                      couponImage: couponImage);
+                                });
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      ),
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.04,
@@ -297,7 +378,9 @@ class _HomeState extends State<Home> {
                                 return CuisinList(
                                     cuisin: popularList[index],
                                     cuisinPath: cuisinImagePath,
-                                    zoneId:zoneId);
+                                    latitude: latitude,
+                                    longitude: longitude,
+                                    zoneId: zoneId);
                               }),
                     ),
                     SizedBox(
@@ -395,10 +478,13 @@ class _HomeState extends State<Home> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => AllResturant(
-                                              allResturentData: _resturentData,
-                                              coverimgpath: _coverImage,
-                                              latitude: latitude,
-                                              longitude: longitude))),
+                                                allResturentData:
+                                                    _resturentData,
+                                                coverimgpath: _coverImage,
+                                                latitude: latitude,
+                                                longitude: longitude,
+                                                section: "Home",
+                                              ))),
                                 ),
                               )
                             : SizedBox()
@@ -446,28 +532,45 @@ class _HomeState extends State<Home> {
   //   );
   // }
 
-  CarouselSlider offerSlider1() {
-    return CarouselSlider(
-      options: CarouselOptions(autoPlay: false, viewportFraction: 1.0),
-      items: offerList
-          .map((item) => Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(item), fit: BoxFit.fill)),
-              ))
-          .toList(),
+  offerSlider1() {
+    return Carousel(
+      showIndicator: false,
+      autoplay: true,
+      images: List.generate(campaignList.length, (index) {
+        return InkWell(
+          onTap: () {
+            print("Id..." + campaignList[index].id.toString());
+            _getCampaignResturent(campaignList[index].id.toString());
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: NetworkImage(campaignList[index].image),
+                    fit: BoxFit.fill)),
+          ),
+        );
+      }).toList(),
+      //options: CarouselOptions(autoPlay: false, viewportFraction: 1.0),
+      // items: offerList
+      //     .map((item) => Container(
+      //           decoration: BoxDecoration(
+      //               image: DecorationImage(
+      //                   image: AssetImage(item), fit: BoxFit.fill)),
+      //         ))
+      //     .toList(),
     );
   }
 
   _getZoneId() async {
     try {
+      print("serviceable..." + _serviceAvailable.toString());
       SharedPreferences preferences = await SharedPreferences.getInstance();
       var response = preferences.getString("token");
       latitude = preferences.getString("latitude");
       longitude = preferences.getString("longitude");
-      print("Latitude..." + preferences.getString("latitude"));
-      print("Longitude..." + preferences.getString("longitude"));
-      print("Token..." + response.toString());
+      // print("Latitude..." + preferences.getString("latitude"));
+      // print("Longitude..." + preferences.getString("longitude"));
+      // print("Token..." + response.toString());
       //var getZone = "?lat=" + latitude + "&lng=" + longitude;
       var getZone =
           "?lat=" + "22.584990444621944" + "&lng=" + "88.4202935801241";
@@ -484,7 +587,12 @@ class _HomeState extends State<Home> {
         zoneId = zone.data["zone_id"];
         print("ZoneId.... in home..." + zoneId.toString());
         _getBanner();
+        _getCampaignBanner();
+        _getCustomerInfo();
+        _getConfigDetails();
+        _getCouponList = _getAllCoupon();
         _popularCuisin();
+        _popularResturent = _getAllPopularResturent();
         _resturentList = _getResturentList();
       }
     } on DioError catch (e) {
@@ -612,6 +720,178 @@ class _HomeState extends State<Home> {
       print(e.toString());
     }
   }
+
+  Future<PopularResturentModel> _getAllPopularResturent() async {
+    try {
+      var response = await dio.get(Const.popularResturent,
+          options: Options(headers: {"zoneId": zoneId}));
+      print("popular resturent in Home..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        _popularList = response.data["errors"];
+        print("popularList..." + _popularList.toString());
+        setState(() {
+          _topPicksLoad = true;
+        });
+        return PopularResturentModel.fromJson(response.data);
+      } else {
+        showCustomToast(response.data["errors"][0]["message"].toString());
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _getCampaignBanner() async {
+    try {
+      var response = await dio.get(Const.campaignBasic,
+          options: Options(headers: {"zoneId": zoneId}));
+      print("response statusCode..." + response.statusCode.toString());
+      print("response Campaign body..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        var campaignBanner = response.data["errors"];
+        var imgUrl = response.data["campaign_image_url"];
+        for (int j = 0; j < campaignBanner.length; j++) {
+          CampaignBannerErrors camgBanner = new CampaignBannerErrors();
+          camgBanner.id = response.data["errors"][j]["id"];
+          camgBanner.title = response.data["errors"][j]["title"];
+          camgBanner.image = imgUrl + response.data["errors"][j]["image"];
+          campaignList.add(camgBanner);
+        }
+        setState(() {
+          _campaignLoad = true;
+        });
+        print("CampaignList..." + campaignList.toString());
+      } else {
+        showCustomToast(response.data["errors"][0]["message"].toString());
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _getCampaignResturent(String id) async {
+    try {
+      _campaignDetailsList.clear();
+      var params = "?basic_campaign_id=" + id;
+      var url = Const.campaignDetails + params;
+      var response =
+          await dio.get(url, options: Options(headers: {"zoneId": zoneId}));
+      if (response.data["state"] == 0) {
+        var resturent = response.data["errors"]["restaurants"];
+        var imagePath = response.data["restaurant_cover_imge"];
+        for (int i = 0; i < resturent.length; i++) {
+          CampaignDetailsRestaurants campainDetails =
+              new CampaignDetailsRestaurants();
+          campainDetails.id = resturent[i]["id"];
+          campainDetails.name = resturent[i]["name"];
+          campainDetails.phone = resturent[i]["phone"];
+          campainDetails.email = resturent[i]["email"];
+          campainDetails.logo = resturent[i]["logo"];
+          campainDetails.latitude = resturent[i]["latitude"];
+          campainDetails.longitude = resturent[i]["longitude"];
+          campainDetails.address = resturent[i]["address"];
+          campainDetails.coverPhoto = resturent[i]["cover_photo"];
+          campainDetails.description = resturent[i]["description"];
+          campainDetails.offerprice = resturent[i]["offerprice"];
+          campainDetails.discount = resturent[i]["discount"];
+          campainDetails.avgRating = resturent[i]["avg_rating"];
+          campainDetails.ratingCount = resturent[i]["rating_count"];
+          _campaignDetailsList.add(campainDetails);
+        }
+        print("campaignDetails..." + _campaignDetailsList.toString());
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AllResturant(
+                    allCampaignData: _campaignDetailsList,
+                    coverimgpath: imagePath,
+                    latitude: latitude,
+                    longitude: longitude,
+                    section: "campaign")));
+      } else {
+        showCustomToast(response.data["errors"][0]["message"].toString());
+      }
+      print("campaignDetails..." + response.data.toString());
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _getCustomerInfo() async {
+    try {
+      var pref = await SharedPreferences.getInstance();
+      var token = pref.getString("token");
+      print("Token..." + token.toString());
+      print("Token..." + Const.customerInfo.toString());
+      var response = await dio.get(Const.customerInfo,
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            //'Accept': 'application/json',
+            "Authorization": "Bearer $token"
+          })
+          // queryParameters: {
+          //   "Authorization": {
+          //     {"Bearer Token": token.toString()}
+          //   }
+          // },
+          // options: Options(headers: {
+          //   "Authorization": {"Bearer Token": token.toString()}
+          // }
+          // )
+          );
+      print("Token..." + response.data["error"]["agestatus"].toString());
+      print("age data...." + response.data.toString());
+      if (response.data["state"] == 0) {
+        saveUserPref(
+            token,
+            response.data["error"]["id"].toString(),
+            response.data["error"]["f_name"],
+            response.data["error"]["l_name"],
+            response.data["error"]["phone"],
+            response.data["error"]["email"],
+            response.data["error"]["agestatus"].toString());
+        // pref.setString("Id", response.data["error"]["id"]);
+        // pref.setString("FName", response.data["error"]["f_name"]);
+        // pref.setString("LName", response.data["error"]["l_name"]);
+        // pref.setString("Phone", response.data["error"]["phone"]);
+        // pref.setString("Phone", response.data["error"]["phone"]);
+        //return CustomerInfoError.fromJson(response.data);
+      }
+      print("response body...in customerInfo..." + response.data.toString());
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<CouponModel> _getAllCoupon() async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      var token = pref.getString("token");
+      var response = await dio.get(Const.couponList,
+          options: Options(
+              headers: {"Authorization": "Bearer $token", "zoneId": zoneId}));
+      print("response Body in Coupon List..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        return CouponModel.fromJson(response.data);
+      } else {
+        showCustomToast(response.data["errors"][0]["message"]);
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _getConfigDetails() async {
+    try {
+      var response = await dio.get(Const.config);
+      print("response of Config..." + response.data.toString());
+      return Configmodel.fromJson(response.data);
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  //void _getCouponList() {}
 
   // _getDistance(String lat, String lng) async {
   //   try {

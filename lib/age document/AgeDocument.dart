@@ -1,10 +1,13 @@
 import 'dart:io';
-
 import 'package:bazimat/age%20document/PhotoView.dart';
 import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/AppConst.dart';
+import 'package:bazimat/util/Const.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AgeDocument extends StatefulWidget {
   const AgeDocument({Key key}) : super(key: key);
@@ -15,7 +18,15 @@ class AgeDocument extends StatefulWidget {
 
 class _AgeDocumentState extends State<AgeDocument> {
   var _image, _image1;
+  TextEditingController dobText;
+  var dio = Dio();
   //String _img;
+  @override
+  void initState() {
+    super.initState();
+    dobText = new TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,6 +47,7 @@ class _AgeDocumentState extends State<AgeDocument> {
                     EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
                 color: Colors.white,
                 child: TextFormField(
+                  controller: dobText,
                   decoration: InputDecoration(
                       hintText: 'Enter Date Of Birth',
                       border: InputBorder.none),
@@ -153,8 +165,7 @@ class _AgeDocumentState extends State<AgeDocument> {
                 child: TextButton(
                     style: TextButton.styleFrom(
                         backgroundColor: AppColors.loginButtonColor),
-                    onPressed: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Home())),
+                    onPressed: () => _ageSubmit(),
                     child: Text(
                       "Login",
                       style: TextStyle(color: Colors.white),
@@ -203,5 +214,32 @@ class _AgeDocumentState extends State<AgeDocument> {
   void _imageView(var image) {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => PhotoView(image)));
+  }
+
+  _ageSubmit() async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      var id = pref.getString("id");
+      var token = pref.getString("token");
+      print("Id..." + id.toString());
+      var response = await dio.post(Const.ageSubmit,
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+          queryParameters: {
+            "cid": id,
+            "fontimg": _image,
+            "backimg": _image1,
+            "db": dobText.text.trim()
+          });
+      print("response Body in age..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        showCustomToast(response.data["message"]);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Home()));
+      } else {
+        showCustomToast(response.data["errors"][0]["message"]);
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }

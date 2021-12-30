@@ -1,5 +1,6 @@
 import 'package:bazimat/age%20document/AgeDocument.dart';
 import 'package:bazimat/sub%20list/SubList.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -87,35 +88,39 @@ class _ListDataState extends State<ListData> {
     try {
       var pref = await SharedPreferences.getInstance();
       var token = pref.getString("token");
+      var ageStatus = pref.getString("ageStatus");
       print("Token..." + token.toString());
+      print("Token..." + ageStatus.toString());
       print("Token..." + Const.customerInfo.toString());
-      var response = await dio.get(Const.customerInfo,
-          options: Options(headers: {
-            "Content-Type": "application/json",
-            //'Accept': 'application/json',
-            "Authorization": "Bearer $token"
-          })
-          // queryParameters: {
-          //   "Authorization": {
-          //     {"Bearer Token": token.toString()}
-          //   }
-          // },
-          // options: Options(headers: {
-          //   "Authorization": {"Bearer Token": token.toString()}
-          // }
-          // )
-          );
-      print("response body..." + response.data.toString());
-      if (response.data["state"] == 0) {
-        print("response body...0.." +
-            response.data["error"]["agestatus"].toString());
-        if (response.data["error"]["agestatus"] == 0) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AgeDocument()));
-        } else {
-          _goToSubList();
-        }
-      } else {}
+      // var response = await dio.get(Const.customerInfo,
+      //     options: Options(headers: {
+      //       "Content-Type": "application/json",
+      //       //'Accept': 'application/json',
+      //       "Authorization": "Bearer $token"
+      //     })
+      //     // queryParameters: {
+      //     //   "Authorization": {
+      //     //     {"Bearer Token": token.toString()}
+      //     //   }
+      //     // },
+      //     // options: Options(headers: {
+      //     //   "Authorization": {"Bearer Token": token.toString()}
+      //     // }
+      //     // )
+      //     );
+      //print("response body..." + response.data.toString());
+      // if (response.data["state"] == 0) {
+      //   print("response body...0.." +
+      //       response.data["error"]["agestatus"].toString());
+      if (ageStatus == "0") {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => AgeDocument()));
+      } else if (ageStatus == "2") {
+        showCustomToast("Document under review");
+      } else {
+        _goToSubList();
+      }
+      //} else {}
     } on DioError catch (e) {
       print(e.toString());
     }
@@ -129,7 +134,7 @@ class _ListDataState extends State<ListData> {
                 listId: widget.listArr.id,
                 listName: widget.listArr.name,
                 zoneId: widget.zoneIdVal,
-                latitude:widget.latitude,
-                longitude:widget.longitude)));
+                latitude: widget.latitude,
+                longitude: widget.longitude)));
   }
 }
