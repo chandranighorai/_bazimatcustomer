@@ -14,8 +14,10 @@ class AddCuisin extends StatefulWidget {
       imageUrl,
       resturentName,
       resturenrAddr,
-      resturentPrice;
+      resturentPrice,
+      configData;
   Products product;
+  Function() couponList;
   AddCuisin(
       {this.duration,
       this.distance,
@@ -23,8 +25,10 @@ class AddCuisin extends StatefulWidget {
       this.resturentName,
       this.resturenrAddr,
       this.resturentPrice,
+      this.configData,
       this.product,
-      Key key})
+      Key key,
+      this.couponList})
       : super(key: key);
 
   @override
@@ -33,10 +37,26 @@ class AddCuisin extends StatefulWidget {
 
 class _AddCuisinState extends State<AddCuisin> {
   Configmodel data;
+  double deliveryCharge;
+  double itemPrice;
+  double payPrice;
+  double taxPrice;
+  bool couponApplied;
+  double couponPrice;
+  @override
+  void initState() {
+    super.initState();
+    couponApplied = false;
+    couponPrice = 0.0;
+    _itemUpdate(widget.product.price.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
-    print("Shipping Charge...." + data.perKmShippingCharge.toString());
+    // print("Shipping Charge...." +
+    //     widget.configData["per_km_shipping_charge"].toString());
     var image = widget.imageUrl + widget.product.image;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -62,7 +82,8 @@ class _AddCuisinState extends State<AddCuisin> {
                   resturentName: widget.resturentName,
                   resturentAddr: widget.resturenrAddr,
                   resturentOffer: widget.resturentPrice,
-                  product: widget.product),
+                  product: widget.product,
+                  refresh: _itemUpdate),
               SizedBox(
                 height: MediaQuery.of(context).size.width * 0.02,
               ),
@@ -93,8 +114,22 @@ class _AddCuisinState extends State<AddCuisin> {
                           Icons.arrow_forward_ios_sharp,
                           color: Colors.black,
                         ),
-                        onPressed: () => Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Coupon())))
+                        onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            Coupon(payPrice: payPrice)))
+                                .then((value) {
+                              print(value.toString());
+                              setState(() {
+                                couponApplied = value["cuponApplied"];
+                                couponPrice =
+                                    double.parse(value["price"].toString());
+                                payPrice =
+                                    (itemPrice + deliveryCharge + taxPrice) -
+                                        couponPrice;
+                              });
+                            }))
                   ],
                 ),
               ),
@@ -127,7 +162,7 @@ class _AddCuisinState extends State<AddCuisin> {
                       children: [
                         Text("Item Total"),
                         Spacer(),
-                        Text("\u20B9300")
+                        Text("\u20B9$itemPrice")
                       ],
                     ),
                     SizedBox(
@@ -147,7 +182,7 @@ class _AddCuisinState extends State<AddCuisin> {
                             style: TextStyle(color: AppColors.cartPage),
                           ),
                           Spacer(),
-                          Text("\u20B940")
+                          Text("\u20B9$deliveryCharge")
                         ],
                       ),
                     ),
@@ -158,31 +193,49 @@ class _AddCuisinState extends State<AddCuisin> {
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
-                    Row(
-                      children: [
-                        Text("Delivery Tip"),
-                        Spacer(),
-                        Text(
-                          "Add Tip",
-                          style: TextStyle(
-                              color: AppColors.cartPage,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.03),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.03,
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Text("Delivery Tip"),
+                    //     Spacer(),
+                    //     Text(
+                    //       "Add Tip",
+                    //       style: TextStyle(
+                    //           color: AppColors.cartPage,
+                    //           fontSize:
+                    //               MediaQuery.of(context).size.width * 0.03),
+                    //     )
+                    //   ],
+                    // ),
+                    // SizedBox(
+                    //   height: MediaQuery.of(context).size.width * 0.03,
+                    // ),
                     Row(
                       children: [
                         Text("Taxes and Charges"),
                         Spacer(),
                         Text(
-                          "\u20B910",
+                          "\u20B9$taxPrice",
                         )
                       ],
                     ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    couponApplied == false ? SizedBox() : Divider(),
+                    // SizedBox(
+                    //   height: MediaQuery.of(context).size.width * 0.02,
+                    // ),
+                    couponApplied == false
+                        ? SizedBox()
+                        : Row(
+                            children: [
+                              Text("Coupon Applied"),
+                              Spacer(),
+                              Text(
+                                "\u20B9$couponPrice",
+                              )
+                            ],
+                          ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
@@ -191,7 +244,11 @@ class _AddCuisinState extends State<AddCuisin> {
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
                     Row(
-                      children: [Text("To Pay"), Spacer(), Text("\u20B9340")],
+                      children: [
+                        Text("To Pay"),
+                        Spacer(),
+                        Text("\u20B9$payPrice")
+                      ],
                     )
                   ],
                 ),
@@ -324,19 +381,19 @@ class _AddCuisinState extends State<AddCuisin> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "\u20B9340",
+                            "\u20B9$payPrice",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.width * 0.01,
-                          ),
-                          Text(
-                            "view detailed bill".toUpperCase(),
-                            style: TextStyle(
-                                color: AppColors.cartPage,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.03),
-                          )
+                          // SizedBox(
+                          //   height: MediaQuery.of(context).size.width * 0.01,
+                          // ),
+                          // Text(
+                          //   "view detailed bill".toUpperCase(),
+                          //   style: TextStyle(
+                          //       color: AppColors.cartPage,
+                          //       fontSize:
+                          //           MediaQuery.of(context).size.width * 0.03),
+                          // )
                         ],
                       ),
                     ),
@@ -366,5 +423,25 @@ class _AddCuisinState extends State<AddCuisin> {
         ),
       ),
     );
+  }
+
+  _itemUpdate(String productPrice) {
+    // print("productPrice..." + productPrice.toString());
+    // print("productPrice..." +
+    //     widget.configData["per_km_shipping_charge"].toString());
+    setState(() {
+      var distanceCal = widget.distance.split(" ");
+      // print("deliveryCharge..." + distanceCal.toString());
+      deliveryCharge = widget.configData["per_km_shipping_charge"] *
+          double.parse(distanceCal[0]);
+      //print("deliveryCharge..." + deliveryCharge.toString());
+      itemPrice = double.parse(productPrice);
+      // print("itemPrice...." + itemPrice.toString());
+      taxPrice = double.parse(widget.product.tax.toString());
+      // print("taxPrice...." + taxPrice.toString());
+      // print("taxPrice...." + deliveryCharge.toString());
+      payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
+      //print("payPrice...." + payPrice.toString());
+    });
   }
 }

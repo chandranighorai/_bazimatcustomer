@@ -1,16 +1,37 @@
+import 'package:bazimat/coupon/CouponList.dart';
+import 'package:bazimat/home/CouponModel.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/AppConst.dart';
+import 'package:bazimat/util/Const.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Coupon extends StatefulWidget {
-  const Coupon({Key key}) : super(key: key);
+  double payPrice;
+  // CouponListErrors data;
+  // Function() couponList;
+  Coupon({
+    this.payPrice,
+    Key key,
+  }) : super(key: key);
 
   @override
   _CouponState createState() => _CouponState();
 }
 
 class _CouponState extends State<Coupon> {
+  Future<CouponModel> _getAllCoupon;
+  var dio = Dio();
+  @override
+  void initState() {
+    super.initState();
+    _getAllCoupon = _getCouponList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    //print("datatList..." + widget.couponList.runtimeType.toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -74,76 +95,49 @@ class _CouponState extends State<Coupon> {
               ),
             ),
             Expanded(
-                child: ListView.builder(
-                    itemCount: 5,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        padding: const EdgeInsets.only(
-                            top: 8.0, left: 8.0, right: 8.0, bottom: 15.0),
-                        //height: 250,
-                        width: MediaQuery.of(context).size.width,
-                        color: Colors.white,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(
-                                      MediaQuery.of(context).size.width * 0.02),
-                                  decoration: BoxDecoration(
-                                      color: AppColors.cartPage,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.02))),
-                                  child: Text("unicard150".toUpperCase(),
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.03)),
-                                ),
-                                Spacer(),
-                                Text(
-                                  "Apply".toUpperCase(),
-                                  style: TextStyle(color: AppColors.applyText),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.width * 0.03,
-                            ),
-                            Text("Get 50% discount using Uni Pay 1/3rd Card"),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.width * 0.04,
-                            ),
-                            Text(
-                              "Maximum discount up to \u20B9200 on orders above \u20B9400",
-                              style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.03,
-                                  color: Colors.grey),
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.width * 0.02,
-                            ),
-                            Text(
-                              "+ more".toUpperCase(),
-                              style: TextStyle(
-                                  color: AppColors.moreText,
-                                  fontSize:
-                                      MediaQuery.of(context).size.width * 0.02),
-                            )
-                          ],
-                        ),
-                      );
-                    }))
+                child: FutureBuilder(
+              initialData: null,
+              future: _getAllCoupon,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  var couponList = snapshot.data.errors;
+                  return ListView.builder(
+                      itemCount: couponList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CouponList(
+                            couponList: couponList[index],
+                            payPrice: widget.payPrice);
+                      });
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ))
           ],
         ),
       ),
     );
+  }
+
+  Future<CouponModel> _getCouponList() async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      var token = pref.getString("token");
+      var zoneId = pref.getString("zoneId");
+      var response = await dio.get(Const.couponList,
+          options: Options(
+              headers: {"Authorization": "Bearer $token", "zoneId": zoneId}));
+      print("response Body in Coupon List..." + zoneId.toString());
+      print("response Body in Coupon List..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        return CouponModel.fromJson(response.data);
+      } else {
+        showCustomToast(response.data["errors"][0]["message"]);
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }

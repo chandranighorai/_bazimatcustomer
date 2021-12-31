@@ -11,6 +11,7 @@ class AllResturentList extends StatefulWidget {
   CampaignDetailsRestaurants resturent1;
   var coverImage, latitude, longitude;
   var section;
+  Function() couponList;
   AllResturentList(
       {this.resturent,
       this.resturent1,
@@ -18,6 +19,7 @@ class AllResturentList extends StatefulWidget {
       this.latitude,
       this.longitude,
       this.section,
+      this.couponList,
       Key key});
 
   @override
@@ -60,6 +62,7 @@ class _AllResturentListState extends State<AllResturentList> {
                       duration: getDistanceResponse.data["rows"][0]["elements"]
                           [0]["duration"]["text"],
                       section: widget.section,
+                      couponList:widget.couponList
                     )));
       },
       child: Stack(

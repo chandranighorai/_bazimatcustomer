@@ -484,6 +484,7 @@ class _HomeState extends State<Home> {
                                                 latitude: latitude,
                                                 longitude: longitude,
                                                 section: "Home",
+                                                //couponList:_getAllCoupon
                                               ))),
                                 ),
                               )
@@ -589,7 +590,7 @@ class _HomeState extends State<Home> {
         _getBanner();
         _getCampaignBanner();
         _getCustomerInfo();
-        _getConfigDetails();
+        //_getConfigDetails();
         _getCouponList = _getAllCoupon();
         _popularCuisin();
         _popularResturent = _getAllPopularResturent();
@@ -799,15 +800,15 @@ class _HomeState extends State<Home> {
           _campaignDetailsList.add(campainDetails);
         }
         print("campaignDetails..." + _campaignDetailsList.toString());
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => AllResturant(
-                    allCampaignData: _campaignDetailsList,
-                    coverimgpath: imagePath,
-                    latitude: latitude,
-                    longitude: longitude,
-                    section: "campaign")));
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => AllResturant(
+        //             allCampaignData: _campaignDetailsList,
+        //             coverimgpath: imagePath,
+        //             latitude: latitude,
+        //             longitude: longitude,
+        //section: "campaign")));
       } else {
         showCustomToast(response.data["errors"][0]["message"].toString());
       }
@@ -849,7 +850,8 @@ class _HomeState extends State<Home> {
             response.data["error"]["l_name"],
             response.data["error"]["phone"],
             response.data["error"]["email"],
-            response.data["error"]["agestatus"].toString());
+            response.data["error"]["agestatus"].toString(),
+            zoneId.toString());
         // pref.setString("Id", response.data["error"]["id"]);
         // pref.setString("FName", response.data["error"]["f_name"]);
         // pref.setString("LName", response.data["error"]["l_name"]);
@@ -881,15 +883,15 @@ class _HomeState extends State<Home> {
     }
   }
 
-  _getConfigDetails() async {
-    try {
-      var response = await dio.get(Const.config);
-      print("response of Config..." + response.data.toString());
-      return Configmodel.fromJson(response.data);
-    } on DioError catch (e) {
-      print(e.toString());
-    }
-  }
+  // _getConfigDetails() async {
+  //   try {
+  //     var response = await dio.get(Const.config);
+  //     print("response of Config..." + response.data.toString());
+  //     return Configmodel.fromJson(response.data);
+  //   } on DioError catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 
   //void _getCouponList() {}
 

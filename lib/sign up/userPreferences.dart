@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 saveUserPref(String token, String id, String fName, String lName, String phone,
-    String email, String ageStatus) async {
+    String email, String ageStatus, String zoneId) async {
   print("ageStatus..." + ageStatus.toString());
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   sharedPreferences.setString("token", token);
@@ -11,4 +11,5 @@ saveUserPref(String token, String id, String fName, String lName, String phone,
   sharedPreferences.setString("Phone", phone);
   sharedPreferences.setString("Email", email);
   sharedPreferences.setString("ageStatus", ageStatus);
+  sharedPreferences.setString("zoneId", zoneId);
 }

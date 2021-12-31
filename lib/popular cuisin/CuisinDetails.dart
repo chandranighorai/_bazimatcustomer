@@ -18,6 +18,7 @@ class CuisinDetails extends StatefulWidget {
   CampaignDetailsRestaurants campaignData;
   var distance, duration;
   String section;
+  Function() couponList;
   CuisinDetails(
       {this.resturentData,
       this.listData,
@@ -26,7 +27,8 @@ class CuisinDetails extends StatefulWidget {
       this.campaignData,
       this.distance,
       this.duration,
-      this.section});
+      this.section,
+      this.couponList});
 
   @override
   _CuisinDetailsState createState() => _CuisinDetailsState();
@@ -428,7 +430,8 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                                         resturentName: resturentName,
                                         resturentAddress: resturentAddr,
                                         resturentOfferPrice:
-                                            resturentOfferPrice);
+                                            resturentOfferPrice,
+                                        couponList: widget.couponList);
                                   });
                         } else {
                           return Center(child: CircularProgressIndicator());

@@ -9,6 +9,7 @@ class AllResturant extends StatefulWidget {
   List<CampaignDetailsRestaurants> allCampaignData;
   var coverimgpath, latitude, longitude;
   var section;
+  Function() couponList;
   AllResturant(
       {this.allResturentData,
       this.allCampaignData,
@@ -16,7 +17,7 @@ class AllResturant extends StatefulWidget {
       this.latitude,
       this.longitude,
       this.section,
-      Key key});
+      Key key, this.couponList});
 
   @override
   _AllResturantState createState() => _AllResturantState();
@@ -65,7 +66,8 @@ class _AllResturantState extends State<AllResturant> {
                   coverImage: widget.coverimgpath,
                   latitude: widget.latitude,
                   longitude: widget.longitude,
-                  section: widget.section);
+                  section: widget.section,
+                  couponList: widget.couponList);
             }),
       ),
     );
