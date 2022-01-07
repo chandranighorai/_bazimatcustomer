@@ -9,6 +9,8 @@ import 'package:bazimat/refer&earn/Refer&Earn.dart';
 import 'package:bazimat/sign%20up/SignUp.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/AppConst.dart';
+import 'package:bazimat/util/Const.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,6 +24,8 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   //CustomerInfoError data;
   String fullName, phone, firstLetter, email, ageStatus;
+  var dio = Dio();
+  var response;
   @override
   void initState() {
     super.initState();
@@ -98,7 +102,7 @@ class _NavigationState extends State<Navigation> {
                                 email: email,
                                 phone: phone,
                                 firstLetter: firstLetter,
-                                ageStatus:ageStatus))).then((value) {
+                                ageStatus: ageStatus))).then((value) {
                       print("Value of name..." + value.toString());
                       setState(() {
                         fullName = value["fullName"];
@@ -250,25 +254,25 @@ class _NavigationState extends State<Navigation> {
                       ],
                     ),
                   ),
-                  ListTile(
-                    visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                    title: Row(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.05,
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          decoration: BoxDecoration(
-                              //color: Colors.red,
-                              image: DecorationImage(
-                                  image: AssetImage("images/sound.png"))),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.04,
-                        ),
-                        Text("Announcements"),
-                      ],
-                    ),
-                  ),
+                  // ListTile(
+                  //   visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  //   title: Row(
+                  //     children: [
+                  //       Container(
+                  //         height: MediaQuery.of(context).size.width * 0.05,
+                  //         width: MediaQuery.of(context).size.width * 0.05,
+                  //         decoration: BoxDecoration(
+                  //             //color: Colors.red,
+                  //             image: DecorationImage(
+                  //                 image: AssetImage("images/sound.png"))),
+                  //       ),
+                  //       SizedBox(
+                  //         width: MediaQuery.of(context).size.width * 0.04,
+                  //       ),
+                  //       Text("Announcements"),
+                  //     ],
+                  //   ),
+                  // ),
                   ListTile(
                     visualDensity: VisualDensity(horizontal: 0, vertical: -4),
                     title: Row(
@@ -307,8 +311,15 @@ class _NavigationState extends State<Navigation> {
                       ],
                     ),
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => More()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => More(
+                                    aboutUs: response.data["about_us"],
+                                    privacy: response.data["privacy_policy"],
+                                    terms:
+                                        response.data["terms_and_conditions"],
+                                  )));
                     },
                   ),
                   ListTile(
@@ -362,5 +373,20 @@ class _NavigationState extends State<Navigation> {
       ageStatus = pref.getString("ageStatus");
       fullName = firstName + " " + lastName;
     });
+    _getConfigData();
+  }
+
+  _getConfigData() async {
+    try {
+      response = await dio.get(Const.config);
+      print("response of config..." +
+          response.data["terms_and_conditions"].toString());
+      // if(response.data["state"]==0)
+      // {
+
+      // }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }

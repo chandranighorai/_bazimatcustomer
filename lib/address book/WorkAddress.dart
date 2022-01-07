@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class WorkAddress extends StatefulWidget {
-  const WorkAddress({Key key}) : super(key: key);
+  var workAddr;
+  WorkAddress({this.workAddr, Key key}) : super(key: key);
 
   @override
   _WorkAddressState createState() => _WorkAddressState();
@@ -32,7 +33,7 @@ class _WorkAddressState extends State<WorkAddress> {
             Container(
               width: MediaQuery.of(context).size.width / 1.2,
               //color: Colors.amber,
-              child: Text("sds work"),
+              child: Text("${widget.workAddr["address"]}"),
             )
           ],
         ),

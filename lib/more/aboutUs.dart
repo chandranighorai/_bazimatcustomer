@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
+// ignore: must_be_immutable
 class AboutUs extends StatefulWidget {
-  const AboutUs({Key key}) : super(key: key);
+  var aboutUs;
+  AboutUs({this.aboutUs, Key key}) : super(key: key);
 
   @override
   _AboutUsState createState() => _AboutUsState();
@@ -10,6 +13,7 @@ class AboutUs extends StatefulWidget {
 class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
+    print("about us..." + widget.aboutUs.toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -24,6 +28,13 @@ class _AboutUsState extends State<AboutUs> {
         title: Text(
           "About Us",
           style: TextStyle(color: Colors.black),
+        ),
+      ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Html(
+          data: widget.aboutUs,
         ),
       ),
     );

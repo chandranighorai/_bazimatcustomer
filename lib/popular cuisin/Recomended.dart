@@ -44,15 +44,19 @@ class _RecommendedState extends State<Recommended> {
   @override
   Widget build(BuildContext context) {
     print("productDetails..." + widget.productList.taxType.toString());
+    print("productDetails..." + widget.productList.name.toString());
+
     var image = widget.imageUrl + widget.productList.image;
     print("Image..." + image.toString());
     print("hjhj..." + image.toString());
 
-    return configData == false
+    return 
+    configData == false
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : InkWell(
+        : 
+        InkWell(
             onTap: () {
               Navigator.push(
                   context,
@@ -149,7 +153,6 @@ class _RecommendedState extends State<Recommended> {
         configLoad = true;
       });
       configData = response.data;
-
       // Configmodel.fromJson(response.data);
     } on DioError catch (e) {
       print(e.toString());

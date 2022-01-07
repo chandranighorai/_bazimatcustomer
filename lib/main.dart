@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/sign%20up/SignUp.dart';

@@ -33,4 +33,8 @@ class Const {
   static String ageDetails = appUrl + "customer/agedetail";
   static String couponList = appUrl + "coupon/list";
   static String config = appUrl + "config";
+  static String addressList = appUrl + "customer/address/list";
+  static String wishListAdd = appUrl + "customer/wish-list/add";
+  static String getWishList = appUrl + "customer/wish-list/";
+  static String removeWishList = appUrl + "customer/wish-list/remove";
 }

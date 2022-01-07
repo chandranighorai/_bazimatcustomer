@@ -6,7 +6,8 @@ import 'package:bazimat/more/termsCondition.dart';
 import 'package:flutter/material.dart';
 
 class More extends StatefulWidget {
-  const More({Key key}) : super(key: key);
+  var aboutUs, privacy, terms;
+  More({this.aboutUs, this.privacy, this.terms, Key key}) : super(key: key);
 
   @override
   _MoreState createState() => _MoreState();
@@ -15,6 +16,7 @@ class More extends StatefulWidget {
 class _MoreState extends State<More> {
   @override
   Widget build(BuildContext context) {
+    print("about..." + widget.aboutUs.toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -44,22 +46,25 @@ class _MoreState extends State<More> {
                     "About Us",
                     style: TextStyle(color: Colors.black),
                   ),
-                  onPressed: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AboutUs())),
-                )),
-            Container(
-                padding: const EdgeInsets.all(0.0),
-                alignment: Alignment.centerLeft,
-                child: TextButton(
-                  child: Text(
-                    "Returns & Cancellation",
-                    style: TextStyle(color: Colors.black),
-                  ),
                   onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ReturnCancellation())),
+                          builder: (context) =>
+                              AboutUs(aboutUs: widget.aboutUs))),
                 )),
+            // Container(
+            //     padding: const EdgeInsets.all(0.0),
+            //     alignment: Alignment.centerLeft,
+            //     child: TextButton(
+            //       child: Text(
+            //         "Returns & Cancellation",
+            //         style: TextStyle(color: Colors.black),
+            //       ),
+            //       onPressed: () => Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //               builder: (context) => ReturnCancellation())),
+            //     )),
             Container(
                 padding: const EdgeInsets.all(0.0),
                 alignment: Alignment.centerLeft,
@@ -71,19 +76,19 @@ class _MoreState extends State<More> {
                   onPressed: () => Navigator.push(context,
                       MaterialPageRoute(builder: (context) => PrivacyPolicy())),
                 )),
-            Container(
-                padding: const EdgeInsets.all(0.0),
-                alignment: Alignment.centerLeft,
-                child: TextButton(
-                  child: Text(
-                    "Registered Address",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => RegisteredAddr())),
-                )),
+            // Container(
+            //     padding: const EdgeInsets.all(0.0),
+            //     alignment: Alignment.centerLeft,
+            //     child: TextButton(
+            //       child: Text(
+            //         "Registered Address",
+            //         style: TextStyle(color: Colors.black),
+            //       ),
+            //       onPressed: () => Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //               builder: (context) => RegisteredAddr())),
+            //     )),
             Container(
                 padding: const EdgeInsets.all(0.0),
                 alignment: Alignment.centerLeft,

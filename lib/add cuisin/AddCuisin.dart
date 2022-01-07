@@ -1,12 +1,15 @@
-import 'dart:ui';
-
 import 'package:bazimat/add%20cuisin/AddQuantity.dart';
 import 'package:bazimat/add%20cuisin/Cart.dart';
+import 'package:bazimat/address%20book/AddAddress.dart';
 import 'package:bazimat/coupon/Coupon.dart';
 import 'package:bazimat/home/ConfigModel.dart';
 import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:flutter/material.dart';
+import 'package:bazimat/util/Const.dart';
+import 'package:bazimat/util/AppConst.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddCuisin extends StatefulWidget {
   var duration,
@@ -43,11 +46,16 @@ class _AddCuisinState extends State<AddCuisin> {
   double taxPrice;
   bool couponApplied;
   double couponPrice;
+  var addressList;
+  bool addressLoad;
+  var dio = Dio();
   @override
   void initState() {
     super.initState();
     couponApplied = false;
+    addressLoad = false;
     couponPrice = 0.0;
+    _getAddress();
     _itemUpdate(widget.product.price.toString());
   }
 
@@ -325,14 +333,21 @@ class _AddCuisinState extends State<AddCuisin> {
                                         MediaQuery.of(context).size.width *
                                             0.04),
                               ),
-                              Text(
-                                "Bidhannagar",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.04),
-                              ),
+                              addressLoad == false
+                                  ? Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : addressList.length == 0
+                                      ? SizedBox()
+                                      : Text(
+                                          addressList[0]["address"],
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.04),
+                                        ),
                               Text(
                                 "${widget.duration}",
                                 style: TextStyle(
@@ -344,13 +359,38 @@ class _AddCuisinState extends State<AddCuisin> {
                           ),
                         ),
                         Spacer(),
-                        Text(
-                          "Change".toUpperCase(),
-                          style: TextStyle(
-                              color: AppColors.cartPage,
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.03),
-                        )
+                        addressLoad == false
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : addressList.length == 0
+                                ? InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddAddress()));
+                                    },
+                                    child: Text(
+                                      "Add Address".toUpperCase(),
+                                      style: TextStyle(
+                                          color: AppColors.cartPage,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.03),
+                                      // )
+                                    ),
+                                  )
+                                : Text(
+                                    "Change".toUpperCase(),
+                                    style: TextStyle(
+                                        color: AppColors.cartPage,
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.03),
+                                  )
                       ],
                     ),
                   ),
@@ -443,5 +483,30 @@ class _AddCuisinState extends State<AddCuisin> {
       payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
       //print("payPrice...." + payPrice.toString());
     });
+  }
+
+  _getAddress() async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      var token = pref.getString("token");
+      print("token..." + token.toString());
+      var response = await dio.get(
+        Const.addressList,
+        options: Options(headers: {"Authorization": "Bearer $token"}),
+      );
+      print("response body..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        addressList = response.data["error"];
+        print("addresslength..." + addressList.length.toString());
+        setState(() {
+          addressLoad = true;
+        });
+      } else {
+        showCustomToast(response.data["errors"][0]["message"]);
+      }
+      //addressList = response.data[""]
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bazimat/favourites/FavouriteModel.dart';
 import 'package:bazimat/home/CampaignDetailsModel.dart';
 import 'package:bazimat/home/PopularResturentModel.dart';
 import 'package:bazimat/home/ResturentModel.dart';
@@ -5,10 +6,12 @@ import 'package:bazimat/popular%20cuisin/Recomended.dart';
 import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/popular%20cuisin/PopularCuisinResturentModel.dart';
 import 'package:bazimat/sub%20list/SubListModel.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CuisinDetails extends StatefulWidget {
   Restaurants resturentData;
@@ -16,6 +19,7 @@ class CuisinDetails extends StatefulWidget {
   RestaurantsCuisin cuisinList;
   PopularResturentErrors topPickList;
   CampaignDetailsRestaurants campaignData;
+  FavRestaurant favResturentData;
   var distance, duration;
   String section;
   Function() couponList;
@@ -25,6 +29,7 @@ class CuisinDetails extends StatefulWidget {
       this.cuisinList,
       this.topPickList,
       this.campaignData,
+      this.favResturentData,
       this.distance,
       this.duration,
       this.section,
@@ -37,6 +42,9 @@ class CuisinDetails extends StatefulWidget {
 class _CuisinDetailsState extends State<CuisinDetails> {
   Future<RecommendedModel> _recommendedProduct;
   var dio = Dio();
+  var dataId, zoneId;
+  var token;
+  bool _resturentLike;
   var resturentName,
       resturentDesc,
       resturentAddr,
@@ -74,6 +82,13 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentAvgRating = widget.campaignData.avgRating;
       resturentRatingCount = widget.campaignData.ratingCount;
       resturentOfferPrice = widget.campaignData.offerprice;
+    } else if (widget.section == "favourite") {
+      resturentName = widget.favResturentData.name;
+      resturentDesc = widget.favResturentData.description;
+      resturentAddr = widget.favResturentData.address;
+      resturentAvgRating = widget.favResturentData.avgRating;
+      resturentRatingCount = widget.favResturentData.ratingCount;
+      resturentOfferPrice = widget.favResturentData.offerprice;
     } else {
       resturentName = widget.resturentData.name;
       resturentDesc = widget.resturentData.description;
@@ -90,6 +105,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
     //         : widget.section == "campaign"
     //             ? "${widget.campaignData.name}"
     //             : "${widget.resturentData.name}",
+    _resturentLike = false;
     _recommendedProduct = _getAllRecommendedProduct();
   }
 
@@ -110,10 +126,25 @@ class _CuisinDetailsState extends State<CuisinDetails> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          Icon(
-            Icons.favorite,
-            color: Colors.grey,
-          ),
+          _resturentLike == true
+              ? IconButton(
+                  icon: Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  ),
+                  onPressed: () {
+                    _favRemove();
+                  },
+                )
+              : IconButton(
+                  icon: Icon(
+                    Icons.favorite,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    _favSelected();
+                  },
+                ),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.03,
           ),
@@ -400,6 +431,8 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
                           var products = snapshot.data.errors.products;
+                          print("recommended product..." +
+                              products[0].toString());
                           var imagePath = snapshot.data.proimgpath;
                           return products.length == 0
                               ? Center(
@@ -422,6 +455,8 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                                                   0.55)),
                                   itemBuilder:
                                       (BuildContext context, int index) {
+                                    print("recommended product..." +
+                                        products[index].toString());
                                     return Recommended(
                                         productList: products[index],
                                         imageUrl: imagePath,
@@ -450,7 +485,12 @@ class _CuisinDetailsState extends State<CuisinDetails> {
 
   Future<RecommendedModel> _getAllRecommendedProduct() async {
     try {
-      var dataId;
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      token = pref.getString("token");
+      zoneId = pref.getString("zoneId");
+      print("Token..." + token.toString());
+      print("Token..." + zoneId.toString());
+
       if (widget.section == "cuisin") {
         dataId = widget.cuisinList.id.toString();
       } else if (widget.section == "list") {
@@ -459,16 +499,83 @@ class _CuisinDetailsState extends State<CuisinDetails> {
         dataId = widget.topPickList.id.toString();
       } else if (widget.section == "campaign") {
         dataId = widget.campaignData.id.toString();
+      } else if (widget.section == "favourite") {
+        dataId = widget.favResturentData.id.toString();
       } else {
         dataId = widget.resturentData.id.toString();
       }
       var params = "?restaurant_id=" + dataId;
       var url = Const.resturentDetails + params;
       print("Url..." + url.toString());
-      var response = await dio.get(url);
-      print("response Body... in rrecommeded" + response.data.toString());
+      print("Url..." + Const.getWishList.toString());
+      var response = await Future.wait([
+        dio.get(url),
+        dio.get(
+          Const.getWishList,
+          options: Options(
+              headers: {"Authorization": "Bearer $token", "zoneId": zoneId}),
+        )
+      ]);
+      print("response Body... in rrecommeded" + response[0].data.toString());
+      if (response[1].data["state"] == 0) {
+        var resturentdetails = response[1].data["errors"]["restaurant"];
+        print("resturentdetails..." + resturentdetails.toString());
+        var data =
+            resturentdetails.where((e) => e["name"] == resturentName).toList();
+        print("resturentDetails in data ..." + data.toString());
+        if (data.length == 0) {
+          setState(() {
+            _resturentLike = false;
+          });
+        } else {
+          setState(() {
+            _resturentLike = true;
+          });
+        }
+      }
+      if (response[0].data["state"] == 0) {
+        return RecommendedModel.fromJson(response[0].data);
+      } else {
+        showCustomToast(response[0].data["errors"][0]["message"]);
+      }
+      //print("response Body... in rrecommeded0" + response[1].data.toString());
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _favSelected() async {
+    try {
+      print("Token..." + dataId.toString());
+
+      var response = await dio.post(Const.wishListAdd,
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+          queryParameters: {"restaurant_id": dataId.toString()});
+      print("response data in favourite..." + response.data.toString());
       if (response.data["state"] == 0) {
-        return RecommendedModel.fromJson(response.data);
+        showCustomToast(response.data["message"]);
+        setState(() {
+          _resturentLike = !_resturentLike;
+        });
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _favRemove() async {
+    try {
+      var response = await dio.delete(Const.removeWishList,
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+          queryParameters: {"restaurant_id": dataId});
+      print("response of remove button..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        showCustomToast(response.data["message"]);
+        setState(() {
+          _resturentLike = false;
+        });
+      } else {
+        showCustomToast(response.data["errors"][0]["message"]);
       }
     } on DioError catch (e) {
       print(e.toString());

@@ -27,7 +27,7 @@ class _CuisinListState extends State<CuisinList> {
 
   @override
   Widget build(BuildContext context) {
-    print("cuisinList.." + widget.cuisin.toString());
+    print("cuisinList.." + widget.cuisinPath.toString());
     print("cuisinList...+++" + widget.cuisin["image"].toString());
     var image = widget.cuisinPath + widget.cuisin["image"];
     return InkWell(

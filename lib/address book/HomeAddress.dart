@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class HomeAddress extends StatefulWidget {
-  const HomeAddress({Key key}) : super(key: key);
+  var homeAddr;
+  HomeAddress({this.homeAddr, Key key}) : super(key: key);
 
   @override
   _HomeAddressState createState() => _HomeAddressState();
@@ -32,7 +33,7 @@ class _HomeAddressState extends State<HomeAddress> {
             Container(
               width: MediaQuery.of(context).size.width / 1.2,
               //color: Colors.amber,
-              child: Text("sds home"),
+              child: Text("${widget.homeAddr["address"]}"),
             )
           ],
         ),
