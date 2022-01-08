@@ -383,13 +383,23 @@ class _AddCuisinState extends State<AddCuisin> {
                                       // )
                                     ),
                                   )
-                                : Text(
-                                    "Change".toUpperCase(),
-                                    style: TextStyle(
-                                        color: AppColors.cartPage,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width *
-                                                0.03),
+                                : InkWell(
+                                    onTap: () {
+                                      // Navigator.push(
+                                      //     context,
+                                      //     MaterialPageRoute(
+                                      //         builder: (context) =>
+                                      //             AddAddress()));
+                                    },
+                                    child: Text(
+                                      "Change".toUpperCase(),
+                                      style: TextStyle(
+                                          color: AppColors.cartPage,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.03),
+                                    ),
                                   )
                       ],
                     ),

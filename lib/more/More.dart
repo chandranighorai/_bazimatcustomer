@@ -74,7 +74,7 @@ class _MoreState extends State<More> {
                     style: TextStyle(color: Colors.black),
                   ),
                   onPressed: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => PrivacyPolicy())),
+                      MaterialPageRoute(builder: (context) => PrivacyPolicy(privacy:widget.privacy))),
                 )),
             // Container(
             //     padding: const EdgeInsets.all(0.0),
@@ -100,7 +100,7 @@ class _MoreState extends State<More> {
                   onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TermsCondition())),
+                          builder: (context) => TermsCondition(terms:widget.terms))),
                 )),
           ],
         ),

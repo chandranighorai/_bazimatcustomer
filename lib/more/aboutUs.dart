@@ -33,8 +33,19 @@ class _AboutUsState extends State<AboutUs> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Html(
-          data: widget.aboutUs,
+        //color: Colors.amber,
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(0),
+          children: [
+            Html(
+              data: widget.aboutUs,
+              // style: {
+              //   "body":
+              //       Style(margin: EdgeInsets.all(0), padding: EdgeInsets.all(0))
+              // },
+            )
+          ],
         ),
       ),
     );

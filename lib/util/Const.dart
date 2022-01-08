@@ -37,4 +37,6 @@ class Const {
   static String wishListAdd = appUrl + "customer/wish-list/add";
   static String getWishList = appUrl + "customer/wish-list/";
   static String removeWishList = appUrl + "customer/wish-list/remove";
+  static String getMessages = appUrl + "customer/message/get";
+  static String sendMessage = appUrl + "customer/message/send";
 }

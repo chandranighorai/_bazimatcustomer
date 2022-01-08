@@ -1,4 +1,5 @@
 import 'package:bazimat/address%20book/AddressBook.dart';
+import 'package:bazimat/chat%20support/ChatSupport.dart';
 import 'package:bazimat/favourites/Favourites.dart';
 import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/more/More.dart';
@@ -253,6 +254,12 @@ class _NavigationState extends State<Navigation> {
                         Text("Chat Support"),
                       ],
                     ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChatSupport()));
+                    },
                   ),
                   // ListTile(
                   //   visualDensity: VisualDensity(horizontal: 0, vertical: -4),
@@ -273,25 +280,25 @@ class _NavigationState extends State<Navigation> {
                   //     ],
                   //   ),
                   // ),
-                  ListTile(
-                    visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                    title: Row(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.05,
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          decoration: BoxDecoration(
-                              //color: Colors.red,
-                              image: DecorationImage(
-                                  image: AssetImage("images/qr-code.png"))),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.04,
-                        ),
-                        Text("Scan QR Code"),
-                      ],
-                    ),
-                  ),
+                  // ListTile(
+                  //   visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  //   title: Row(
+                  //     children: [
+                  //       Container(
+                  //         height: MediaQuery.of(context).size.width * 0.05,
+                  //         width: MediaQuery.of(context).size.width * 0.05,
+                  //         decoration: BoxDecoration(
+                  //             //color: Colors.red,
+                  //             image: DecorationImage(
+                  //                 image: AssetImage("images/qr-code.png"))),
+                  //       ),
+                  //       SizedBox(
+                  //         width: MediaQuery.of(context).size.width * 0.04,
+                  //       ),
+                  //       Text("Scan QR Code"),
+                  //     ],
+                  //   ),
+                  // ),
                   ListTile(
                     visualDensity: VisualDensity(horizontal: 0, vertical: -4),
                     title: Row(
