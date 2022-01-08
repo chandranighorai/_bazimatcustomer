@@ -366,11 +366,11 @@ class _AddCuisinState extends State<AddCuisin> {
                             : addressList.length == 0
                                 ? InkWell(
                                     onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AddAddress()));
+                                      // Navigator.push(
+                                      //     context,
+                                      //     MaterialPageRoute(
+                                      //         builder: (context) =>
+                                      //             AddAddress()));
                                     },
                                     child: Text(
                                       "Add Address".toUpperCase(),
