@@ -1,3 +1,4 @@
+import 'package:bazimat/address%20book/AddAddress.dart';
 import 'package:bazimat/address%20book/HomeAddress.dart';
 import 'package:bazimat/address%20book/OtherAddress.dart';
 import 'package:bazimat/address%20book/WorkAddress.dart';
@@ -97,7 +98,9 @@ class _AddressBookState extends State<AddressBook> {
                                 itemCount: homeAddress.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return HomeAddress(
-                                      homeAddr: homeAddress[index]);
+                                    homeAddr: homeAddress[index],
+                                    //refresh: _getCurrentAddress
+                                  );
                                 })
                           ],
                         ),
@@ -145,23 +148,32 @@ class _AddressBookState extends State<AddressBook> {
                       ],
                     ),
                   ),
-                  Align(
-                    alignment: FractionalOffset.bottomCenter,
-                    child: Container(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.width * 0.04,
-                            bottom: MediaQuery.of(context).size.width * 0.04,
-                            left: MediaQuery.of(context).size.width * 0.06,
-                            right: MediaQuery.of(context).size.width * 0.06),
-                        decoration: BoxDecoration(
-                            color: AppColors.buttonColor,
-                            borderRadius: BorderRadius.all(Radius.circular(
-                                MediaQuery.of(context).size.width * 0.10))),
-                        child: Text(
-                          "Select From Map".toUpperCase(),
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        )),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddAddress()));
+                    },
+                    child: Align(
+                      alignment: FractionalOffset.bottomCenter,
+                      child: Container(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.width * 0.04,
+                              bottom: MediaQuery.of(context).size.width * 0.04,
+                              left: MediaQuery.of(context).size.width * 0.06,
+                              right: MediaQuery.of(context).size.width * 0.06),
+                          decoration: BoxDecoration(
+                              color: AppColors.buttonColor,
+                              borderRadius: BorderRadius.all(Radius.circular(
+                                  MediaQuery.of(context).size.width * 0.10))),
+                          child: Text(
+                            "Select From Map".toUpperCase(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          )),
+                    ),
                   )
                 ],
               ),

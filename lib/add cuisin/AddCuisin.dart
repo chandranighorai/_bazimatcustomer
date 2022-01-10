@@ -49,6 +49,7 @@ class _AddCuisinState extends State<AddCuisin> {
   var addressList;
   bool addressLoad;
   var dio = Dio();
+  String addr;
   @override
   void initState() {
     super.initState();
@@ -317,10 +318,10 @@ class _AddCuisinState extends State<AddCuisin> {
                           ),
                         ),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.03,
+                          width: MediaQuery.of(context).size.width * 0.04,
                         ),
                         Container(
-                          width: MediaQuery.of(context).size.width / 3,
+                          width: MediaQuery.of(context).size.width / 1.6,
                           //color: Colors.red,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,7 +341,7 @@ class _AddCuisinState extends State<AddCuisin> {
                                   : addressList.length == 0
                                       ? SizedBox()
                                       : Text(
-                                          addressList[0]["address"],
+                                          addr,
                                           style: TextStyle(
                                               color: Colors.grey,
                                               fontSize: MediaQuery.of(context)
@@ -385,11 +386,16 @@ class _AddCuisinState extends State<AddCuisin> {
                                   )
                                 : InkWell(
                                     onTap: () {
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) =>
-                                      //             AddAddress()));
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddAddress())).then((value) {
+                                        setState(() {
+                                          addr = value["address"];
+                                        });
+                                        print("VAlue.." + value.toString());
+                                      });
                                     },
                                     child: Text(
                                       "Change".toUpperCase(),
@@ -405,7 +411,7 @@ class _AddCuisinState extends State<AddCuisin> {
                     ),
                   ),
                   Positioned(
-                      top: MediaQuery.of(context).size.width * 0.00,
+                      top: MediaQuery.of(context).size.width * 0.02,
                       left: MediaQuery.of(context).size.width * 0.15,
                       child: Container(
                         height: MediaQuery.of(context).size.width * 0.06,
@@ -509,6 +515,7 @@ class _AddCuisinState extends State<AddCuisin> {
         addressList = response.data["error"];
         print("addresslength..." + addressList.length.toString());
         setState(() {
+          addr = addressList[0]["address"];
           addressLoad = true;
         });
       } else {

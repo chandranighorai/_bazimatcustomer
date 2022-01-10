@@ -36,7 +36,7 @@ dependencies:
   flutter_html: ^1.3.0
   #flutter_svg: any
   geolocator: ^3.0.1
-  #google_maps_flutter: ^2.0.0
+  google_maps_flutter: ^2.0.0
   #cached_network_image: ^3.2.0
   package_info: ^2.0.2
   carousel_pro: ^1.0.0

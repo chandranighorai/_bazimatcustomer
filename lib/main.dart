@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
           .timeout(new Duration(seconds: 5));
       setState(() {
         _position = newPosition;
-        print("Error...$newPosition");
+        print("Error...$_position");
         sharedPreferences.setString("latitude", _position.latitude.toString());
         sharedPreferences.setString(
             "longitude", _position.longitude.toString());
