@@ -27,13 +27,17 @@ class _TopPicksState extends State<TopPicks> {
   @override
   Widget build(BuildContext context) {
     var image = widget.imgPath + widget.topArr.coverPhoto;
+    print("top cuisin..." + widget.topArr.latitude.toString());
     return InkWell(
       onTap: () {
+        print("top cuisin..." + widget.topArr.latitude.toString());
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => CuisinDetails(
                     topPickList: widget.topArr,
+                    resturentLat: widget.topArr.latitude.toString(),
+                    resturentLng: widget.topArr.longitude.toString(),
                     distance: distanceData.data["rows"][0]["elements"][0]
                         ["distance"]["text"],
                     duration: distanceData.data["rows"][0]["elements"][0]

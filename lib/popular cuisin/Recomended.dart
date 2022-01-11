@@ -11,6 +11,8 @@ class Recommended extends StatefulWidget {
   var imageUrl,
       duration,
       distance,
+      resturentLat,
+      resturentLng,
       resturentName,
       resturentAddress,
       resturentOfferPrice;
@@ -20,6 +22,8 @@ class Recommended extends StatefulWidget {
       this.imageUrl,
       this.duration,
       this.distance,
+      this.resturentLat,
+      this.resturentLng,
       this.resturentName,
       this.resturentAddress,
       this.resturentOfferPrice,
@@ -50,13 +54,11 @@ class _RecommendedState extends State<Recommended> {
     print("Image..." + image.toString());
     print("hjhj..." + image.toString());
 
-    return 
-    configData == false
+    return configData == false
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : 
-        InkWell(
+        : InkWell(
             onTap: () {
               Navigator.push(
                   context,
@@ -64,6 +66,8 @@ class _RecommendedState extends State<Recommended> {
                       builder: (context) => AddCuisin(
                           duration: widget.duration,
                           distance: widget.distance,
+                          resturentLat:widget.resturentLat,
+                          resturentLng:widget.resturentLng,
                           product: widget.productList,
                           imageUrl: widget.imageUrl,
                           resturentName: widget.resturentName,

@@ -1,26 +1,34 @@
 import 'dart:async';
 
 import 'package:bazimat/address%20book/AddressBook.dart';
+import 'package:bazimat/util/AppConst.dart';
+import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 
+enum AddressType { home, office }
+
 class AddAddress extends StatefulWidget {
-  const AddAddress({Key key}) : super(key: key);
+  Function(String addr, String lat, String lng) refresh;
+  AddAddress({this.refresh, Key key}) : super(key: key);
 
   @override
   _AddAddressState createState() => _AddAddressState();
 }
 
 class _AddAddressState extends State<AddAddress> {
+  AddressType _type = AddressType.home;
   Completer<GoogleMapController> _controller = Completer();
   BitmapDescriptor customIcon1;
   Set<Marker> markers;
   bool _mapLoad;
   double lat, lng;
   String address = "";
+  var name, phone, token;
+  var dio = Dio();
   // static final CameraPosition _kGooglePlex = CameraPosition(
   //   target: LatLng(22.3463779, 87.2754387),
   //   zoom: 14.4746,
@@ -61,6 +69,8 @@ class _AddAddressState extends State<AddAddress> {
               child: CircularProgressIndicator(),
             )
           : Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   height: MediaQuery.of(context).size.height * 0.75,
@@ -84,15 +94,86 @@ class _AddAddressState extends State<AddAddress> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(address),
                 ),
-                Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                // Align(
+                //     alignment: Alignment.centerRight,
+                //     child: Padding(
+                //       padding: const EdgeInsets.all(8.0),
+                //       child: TextButton(
+                //           onPressed: () => Navigator.push(
+                //               context,
+                //               MaterialPageRoute(
+                //                   builder: (context) =>
+                //                       AddressBook(refresh: widget.refresh))),
+                //           style: ButtonStyle(
+                //               backgroundColor:
+                //                   MaterialStateProperty.all(Colors.blueAccent)),
+                //           child: Text(
+                //             "Change",
+                //             style: TextStyle(color: Colors.white),
+                //           )),
+                //     )),
+
+                Row(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2.8,
+                      child: ListTile(
+                        title: Row(
+                          children: [
+                            Radio(
+                              value: AddressType.home,
+                              groupValue: _type,
+                              onChanged: (AddressType value) {
+                                setState(() {
+                                  _type = value;
+                                });
+                              },
+                            ),
+                            Text("Home"),
+                          ],
+                        ),
+                        //leading: ,
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2.8,
+                      child: ListTile(
+                        //visualDensity:
+                        //VisualDensity(horizontal: 0, vertical: -4),
+                        title: Row(
+                          children: [
+                            Radio(
+                              value: AddressType.office,
+                              groupValue: _type,
+                              onChanged: (AddressType value) {
+                                setState(() {
+                                  _type = value;
+                                });
+                              },
+                            ),
+                            Text("Office"),
+                          ],
+                        ),
+                        // leading: Radio<AddressType>(
+                        //   value: AddressType.office,
+                        //   groupValue: _type,
+                        //   onChanged: (AddressType value) {
+                        //     setState(() {
+                        //       _type = value;
+                        //     });
+                        //   },
+                        // ),
+                      ),
+                    ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 12.0),
                       child: TextButton(
-                          onPressed: () => Navigator.push(
+                          onPressed: () => Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AddressBook())),
+                                  builder: (context) =>
+                                      AddressBook(refresh: widget.refresh))),
                           style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.blueAccent)),
@@ -100,7 +181,10 @@ class _AddAddressState extends State<AddAddress> {
                             "Change",
                             style: TextStyle(color: Colors.white),
                           )),
-                    )),
+                    ),
+                  ],
+                ),
+
                 Spacer(),
                 TextButton(
                     onPressed: () => _locationAddress(),
@@ -112,7 +196,7 @@ class _AddAddressState extends State<AddAddress> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: _goToTheLake,
-        child: Icon(Icons.add),
+        child: Icon(Icons.map),
 
         //label: Text('+'),
         // child: Column(
@@ -139,6 +223,11 @@ class _AddAddressState extends State<AddAddress> {
     try {
       Geolocator _geolocator = Geolocator();
       SharedPreferences pref = await SharedPreferences.getInstance();
+      var firstName = pref.getString("fName");
+      var lastName = pref.getString("lName");
+      name = firstName + " " + lastName;
+      phone = pref.getString("Phone");
+      token = pref.getString("token");
       Position position = await _geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best);
       print("latitude..." + position.latitude.toString());
@@ -167,8 +256,44 @@ class _AddAddressState extends State<AddAddress> {
     }
   }
 
-  _locationAddress() {
-    Navigator.of(context).pop({"address": address});
+  _locationAddress() async {
+    try {
+      var dd = _type.toString().split(".");
+      print("type..." + dd[1].toString());
+      var params = "?";
+      params += "contact_person_name" +
+          name +
+          "address_type" +
+          dd[1].toString() +
+          "contact_person_number" +
+          phone +
+          "address" +
+          address +
+          "longitude" +
+          lng.toString() +
+          "latitude" +
+          lat.toString();
+      var url = Const.addressAdd + params;
+      var response = await dio.post(Const.addressAdd,
+          options: Options(headers: {"Authorization": "Bearer $token"}),
+          queryParameters: {
+            "contact_person_name": name,
+            "address_type": dd[1].toString(),
+            "contact_person_number": phone,
+            "address": address,
+            "longitude": lng,
+            "latitude": lat
+          });
+      print("response in location..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        Navigator.of(context)
+            .pop({"address": address, "latitude": lat, "longitude": lng});
+      } else {
+        showCustomToast(response.data["errors"][0]["message"]);
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }
 

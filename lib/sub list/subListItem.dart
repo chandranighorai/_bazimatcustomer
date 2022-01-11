@@ -47,6 +47,8 @@ class _SubListItemState extends State<SubListItem> {
             MaterialPageRoute(
                 builder: (context) => CuisinDetails(
                     listData: widget.listData,
+                    resturentLat: widget.listData.latitude,
+                    resturentLng: widget.listData.longitude,
                     distance: getDistanceResponse.data["rows"][0]["elements"][0]
                         ["distance"]["text"],
                     duration: getDistanceResponse.data["rows"][0]["elements"][0]

@@ -60,7 +60,7 @@ class RestaurantsSub {
   String address;
   Null footerText;
   int minimumOrder;
-  Null comission;
+  int comission;
   bool scheduleOrder;
   int status;
   int vendorId;

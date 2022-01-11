@@ -50,6 +50,8 @@ class _ResturentState extends State<Resturent> {
             MaterialPageRoute(
                 builder: (context) => CuisinDetails(
                     resturentData: widget.resturentData,
+                    resturentLat: widget.resturentData.latitude,
+                    resturentLng: widget.resturentData.longitude,
                     distance: getDistanceResponse.data["rows"][0]["elements"][0]
                         ["distance"]["text"],
                     duration: getDistanceResponse.data["rows"][0]["elements"][0]

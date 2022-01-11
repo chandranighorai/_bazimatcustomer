@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressBook extends StatefulWidget {
-  const AddressBook({Key key}) : super(key: key);
+  Function(String addre,String lat,String lng) refresh;
+  AddressBook({this.refresh, Key key}) : super(key: key);
 
   @override
   _AddressBookState createState() => _AddressBookState();
@@ -99,7 +100,7 @@ class _AddressBookState extends State<AddressBook> {
                                 itemBuilder: (BuildContext context, int index) {
                                   return HomeAddress(
                                     homeAddr: homeAddress[index],
-                                    //refresh: _getCurrentAddress
+                                    refresh: widget.refresh
                                   );
                                 })
                           ],
@@ -121,7 +122,9 @@ class _AddressBookState extends State<AddressBook> {
                                 itemCount: officeAddress.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return WorkAddress(
-                                      workAddr: officeAddress[index]);
+                                      workAddr: officeAddress[index],
+                                    refresh: widget.refresh
+                                      );
                                 })
                           ],
                         ),

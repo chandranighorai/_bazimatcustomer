@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class HomeAddress extends StatefulWidget {
+  Function(String addr, String lat, String lng) refresh;
   var homeAddr;
-  HomeAddress({this.homeAddr, Key key}) : super(key: key);
+  HomeAddress({this.refresh, this.homeAddr, Key key}) : super(key: key);
 
   @override
   _HomeAddressState createState() => _HomeAddressState();
@@ -14,6 +15,12 @@ class _HomeAddressState extends State<HomeAddress> {
     return InkWell(
       onTap: () {
         print(widget.homeAddr["address"]);
+        print(widget.homeAddr["latitude"]);
+        print(widget.homeAddr["longitude"]);
+
+        Navigator.pop(context);
+        widget.refresh(widget.homeAddr["address"], widget.homeAddr["latitude"],
+            widget.homeAddr["longitude"]);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),

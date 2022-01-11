@@ -25,8 +25,10 @@ class _ResturentListState extends State<ResturentList> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    CuisinDetails(resturentData: widget.resturentData)));
+                builder: (context) => CuisinDetails(
+                    resturentData: widget.resturentData,
+                    resturentLat: widget.resturentData.latitude,
+                    resturentLng: widget.resturentData.longitude)));
       },
       child: Stack(
         children: [

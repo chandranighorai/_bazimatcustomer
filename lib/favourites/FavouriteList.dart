@@ -42,14 +42,17 @@ class _FavouriteListState extends State<FavouriteList> {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => CuisinDetails(
-              favResturentData: widget.favouriteData,
+            context,
+            MaterialPageRoute(
+                builder: (context) => CuisinDetails(
+                    favResturentData: widget.favouriteData,
+                    resturentLat: widget.favouriteData.latitude,
+                    resturentLng: widget.favouriteData.longitude,
                     distance: getDistanceResponse.data["rows"][0]["elements"][0]
                         ["distance"]["text"],
                     duration: getDistanceResponse.data["rows"][0]["elements"][0]
                         ["duration"]["text"],
-                        section:"favourite"
-            )));
+                    section: "favourite")));
       },
       child: Stack(children: [
         Padding(

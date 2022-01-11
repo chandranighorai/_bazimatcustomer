@@ -14,6 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AddCuisin extends StatefulWidget {
   var duration,
       distance,
+      resturentLat,
+      resturentLng,
       imageUrl,
       resturentName,
       resturenrAddr,
@@ -24,6 +26,8 @@ class AddCuisin extends StatefulWidget {
   AddCuisin(
       {this.duration,
       this.distance,
+      this.resturentLat,
+      this.resturentLng,
       this.imageUrl,
       this.resturentName,
       this.resturenrAddr,
@@ -47,15 +51,20 @@ class _AddCuisinState extends State<AddCuisin> {
   bool couponApplied;
   double couponPrice;
   var addressList;
-  bool addressLoad;
+  bool addressLoad, _distanceLoad;
+  var duration, distance;
   var dio = Dio();
-  String addr;
+  String addr, restLat, restLng;
   @override
   void initState() {
     super.initState();
     couponApplied = false;
     addressLoad = false;
     couponPrice = 0.0;
+    duration = widget.duration;
+    distance = widget.distance;
+    restLat = widget.resturentLat;
+    restLng = widget.resturentLng;
     _getAddress();
     _itemUpdate(widget.product.price.toString());
   }
@@ -64,6 +73,7 @@ class _AddCuisinState extends State<AddCuisin> {
   Widget build(BuildContext context) {
     // print("Shipping Charge...." +
     //     widget.configData["per_km_shipping_charge"].toString());
+    print("ResturentLat...." + widget.resturentLat.toString());
     var image = widget.imageUrl + widget.product.image;
 
     return Scaffold(
@@ -187,7 +197,7 @@ class _AddCuisinState extends State<AddCuisin> {
                           VerticalDivider(
                               thickness: 1, color: AppColors.cartPage),
                           Text(
-                            "${widget.distance}",
+                            _distanceLoad == false ? "..." : "$distance",
                             style: TextStyle(color: AppColors.cartPage),
                           ),
                           Spacer(),
@@ -350,7 +360,7 @@ class _AddCuisinState extends State<AddCuisin> {
                                                   0.04),
                                         ),
                               Text(
-                                "${widget.duration}",
+                                _distanceLoad == false ? "..." : "$duration",
                                 style: TextStyle(
                                     fontSize:
                                         MediaQuery.of(context).size.width *
@@ -389,10 +399,23 @@ class _AddCuisinState extends State<AddCuisin> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AddAddress())).then((value) {
+                                              builder: (context) => AddAddress(
+                                                  refresh:
+                                                      _getChangeAddress))).then(
+                                          (value) {
+                                        // print("Value..." +
+                                        //     value["address"].toString());
+                                        // print("resturentLat...Value..." +
+                                        //     widget.resturentLat.toString());
                                         setState(() {
                                           addr = value["address"];
+                                          _distanceLoad = false;
+
+                                          _getDistance(
+                                              value["latitude"],
+                                              value["longitude"],
+                                              widget.resturentLat,
+                                              widget.resturentLng);
                                         });
                                         print("VAlue.." + value.toString());
                                       });
@@ -482,11 +505,11 @@ class _AddCuisinState extends State<AddCuisin> {
   }
 
   _itemUpdate(String productPrice) {
-    // print("productPrice..." + productPrice.toString());
+    print("productPrice..." + distance.toString());
     // print("productPrice..." +
     //     widget.configData["per_km_shipping_charge"].toString());
     setState(() {
-      var distanceCal = widget.distance.split(" ");
+      var distanceCal = distance.split(" ");
       // print("deliveryCharge..." + distanceCal.toString());
       deliveryCharge = widget.configData["per_km_shipping_charge"] *
           double.parse(distanceCal[0]);
@@ -522,6 +545,61 @@ class _AddCuisinState extends State<AddCuisin> {
         showCustomToast(response.data["errors"][0]["message"]);
       }
       //addressList = response.data[""]
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _getChangeAddress(String adr, String lat, String lng) {
+    print("address..." + addr.toString());
+    print("address..." + lat.toString());
+    print("address..." + lng.toString());
+    print("res_latitude..." + widget.resturentLat.toString());
+    print("res_longitude..." + widget.resturentLng.toString());
+
+    setState(() {
+      addr = adr;
+      _getDistance(lat, lng, widget.resturentLat.toString(),
+          widget.resturentLng.toString());
+    });
+  }
+
+  _getDistance(String lat, String lng, String resLat, String resLng) async {
+    try {
+      print("latitude..." + lat.toString());
+      print("latitude..." + lng.toString());
+      print("res_latitude..." + resLat.toString());
+      print("res_longitude..." + resLng.toString());
+
+      //  destinationLat = widget.section == "campaign"
+      //     ? widget.resturent1.latitude
+      //     : widget.resturent.latitude;
+      // destinationLng = widget.section == "campaign"
+      //     ? widget.resturent1.longitude
+      //     : widget.resturent.longitude;
+      var params = "?";
+      params += "origin_lat=" + restLat + "&origin_lng=" + restLng;
+      params += "&destination_lat=" + lat + "&destination_lng=" + lng;
+      var url = Const.distanceApi + params;
+      print("url..." + url.toString());
+      var getDistanceResponse = await dio.get(url);
+      print(
+          "response statusCode..." + getDistanceResponse.statusCode.toString());
+      print("response data...in getDistance..." +
+          getDistanceResponse.data.toString());
+      print("hjhj..." +
+          getDistanceResponse.data["rows"][0]["elements"][0]["distance"]["text"]
+              .toString());
+      setState(() {
+        _distanceLoad = true;
+        distance = getDistanceResponse.data["rows"][0]["elements"][0]
+                ["distance"]["text"]
+            .toString();
+        duration = getDistanceResponse.data["rows"][0]["elements"][0]
+                ["duration"]["text"]
+            .toString();
+        _itemUpdate(widget.product.price.toString());
+      });
     } on DioError catch (e) {
       print(e.toString());
     }

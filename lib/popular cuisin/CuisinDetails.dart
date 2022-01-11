@@ -20,7 +20,7 @@ class CuisinDetails extends StatefulWidget {
   PopularResturentErrors topPickList;
   CampaignDetailsRestaurants campaignData;
   FavRestaurant favResturentData;
-  var distance, duration;
+  var resturentLat, resturentLng, distance, duration;
   String section;
   Function() couponList;
   CuisinDetails(
@@ -30,6 +30,8 @@ class CuisinDetails extends StatefulWidget {
       this.topPickList,
       this.campaignData,
       this.favResturentData,
+      this.resturentLat,
+      this.resturentLng,
       this.distance,
       this.duration,
       this.section,
@@ -457,11 +459,15 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                                       (BuildContext context, int index) {
                                     print("recommended product..." +
                                         products[index].toString());
+                                    print("recommended product..." +
+                                        widget.resturentLat.toString());
                                     return Recommended(
                                         productList: products[index],
                                         imageUrl: imagePath,
                                         duration: widget.duration,
                                         distance: widget.distance,
+                                        resturentLat: widget.resturentLat,
+                                        resturentLng: widget.resturentLng,
                                         resturentName: resturentName,
                                         resturentAddress: resturentAddr,
                                         resturentOfferPrice:

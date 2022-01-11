@@ -37,13 +37,14 @@ class _PopularCuisinListState extends State<PopularCuisinList> {
             context,
             MaterialPageRoute(
                 builder: (context) => CuisinDetails(
-                      cuisinList: widget.cuisinList,
-                      distance: distanceResponse.data["rows"][0]["elements"][0]
-                          ["distance"]["text"],
-                      duration: distanceResponse.data["rows"][0]["elements"][0]
-                          ["duration"]["text"],
-                       section:"cuisin"   
-                    )));
+                    cuisinList: widget.cuisinList,
+                    resturentLat: widget.cuisinList.latitude,
+                    resturentLng: widget.cuisinList.longitude,
+                    distance: distanceResponse.data["rows"][0]["elements"][0]
+                        ["distance"]["text"],
+                    duration: distanceResponse.data["rows"][0]["elements"][0]
+                        ["duration"]["text"],
+                    section: "cuisin")));
       },
       child: Stack(
         children: [

@@ -30,6 +30,7 @@ class _AllResturentListState extends State<AllResturentList> {
   var dio = Dio();
   bool _distanceLoad;
   var getDistanceResponse;
+  var destinationLat, destinationLng;
   @override
   void initState() {
     super.initState();
@@ -51,19 +52,18 @@ class _AllResturentListState extends State<AllResturentList> {
             context,
             MaterialPageRoute(
                 builder: (context) => CuisinDetails(
-                      resturentData: widget.section == "campaign"
-                          ? null
-                          : widget.resturent,
-                      campaignData: widget.section == "campaign"
-                          ? widget.resturent1
-                          : null,
-                      distance: getDistanceResponse.data["rows"][0]["elements"]
-                          [0]["distance"]["text"],
-                      duration: getDistanceResponse.data["rows"][0]["elements"]
-                          [0]["duration"]["text"],
-                      section: widget.section,
-                      couponList:widget.couponList
-                    )));
+                    resturentData:
+                        widget.section == "campaign" ? null : widget.resturent,
+                    campaignData:
+                        widget.section == "campaign" ? widget.resturent1 : null,
+                    distance: getDistanceResponse.data["rows"][0]["elements"][0]
+                        ["distance"]["text"],
+                    duration: getDistanceResponse.data["rows"][0]["elements"][0]
+                        ["duration"]["text"],
+                    resturentLat: destinationLat,
+                    resturentLng: destinationLng,
+                    section: widget.section,
+                    couponList: widget.couponList)));
       },
       child: Stack(
         children: [
@@ -268,10 +268,10 @@ class _AllResturentListState extends State<AllResturentList> {
     print("distanceload..." + widget.section.toString());
 
     try {
-      var destinationLat = widget.section == "campaign"
+      destinationLat = widget.section == "campaign"
           ? widget.resturent1.latitude
           : widget.resturent.latitude;
-      var destinationLng = widget.section == "campaign"
+      destinationLng = widget.section == "campaign"
           ? widget.resturent1.longitude
           : widget.resturent.longitude;
       var params = "?";
