@@ -47,7 +47,8 @@ class _CuisinDetailsState extends State<CuisinDetails> {
   var dataId, zoneId;
   var token;
   bool _resturentLike;
-  var resturentName,
+  var resturentId,
+      resturentName,
       resturentDesc,
       resturentAddr,
       resturentAvgRating,
@@ -57,6 +58,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
   void initState() {
     super.initState();
     if (widget.section == "cuisin") {
+      resturentId = widget.cuisinList.id;
       resturentName = widget.cuisinList.name;
       resturentDesc = widget.cuisinList.description;
       resturentAddr = widget.cuisinList.address;
@@ -64,6 +66,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentRatingCount = widget.cuisinList.ratingCount;
       resturentOfferPrice = widget.cuisinList.offerprice;
     } else if (widget.section == "list") {
+      resturentId = widget.listData.id;
       resturentName = widget.listData.name;
       resturentDesc = widget.listData.description;
       resturentAddr = widget.listData.address;
@@ -71,6 +74,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentRatingCount = widget.listData.ratingCount;
       resturentOfferPrice = widget.listData.offerprice;
     } else if (widget.section == "topPicks") {
+      resturentId = widget.topPickList.id;
       resturentName = widget.topPickList.name;
       resturentDesc = widget.topPickList.description;
       resturentAddr = widget.topPickList.address;
@@ -78,6 +82,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentRatingCount = widget.topPickList.ratingCount;
       resturentOfferPrice = widget.topPickList.offerprice;
     } else if (widget.section == "campaign") {
+      resturentId = widget.campaignData.id;
       resturentName = widget.campaignData.name;
       resturentDesc = widget.campaignData.description;
       resturentAddr = widget.campaignData.address;
@@ -85,6 +90,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentRatingCount = widget.campaignData.ratingCount;
       resturentOfferPrice = widget.campaignData.offerprice;
     } else if (widget.section == "favourite") {
+      resturentId = widget.favResturentData.id;
       resturentName = widget.favResturentData.name;
       resturentDesc = widget.favResturentData.description;
       resturentAddr = widget.favResturentData.address;
@@ -92,6 +98,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentRatingCount = widget.favResturentData.ratingCount;
       resturentOfferPrice = widget.favResturentData.offerprice;
     } else {
+      resturentId = widget.resturentData.id;
       resturentName = widget.resturentData.name;
       resturentDesc = widget.resturentData.description;
       resturentAddr = widget.resturentData.address;
@@ -115,6 +122,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
   Widget build(BuildContext context) {
     // print("ResturentName..." + widget.resturentData.name.toString());
     // print("ResturentName..." + widget.resturentData.id.toString());
+    print("resturentId..." + resturentId.toString());
     print("section..." + widget.section.toString());
     return Scaffold(
       appBar: AppBar(
@@ -469,6 +477,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                                         resturentLat: widget.resturentLat,
                                         resturentLng: widget.resturentLng,
                                         resturentName: resturentName,
+                                        resturentId: resturentId,
                                         resturentAddress: resturentAddr,
                                         resturentOfferPrice:
                                             resturentOfferPrice,

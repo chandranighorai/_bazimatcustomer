@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class WorkAddress extends StatefulWidget {
   var workAddr;
-  Function(String addr, String lat, String lng) refresh;
+  Function(String addr,String addrType, String lat, String lng) refresh;
   WorkAddress({this.workAddr, this.refresh, Key key}) : super(key: key);
 
   @override
@@ -12,10 +12,11 @@ class WorkAddress extends StatefulWidget {
 class _WorkAddressState extends State<WorkAddress> {
   @override
   Widget build(BuildContext context) {
+    print("workAddr..." + widget.workAddr.toString());
     return InkWell(
       onTap: () {
         Navigator.pop(context);
-        widget.refresh(widget.workAddr["address"], widget.workAddr["latitude"],
+        widget.refresh(widget.workAddr["address"],widget.workAddr["address_type"], widget.workAddr["latitude"],
             widget.workAddr["longitude"]);
       },
       child: Padding(

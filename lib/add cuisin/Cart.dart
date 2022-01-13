@@ -1,10 +1,34 @@
 import 'package:bazimat/add%20cuisin/DeliveryTime.dart';
 import 'package:bazimat/add%20cuisin/ThankYou.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/Const.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class Cart extends StatefulWidget {
-  const Cart({Key key}) : super(key: key);
+  var totalAmount,
+      resturentName,
+      resturentId,
+      duration,
+      distance,
+      address,
+      addressType,
+      addressLat,
+      addressLng,
+      token;
+  Cart(
+      {this.totalAmount,
+      this.resturentName,
+      this.resturentId,
+      this.duration,
+      this.distance,
+      this.address,
+      this.addressType,
+      this.addressLat,
+      this.addressLng,
+      this.token,
+      Key key})
+      : super(key: key);
 
   @override
   _CartState createState() => _CartState();
@@ -13,6 +37,7 @@ class Cart extends StatefulWidget {
 enum SingingCharacter { cash, online }
 
 class _CartState extends State<Cart> {
+  Dio dio = Dio();
   SingingCharacter _character = SingingCharacter.cash;
   @override
   Widget build(BuildContext context) {
@@ -28,7 +53,7 @@ class _CartState extends State<Cart> {
           onPressed: () => {Navigator.pop(context)},
         ),
         title: Text(
-          "Bill total : \u20B9340".toUpperCase(),
+          "Bill total : \u20B9${widget.totalAmount}".toUpperCase(),
           style: TextStyle(
               color: Colors.black,
               fontSize: MediaQuery.of(context).size.width * 0.04),
@@ -39,7 +64,13 @@ class _CartState extends State<Cart> {
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
-            Container(color: Colors.white, child: DeliveryTime()),
+            Container(
+                color: Colors.white,
+                child: DeliveryTime(
+                    resturentName: widget.resturentName,
+                    duration: widget.duration,
+                    addressType: widget.addressType,
+                    address: widget.address)),
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.03,
             ),
@@ -67,6 +98,7 @@ class _CartState extends State<Cart> {
                       onChanged: (SingingCharacter value) {
                         setState(() {
                           _character = value;
+                          print("Character..." + _character.toString());
                         });
                       },
                     ),
@@ -79,6 +111,7 @@ class _CartState extends State<Cart> {
                       onChanged: (SingingCharacter value) {
                         setState(() {
                           _character = value;
+                          print("Character..." + _character.toString());
                         });
                       },
                     ),
@@ -91,8 +124,10 @@ class _CartState extends State<Cart> {
                 alignment: FractionalOffset.bottomCenter,
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ThankYou()));
+                    print("Character...0.." + _character.toString());
+                    _payNow();
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context) => ThankYou()));
                   },
                   child: Container(
                       width: MediaQuery.of(context).size.width,
@@ -113,5 +148,57 @@ class _CartState extends State<Cart> {
         ),
       ),
     );
+  }
+
+  _payNow() async {
+    try {
+      print("distance..." + widget.distance.toString());
+      print("address..." + widget.address.toString());
+      print("latitude..." + widget.addressLat.toString());
+      print("longitude..." + widget.addressLng.toString());
+      var distance = widget.distance.split(" ");
+      print("longitude..." + distance[1].toString());
+      var newDistance = distance[1] == "km" ? distance[0] : distance[0] / 1000;
+      print("NewDistance..." + newDistance.toString());
+      var paymentMethod = (_character.toString() == "SingingCharacter.cash")
+          ? "cash_on_delivery"
+          : "digital_payment";
+      var params = "?";
+      params += "order_amount" + widget.totalAmount.toString();
+      params += "payment_method" +
+          paymentMethod +
+          "order_type" +
+          "delivery" +
+          "restaurant_id" +
+          widget.resturentId.toString() +
+          "distance" +
+          newDistance.toString() +
+          "address" +
+          widget.address.toString() +
+          "latitude" +
+          widget.addressLat.toString() +
+          "longitude" +
+          widget.addressLng.toString();
+      var url = Const.orderPlace + params;
+      var response = await dio.post(
+        url,
+        options: Options(headers: {"Authorization": "Bearer ${widget.token}"}),
+        // queryParameters: {
+        //   "order_amount": widget.totalAmount,
+        //   "payment_method": (_character.toString() == "SingingCharacter.cash")
+        //       ? "cash_on_delivery"
+        //       : "digital_payment",
+        //   "order_type": "delivery",
+        //   "restaurant_id": widget.resturentId,
+        //   "distance": widget.distance,
+        //   "address": widget.address,
+        //   "latitude": widget.addressLat,
+        //   "longitude": widget.addressLng,
+        // }
+      );
+      print("response data pay..." + response.data.toString());
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }

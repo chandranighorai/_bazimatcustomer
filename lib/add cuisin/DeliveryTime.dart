@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class DeliveryTime extends StatelessWidget {
-  const DeliveryTime({Key key}) : super(key: key);
+  var resturentName, duration, addressType, address;
+  DeliveryTime(
+      {this.resturentName,
+      this.duration,
+      this.addressType,
+      this.address,
+      Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +35,7 @@ class DeliveryTime extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("So Southy",
+                      Text("$resturentName",
                           style: TextStyle(
                               fontSize:
                                   MediaQuery.of(context).size.width * 0.045)),
@@ -38,7 +45,9 @@ class DeliveryTime extends StatelessWidget {
                       Container(
                         width: MediaQuery.of(context).size.width / 1.2,
                         child: Text(
-                          "1 Item | ETA : 37 MINS",
+                          // "1 Item | ETA : 37 MINS",
+                          "ETA : $duration",
+
                           style: TextStyle(
                               color: Colors.grey,
                               fontSize:
@@ -77,7 +86,7 @@ class DeliveryTime extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Office",
+                      Text("$addressType",
                           style: TextStyle(
                               fontSize:
                                   MediaQuery.of(context).size.width * 0.045)),
@@ -86,8 +95,7 @@ class DeliveryTime extends StatelessWidget {
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width / 1.2,
-                        child: Text(
-                            "SDF Building, 4th Floor Software Technology Park, GP Block, Sector V, Bidhannagar, Kolkata, West Bengal 700091",
+                        child: Text("$address",
                             style: TextStyle(
                                 color: Colors.grey,
                                 fontSize:

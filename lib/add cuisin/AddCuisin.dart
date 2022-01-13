@@ -18,6 +18,7 @@ class AddCuisin extends StatefulWidget {
       resturentLng,
       imageUrl,
       resturentName,
+      resturentId,
       resturenrAddr,
       resturentPrice,
       configData;
@@ -30,6 +31,7 @@ class AddCuisin extends StatefulWidget {
       this.resturentLng,
       this.imageUrl,
       this.resturentName,
+      this.resturentId,
       this.resturenrAddr,
       this.resturentPrice,
       this.configData,
@@ -52,9 +54,9 @@ class _AddCuisinState extends State<AddCuisin> {
   double couponPrice;
   var addressList;
   bool addressLoad, _distanceLoad;
-  var duration, distance;
+  var duration, distance, addressLat, addressLng, token;
   var dio = Dio();
-  String addr, restLat, restLng;
+  String addr, restLat, restLng, addressType;
   @override
   void initState() {
     super.initState();
@@ -403,12 +405,15 @@ class _AddCuisinState extends State<AddCuisin> {
                                                   refresh:
                                                       _getChangeAddress))).then(
                                           (value) {
-                                        // print("Value..." +
-                                        //     value["address"].toString());
+                                        print("Value..." +
+                                            value["addressType"].toString());
                                         // print("resturentLat...Value..." +
                                         //     widget.resturentLat.toString());
                                         setState(() {
                                           addr = value["address"];
+                                          addressType = value["addressType"];
+                                          addressLat = value["latitude"];
+                                          addressLat = value["longitude"];
                                           _distanceLoad = false;
 
                                           _getDistance(
@@ -479,8 +484,20 @@ class _AddCuisinState extends State<AddCuisin> {
                     Spacer(),
                     InkWell(
                       onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Cart()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Cart(
+                                    totalAmount: payPrice,
+                                    resturentName: widget.resturentName,
+                                    resturentId: widget.resturentId,
+                                    duration: duration,
+                                    distance: distance,
+                                    address: addr,
+                                    addressType: addressType,
+                                    addressLat: addressLat,
+                                    addressLng: addressLng,
+                                    token:token)));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width / 2.2,
@@ -527,7 +544,7 @@ class _AddCuisinState extends State<AddCuisin> {
   _getAddress() async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
-      var token = pref.getString("token");
+      token = pref.getString("token");
       print("token..." + token.toString());
       var response = await dio.get(
         Const.addressList,
@@ -539,6 +556,9 @@ class _AddCuisinState extends State<AddCuisin> {
         print("addresslength..." + addressList.length.toString());
         setState(() {
           addr = addressList[0]["address"];
+          addressType = addressList[0]["address_type"];
+          addressLat = addressList[0]["latitude"];
+          addressLng = addressList[0]["longitude"];
           addressLoad = true;
         });
       } else {
@@ -550,15 +570,17 @@ class _AddCuisinState extends State<AddCuisin> {
     }
   }
 
-  _getChangeAddress(String adr, String lat, String lng) {
+  _getChangeAddress(String adr, String addrType, String lat, String lng) {
     print("address..." + addr.toString());
     print("address..." + lat.toString());
     print("address..." + lng.toString());
+    print("address..." + addrType.toString());
     print("res_latitude..." + widget.resturentLat.toString());
     print("res_longitude..." + widget.resturentLng.toString());
 
     setState(() {
       addr = adr;
+      addressType = addrType;
       _getDistance(lat, lng, widget.resturentLat.toString(),
           widget.resturentLng.toString());
     });

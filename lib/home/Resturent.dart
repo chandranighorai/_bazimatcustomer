@@ -262,9 +262,11 @@ class _ResturentState extends State<Resturent> {
     print("distanceload..." + _distanceLoad.toString());
     try {
       var params = "?";
-      params +=
-          "origin_lat=" + widget.latitude + "&origin_lng=" + widget.longitude;
-      params += "&destination_lat=" + lat + "&destination_lng=" + lng;
+      params += "origin_lat=" + lat + "&origin_lng=" + lng;
+      params += "&destination_lat=" +
+          widget.latitude +
+          "&destination_lng=" +
+          widget.longitude;
       var url = Const.distanceApi + params;
       print("url..." + url.toString());
       getDistanceResponse = await dio.get(url);

@@ -201,12 +201,14 @@ class _PopularCuisinListState extends State<PopularCuisinList> {
   void _getDistance() async {
     try {
       var params = "?";
-      params +=
-          "origin_lat=" + widget.latitude + "&origin_lng=" + widget.longitude;
-      params += "&destination_lat=" +
+      params += "origin_lat=" +
           widget.cuisinList.latitude +
-          "&destination_lng=" +
+          "&origin_lng=" +
           widget.cuisinList.longitude;
+      params += "&destination_lat=" +
+          widget.latitude +
+          "&destination_lng=" +
+          widget.longitude;
       print("PArams..." + params.toString());
       var url = Const.distanceApi + params;
       print("Url in params..." + url.toString());

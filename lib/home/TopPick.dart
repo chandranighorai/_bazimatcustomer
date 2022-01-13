@@ -100,12 +100,20 @@ class _TopPicksState extends State<TopPicks> {
   _getDistance() async {
     try {
       var params = "?";
-      params +=
-          "origin_lat=" + widget.latitude + "&origin_lng=" + widget.longitude;
-      params += "&destination_lat=" +
+      // params +=
+      //     "origin_lat=" + widget.latitude + "&origin_lng=" + widget.longitude;
+      // params += "&destination_lat=" +
+      //     widget.topArr.latitude +
+      //     "&destination_lng=" +
+      //     widget.topArr.longitude;
+      params += "origin_lat=" +
           widget.topArr.latitude +
-          "&destination_lng=" +
+          "&origin_lng=" +
           widget.topArr.longitude;
+      params += "&destination_lat=" +
+          widget.latitude +
+          "&destination_lng=" +
+          widget.longitude;
       var url = Const.distanceApi + params;
       distanceData = await dio.get(url);
       print("DistanceData..." + distanceData.data.toString());

@@ -196,12 +196,14 @@ class _SubListItemState extends State<SubListItem> {
   _getDistance() async {
     try {
       var params = "?";
-      params +=
-          "origin_lat=" + widget.latitude + "&origin_lng=" + widget.longitude;
-      params += "&destination_lat=" +
+      params += "origin_lat=" +
           widget.listData.latitude +
-          "&destination_lng=" +
+          "&origin_lng=" +
           widget.listData.longitude;
+      params += "&destination_lat=" +
+          widget.latitude +
+          "&destination_lng=" +
+          widget.longitude;
       var url = Const.distanceApi + params;
       print("Url..." + url.toString());
       getDistanceResponse = await dio.get(url);

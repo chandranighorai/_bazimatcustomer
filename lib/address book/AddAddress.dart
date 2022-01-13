@@ -12,7 +12,7 @@ import 'package:geolocator/geolocator.dart';
 enum AddressType { home, office }
 
 class AddAddress extends StatefulWidget {
-  Function(String addr, String lat, String lng) refresh;
+  Function(String addr, String addrType, String lat, String lng) refresh;
   AddAddress({this.refresh, Key key}) : super(key: key);
 
   @override
@@ -286,8 +286,12 @@ class _AddAddressState extends State<AddAddress> {
           });
       print("response in location..." + response.data.toString());
       if (response.data["state"] == 0) {
-        Navigator.of(context)
-            .pop({"address": address, "latitude": lat, "longitude": lng});
+        Navigator.of(context).pop({
+          "address": address,
+          "addressType": dd[1].toString(),
+          "latitude": lat,
+          "longitude": lng
+        });
       } else {
         showCustomToast(response.data["errors"][0]["message"]);
       }

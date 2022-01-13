@@ -14,6 +14,7 @@ class Recommended extends StatefulWidget {
       resturentLat,
       resturentLng,
       resturentName,
+      resturentId,
       resturentAddress,
       resturentOfferPrice;
   Function() couponList;
@@ -25,6 +26,7 @@ class Recommended extends StatefulWidget {
       this.resturentLat,
       this.resturentLng,
       this.resturentName,
+      this.resturentId,
       this.resturentAddress,
       this.resturentOfferPrice,
       Key key,
@@ -71,6 +73,7 @@ class _RecommendedState extends State<Recommended> {
                           product: widget.productList,
                           imageUrl: widget.imageUrl,
                           resturentName: widget.resturentName,
+                          resturentId:widget.resturentId,
                           resturenrAddr: widget.resturentAddress,
                           resturentPrice: widget.resturentOfferPrice,
                           configData: configData,

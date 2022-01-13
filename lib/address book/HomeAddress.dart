@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HomeAddress extends StatefulWidget {
-  Function(String addr, String lat, String lng) refresh;
+  Function(String addr, String addrType, String lat, String lng) refresh;
   var homeAddr;
   HomeAddress({this.refresh, this.homeAddr, Key key}) : super(key: key);
 
@@ -19,7 +19,10 @@ class _HomeAddressState extends State<HomeAddress> {
         print(widget.homeAddr["longitude"]);
 
         Navigator.pop(context);
-        widget.refresh(widget.homeAddr["address"], widget.homeAddr["latitude"],
+        widget.refresh(
+            widget.homeAddr["address"],
+            widget.homeAddr["address_type"],
+            widget.homeAddr["latitude"],
             widget.homeAddr["longitude"]);
       },
       child: Padding(

@@ -276,11 +276,11 @@ class _AllResturentListState extends State<AllResturentList> {
           : widget.resturent.longitude;
       var params = "?";
       params +=
-          "origin_lat=" + widget.latitude + "&origin_lng=" + widget.longitude;
+          "origin_lat=" + destinationLat + "&origin_lng=" + destinationLng;
       params += "&destination_lat=" +
-          destinationLat +
+          widget.latitude +
           "&destination_lng=" +
-          destinationLng;
+          widget.longitude;
       var url = Const.distanceApi + params;
       print("url..." + url.toString());
       getDistanceResponse = await dio.get(url);
