@@ -28,7 +28,7 @@ class ChatList {
   int id;
   int userId;
   String message;
-  Null reply;
+  String reply;
   int checked;
   Null image;
   String createdAt;

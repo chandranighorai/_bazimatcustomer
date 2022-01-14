@@ -57,6 +57,7 @@ class _ChatSupportState extends State<ChatSupport> {
                   future: chatList,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
+                      print("hasData..." + snapshot.hasData.toString());
                       var msgList = snapshot.data.errors;
                       return ListView.builder(
                           shrinkWrap: true,

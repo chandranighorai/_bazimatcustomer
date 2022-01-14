@@ -1,9 +1,14 @@
 import 'package:bazimat/add%20cuisin/DeliveryTime.dart';
 import 'package:bazimat/add%20cuisin/ThankYou.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Cart extends StatefulWidget {
   var totalAmount,
@@ -37,8 +42,25 @@ class Cart extends StatefulWidget {
 enum SingingCharacter { cash, online }
 
 class _CartState extends State<Cart> {
+  static const platform = const MethodChannel("razorpay_flutter");
+  Razorpay _razorpay;
   Dio dio = Dio();
   SingingCharacter _character = SingingCharacter.cash;
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,7 +147,11 @@ class _CartState extends State<Cart> {
                 child: InkWell(
                   onTap: () {
                     print("Character...0.." + _character.toString());
-                    _payNow();
+                    if (_character.toString() == "SingingCharacter.cash") {
+                      _payNow();
+                    } else {
+                      openCheckout();
+                    }
                     // Navigator.push(context,
                     //     MaterialPageRoute(builder: (context) => ThankYou()));
                   },
@@ -152,10 +178,10 @@ class _CartState extends State<Cart> {
 
   _payNow() async {
     try {
-      print("distance..." + widget.distance.toString());
-      print("address..." + widget.address.toString());
-      print("latitude..." + widget.addressLat.toString());
-      print("longitude..." + widget.addressLng.toString());
+      // print("distance..." + widget.distance.toString());
+      // print("address..." + widget.address.toString());
+      // print("latitude..." + widget.addressLat.toString());
+      // print("longitude..." + widget.addressLng.toString());
       var distance = widget.distance.split(" ");
       print("longitude..." + distance[1].toString());
       var newDistance = distance[1] == "km" ? distance[0] : distance[0] / 1000;
@@ -164,22 +190,22 @@ class _CartState extends State<Cart> {
           ? "cash_on_delivery"
           : "digital_payment";
       var params = "?";
-      params += "order_amount" + widget.totalAmount.toString();
-      params += "payment_method" +
+      params += "order_amount=" + widget.totalAmount.toString();
+      params += "&payment_method=" +
           paymentMethod +
-          "order_type" +
-          "delivery" +
-          "restaurant_id" +
+          "&order_type=delivery" +
+          "&restaurant_id=" +
           widget.resturentId.toString() +
-          "distance" +
+          "&distance=" +
           newDistance.toString() +
-          "address" +
+          "&address=" +
           widget.address.toString() +
-          "latitude" +
+          "&latitude=" +
           widget.addressLat.toString() +
-          "longitude" +
+          "&longitude=" +
           widget.addressLng.toString();
       var url = Const.orderPlace + params;
+      print("Url..." + url.toString());
       var response = await dio.post(
         url,
         options: Options(headers: {"Authorization": "Bearer ${widget.token}"}),
@@ -197,7 +223,54 @@ class _CartState extends State<Cart> {
         // }
       );
       print("response data pay..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        showCustomToast(response.data["message"]);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ThankYou()));
+      } else {
+        showCustomToast(response.data["errors"][0]["message"]);
+      }
     } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(
+        msg: "SUCCESS: " + response.paymentId, toastLength: Toast.LENGTH_SHORT);
+    _payNow();
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+        msg: "ERROR: " + response.code.toString() + " - " + response.message,
+        toastLength: Toast.LENGTH_SHORT);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+        msg: "EXTERNAL_WALLET: " + response.walletName,
+        toastLength: Toast.LENGTH_SHORT);
+  }
+
+  void openCheckout() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var phone = pref.getString("Phone");
+    var email = pref.getString("Email");
+    print("phone..." + phone.toString());
+    print("phone..." + email.toString());
+    var options = {
+      'key': 'rzp_test_1DP5mmOlF5G5ag',
+      'amount': widget.totalAmount,
+      'name': widget.resturentName,
+      'prefill': {'contact': phone, 'email': email},
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+    try {
+      _razorpay.open(options);
+    } catch (e) {
       print(e.toString());
     }
   }
