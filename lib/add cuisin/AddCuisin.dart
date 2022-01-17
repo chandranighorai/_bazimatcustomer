@@ -52,6 +52,7 @@ class _AddCuisinState extends State<AddCuisin> {
   double taxPrice;
   bool couponApplied;
   double couponPrice;
+  int itemCount;
   var addressList;
   bool addressLoad, _distanceLoad;
   var duration, distance, addressLat, addressLng, token;
@@ -63,12 +64,13 @@ class _AddCuisinState extends State<AddCuisin> {
     couponApplied = false;
     addressLoad = false;
     couponPrice = 0.0;
+    itemCount = 1;
     duration = widget.duration;
     distance = widget.distance;
     restLat = widget.resturentLat;
     restLng = widget.resturentLng;
     _getAddress();
-    _itemUpdate(widget.product.price.toString());
+    _itemUpdate(widget.product.price.toString(), itemCount);
   }
 
   @override
@@ -497,7 +499,9 @@ class _AddCuisinState extends State<AddCuisin> {
                                     addressType: addressType,
                                     addressLat: addressLat,
                                     addressLng: addressLng,
-                                    token:token)));
+                                    token: token,
+                                    quantity: itemCount,
+                                    foodID: widget.product.id)));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width / 2.2,
@@ -521,11 +525,12 @@ class _AddCuisinState extends State<AddCuisin> {
     );
   }
 
-  _itemUpdate(String productPrice) {
-    print("productPrice..." + distance.toString());
+  _itemUpdate(String productPrice, int itemcount) {
+    print("productPrice..." + itemcount.toString());
     // print("productPrice..." +
     //     widget.configData["per_km_shipping_charge"].toString());
     setState(() {
+      itemCount = itemcount;
       var distanceCal = distance.split(" ");
       // print("deliveryCharge..." + distanceCal.toString());
       deliveryCharge = widget.configData["per_km_shipping_charge"] *
@@ -620,7 +625,7 @@ class _AddCuisinState extends State<AddCuisin> {
         duration = getDistanceResponse.data["rows"][0]["elements"][0]
                 ["duration"]["text"]
             .toString();
-        _itemUpdate(widget.product.price.toString());
+        _itemUpdate(widget.product.price.toString(), itemCount);
       });
     } on DioError catch (e) {
       print(e.toString());

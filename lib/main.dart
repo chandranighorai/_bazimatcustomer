@@ -44,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
         LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 1);
     checkPermission();
     updateLocation();
+    // ignore: cancel_subscriptions
     StreamSubscription positionStream = _geolocator
         .getPositionStream(locationOptions)
         .listen((Position position) {

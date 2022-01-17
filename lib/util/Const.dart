@@ -41,4 +41,5 @@ class Const {
   static String getMessages = appUrl + "customer/message/get";
   static String sendMessage = appUrl + "customer/message/send";
   static String orderPlace = appUrl + "customer/order/place";
+  static String pastOrder = appUrl + "customer/order/list";
 }

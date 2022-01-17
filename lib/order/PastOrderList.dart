@@ -1,9 +1,11 @@
 import 'dart:ui';
 
+import 'package:bazimat/order/pastOrderModel.dart';
 import 'package:flutter/material.dart';
 
 class PastOrderList extends StatefulWidget {
-  const PastOrderList({Key key}) : super(key: key);
+  PostOrderData listData;
+  PastOrderList({this.listData, Key key}) : super(key: key);
 
   @override
   _PastOrderListState createState() => _PastOrderListState();
@@ -32,13 +34,13 @@ class _PastOrderListState extends State<PastOrderList> {
                   //color: Colors.amber,
                   width: MediaQuery.of(context).size.width / 1.5,
                   child: Text(
-                    "Rava Masala Dosa No Onion No Garlic",
+                    "${widget.listData.foodName}",
                     // style: TextStyle(color: Colors.red),
                   ),
                 ),
                 Spacer(),
                 Text(
-                  "Delivered",
+                  "${widget.listData.orderStatus}",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 )
               ],
@@ -47,19 +49,19 @@ class _PastOrderListState extends State<PastOrderList> {
               height: MediaQuery.of(context).size.width * 0.01,
             ),
             Text(
-              "Sector V",
+              "${widget.listData.deliveryAddress.address}",
               style: TextStyle(color: Colors.grey),
             ),
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.01,
             ),
             Text(
-              "\u20B9300",
+              "\u20B9${widget.listData.orderAmountRound}",
               style: TextStyle(color: Colors.black),
             ),
             Divider(),
             Text(
-              "Onion x 2",
+              "Qty: ${widget.listData.quantity}",
               style: TextStyle(color: Colors.grey),
             ),
             SizedBox(
@@ -73,19 +75,20 @@ class _PastOrderListState extends State<PastOrderList> {
               height: MediaQuery.of(context).size.width * 0.02,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Container(
+                //   width: MediaQuery.of(context).size.width / 2.5,
+                //   padding: const EdgeInsets.all(8.0),
+                //   alignment: Alignment.center,
+                //   decoration: BoxDecoration(
+                //       color: Colors.white,
+                //       border: Border.all(color: Colors.grey)),
+                //   child: Text("Reorder".toUpperCase()),
+                // ),
+                // Spacer(),
                 Container(
-                  width: MediaQuery.of(context).size.width / 2.5,
-                  padding: const EdgeInsets.all(8.0),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey)),
-                  child: Text("Reorder".toUpperCase()),
-                ),
-                Spacer(),
-                Container(
-                  width: MediaQuery.of(context).size.width / 2.5,
+                  // width: MediaQuery.of(context).size.width / 2.5,
                   padding: const EdgeInsets.all(8.0),
                   //color: Colors.white,
                   alignment: Alignment.center,

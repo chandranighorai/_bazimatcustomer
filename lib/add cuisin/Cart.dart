@@ -20,7 +20,9 @@ class Cart extends StatefulWidget {
       addressType,
       addressLat,
       addressLng,
-      token;
+      token,
+      quantity,
+      foodID;
   Cart(
       {this.totalAmount,
       this.resturentName,
@@ -32,6 +34,8 @@ class Cart extends StatefulWidget {
       this.addressLat,
       this.addressLng,
       this.token,
+      this.quantity,
+      this.foodID,
       Key key})
       : super(key: key);
 
@@ -46,6 +50,7 @@ class _CartState extends State<Cart> {
   Razorpay _razorpay;
   Dio dio = Dio();
   SingingCharacter _character = SingingCharacter.cash;
+  String _transactionId;
   @override
   void initState() {
     super.initState();
@@ -63,6 +68,9 @@ class _CartState extends State<Cart> {
 
   @override
   Widget build(BuildContext context) {
+    print("itemCount..." + widget.quantity.toString());
+    print("itemCount..." + widget.foodID.toString());
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -148,7 +156,8 @@ class _CartState extends State<Cart> {
                   onTap: () {
                     print("Character...0.." + _character.toString());
                     if (_character.toString() == "SingingCharacter.cash") {
-                      _payNow();
+                      _transactionId = "";
+                      _payNow(_transactionId);
                     } else {
                       openCheckout();
                     }
@@ -176,12 +185,12 @@ class _CartState extends State<Cart> {
     );
   }
 
-  _payNow() async {
+  _payNow(String transactionId) async {
     try {
-      // print("distance..." + widget.distance.toString());
+      print("distance..." + transactionId.toString());
       // print("address..." + widget.address.toString());
       // print("latitude..." + widget.addressLat.toString());
-      // print("longitude..." + widget.addressLng.toString());
+      //print("longitude..." + paymentMethod.toString());
       var distance = widget.distance.split(" ");
       print("longitude..." + distance[1].toString());
       var newDistance = distance[1] == "km" ? distance[0] : distance[0] / 1000;
@@ -203,7 +212,13 @@ class _CartState extends State<Cart> {
           "&latitude=" +
           widget.addressLat.toString() +
           "&longitude=" +
-          widget.addressLng.toString();
+          widget.addressLng.toString() +
+          "&transaction_id=" +
+          transactionId +
+          "&food_id=" +
+          widget.foodID.toString() +
+          "&quantity=" +
+          widget.quantity.toString();
       var url = Const.orderPlace + params;
       print("Url..." + url.toString());
       var response = await dio.post(
@@ -238,7 +253,8 @@ class _CartState extends State<Cart> {
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     Fluttertoast.showToast(
         msg: "SUCCESS: " + response.paymentId, toastLength: Toast.LENGTH_SHORT);
-    _payNow();
+    print("payment_id..." + response.paymentId.toString());
+    _payNow(response.paymentId.toString());
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {

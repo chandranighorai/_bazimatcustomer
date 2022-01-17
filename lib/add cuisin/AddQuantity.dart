@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class AddQuantity extends StatefulWidget {
   var imageUrl, resturentName, resturentAddr, resturentOffer;
   Products product;
-  Function(String itemPrice) refresh;
+  Function(String itemPrice,int itemcount) refresh;
   AddQuantity(
       {this.imageUrl,
       this.resturentName,
@@ -110,7 +110,7 @@ class _AddQuantityState extends State<AddQuantity> {
                           setState(() {
                             itemCount = itemCount - 1;
                             finalPrice = price * itemCount;
-                            widget.refresh(finalPrice.toString());
+                            widget.refresh(finalPrice.toString(),itemCount);
                           });
                         } else {
                           itemCount = 1;
@@ -132,7 +132,7 @@ class _AddQuantityState extends State<AddQuantity> {
                         setState(() {
                           itemCount = itemCount + 1;
                           finalPrice = price * itemCount;
-                          widget.refresh(finalPrice.toString());
+                          widget.refresh(finalPrice.toString(),itemCount);
                         });
                         print("PriceItem...." + price.runtimeType.toString());
                       },
