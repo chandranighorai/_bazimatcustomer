@@ -1,19 +1,26 @@
 import 'dart:ui';
-
+import 'package:bazimat/util/AppConst.dart';
+import 'package:bazimat/util/Const.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:bazimat/order/pastOrderModel.dart';
 import 'package:flutter/material.dart';
 
 class PastOrderList extends StatefulWidget {
   PostOrderData listData;
-  PastOrderList({this.listData, Key key}) : super(key: key);
+  var token;
+  PastOrderList({this.listData, this.token, Key key}) : super(key: key);
 
   @override
   _PastOrderListState createState() => _PastOrderListState();
 }
 
 class _PastOrderListState extends State<PastOrderList> {
+  double _selectIcon = 0.0;
+  var dio = Dio();
   @override
   Widget build(BuildContext context) {
+    print("listData..." + widget.listData.toString());
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -68,40 +75,82 @@ class _PastOrderListState extends State<PastOrderList> {
               height: MediaQuery.of(context).size.width * 0.02,
             ),
             Text(
-              "November 2, 12:07 pm",
+              "Order Time: ${widget.listData.createdAt}",
               style: TextStyle(color: Colors.grey),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.width * 0.01,
+            ),
+            Container(
+              height: MediaQuery.of(context).size.width * 0.08,
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              child: RatingBar(
+                initialRating: _selectIcon,
+                direction: Axis.horizontal,
+                allowHalfRating: false,
+                itemCount: 5,
+                itemSize: 30.0,
+                ratingWidget: RatingWidget(
+                    empty: Icon(
+                      Icons.star,
+                      color: Colors.grey,
+                    ),
+                    full: Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    )),
+                onRatingUpdate: (rating) {
+                  print("Rating..." + rating.toString());
+                  setState(() {
+                    _selectIcon = rating;
+                    print("Rating..." + _selectIcon.toString());
+                    _giveRating(_selectIcon);
+                  });
+                },
+              ),
             ),
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.02,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Container(
-                //   width: MediaQuery.of(context).size.width / 2.5,
-                //   padding: const EdgeInsets.all(8.0),
-                //   alignment: Alignment.center,
-                //   decoration: BoxDecoration(
-                //       color: Colors.white,
-                //       border: Border.all(color: Colors.grey)),
-                //   child: Text("Reorder".toUpperCase()),
-                // ),
-                // Spacer(),
-                Container(
-                  // width: MediaQuery.of(context).size.width / 2.5,
-                  padding: const EdgeInsets.all(8.0),
-                  //color: Colors.white,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey)),
-                  child: Text("Rate food".toUpperCase()),
-                ),
-              ],
+            Container(
+              // width: MediaQuery.of(context).size.width / 2.5,
+              padding: const EdgeInsets.all(8.0),
+              //color: Colors.white,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Colors.white, border: Border.all(color: Colors.grey)),
+              child: Text("Rate food".toUpperCase()),
             )
           ],
         ),
       ),
     );
+  }
+
+  _giveRating(double selectIcon) async {
+    try {
+      var params = "?";
+      params += "food_id=" +
+          widget.listData.foodId.toString() +
+          "&order_id=" +
+          widget.listData.id.toString() +
+          "&comment=" +
+          "test" +
+          "&rating=" +
+          selectIcon.toString();
+      var url = Const.rateFood + params;
+      var response = await dio.post(url,
+          options:
+              Options(headers: {"Authorization": "Bearer ${widget.token}"}));
+      print("Response..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        showCustomToast(response.data["message"]);
+      } else {
+        showCustomToast(response.data["errors"][0]["message"]);
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }

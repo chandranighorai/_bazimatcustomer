@@ -16,6 +16,7 @@ class PastOrder extends StatefulWidget {
 class _PastOrderState extends State<PastOrder> {
   Future<PostOrderModel> _pastOrder;
   var dio = Dio();
+  var token;
   @override
   void initState() {
     super.initState();
@@ -42,7 +43,9 @@ class _PastOrderState extends State<PastOrder> {
             return ListView.builder(
                 itemCount: errorData.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return PastOrderList(listData: errorData[index]);
+                  print("listDAta..." + errorData[index].toString());
+                  return PastOrderList(
+                      listData: errorData[index], token: token);
                 });
           } else {
             return Center(
@@ -58,7 +61,7 @@ class _PastOrderState extends State<PastOrder> {
   Future<PostOrderModel> _getAllOder() async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
-      var token = pref.getString("token");
+      token = pref.getString("token");
       var response = await dio.get(Const.pastOrder,
           options: Options(headers: {"Authorization": "Bearer $token"}));
       print("response body..." + response.statusCode.toString());

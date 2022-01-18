@@ -186,6 +186,7 @@ class _CartState extends State<Cart> {
   }
 
   _payNow(String transactionId) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
     try {
       print("distance..." + transactionId.toString());
       // print("address..." + widget.address.toString());
@@ -240,6 +241,7 @@ class _CartState extends State<Cart> {
       print("response data pay..." + response.data.toString());
       if (response.data["state"] == 0) {
         showCustomToast(response.data["message"]);
+        pref.setString("OrderId", response.data["order_id"].toString());
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ThankYou()));
       } else {
