@@ -265,6 +265,8 @@ class _HomeState extends State<Home> {
                                   future: _popularResturent,
                                   builder: (BuildContext context,
                                       AsyncSnapshot snapshot) {
+                                    print("snapshot...in popular..." +
+                                        snapshot.hasData.toString());
                                     if (snapshot.hasData) {
                                       var dataList = snapshot.data.errors;
                                       print(

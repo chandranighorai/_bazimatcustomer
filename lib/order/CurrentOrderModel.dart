@@ -45,6 +45,8 @@ class CurrentOrderModel {
   Restaurant restaurant;
   String deliveryMan;
   String orderAmountRound;
+  String foodName;
+  int state;
 
   CurrentOrderModel(
       {this.id,
@@ -92,7 +94,9 @@ class CurrentOrderModel {
       this.detailsCount,
       this.restaurant,
       this.deliveryMan,
-      this.orderAmountRound});
+      this.orderAmountRound,
+      this.foodName,
+      this.state});
 
   CurrentOrderModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -145,6 +149,8 @@ class CurrentOrderModel {
         : null;
     deliveryMan = json['delivery_man'];
     orderAmountRound = json['order_amount_round'];
+    foodName = json['food_name'];
+    state = json['state'];
   }
 
   Map<String, dynamic> toJson() {
@@ -199,6 +205,8 @@ class CurrentOrderModel {
     }
     data['delivery_man'] = this.deliveryMan;
     data['order_amount_round'] = this.orderAmountRound;
+    data['food_name'] = this.foodName;
+    data['state'] = this.state;
     return data;
   }
 }
@@ -251,7 +259,7 @@ class Restaurant {
   String address;
   Null footerText;
   int minimumOrder;
-  Null comission;
+  int comission;
   bool scheduleOrder;
   int status;
   int vendorId;

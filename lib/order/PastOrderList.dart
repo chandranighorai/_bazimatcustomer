@@ -18,6 +18,14 @@ class PastOrderList extends StatefulWidget {
 class _PastOrderListState extends State<PastOrderList> {
   double _selectIcon = 0.0;
   var dio = Dio();
+  bool _reviewSubmit;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _reviewSubmit = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     print("listData..." + widget.listData.toString());
@@ -81,47 +89,54 @@ class _PastOrderListState extends State<PastOrderList> {
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.01,
             ),
-            Container(
-              height: MediaQuery.of(context).size.width * 0.08,
-              width: MediaQuery.of(context).size.width,
-              alignment: Alignment.center,
-              child: RatingBar(
-                initialRating: _selectIcon,
-                direction: Axis.horizontal,
-                allowHalfRating: false,
-                itemCount: 5,
-                itemSize: 30.0,
-                ratingWidget: RatingWidget(
-                    empty: Icon(
-                      Icons.star,
-                      color: Colors.grey,
+            _reviewSubmit == true
+                ? SizedBox()
+                : Container(
+                    height: MediaQuery.of(context).size.width * 0.08,
+                    width: MediaQuery.of(context).size.width,
+                    alignment: Alignment.center,
+                    child: RatingBar(
+                      initialRating: _selectIcon,
+                      direction: Axis.horizontal,
+                      allowHalfRating: false,
+                      itemCount: 5,
+                      itemSize: 30.0,
+                      ratingWidget: RatingWidget(
+                          empty: Icon(
+                            Icons.star,
+                            color: Colors.grey,
+                          ),
+                          full: Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          )),
+                      onRatingUpdate: (rating) {
+                        print("Rating..." + rating.toString());
+                        setState(() {
+                          _selectIcon = rating;
+                          print("Rating..." + _selectIcon.toString());
+                          _giveRating(_selectIcon);
+                        });
+                      },
                     ),
-                    full: Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    )),
-                onRatingUpdate: (rating) {
-                  print("Rating..." + rating.toString());
-                  setState(() {
-                    _selectIcon = rating;
-                    print("Rating..." + _selectIcon.toString());
-                    _giveRating(_selectIcon);
-                  });
-                },
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * 0.02,
-            ),
-            Container(
-              // width: MediaQuery.of(context).size.width / 2.5,
-              padding: const EdgeInsets.all(8.0),
-              //color: Colors.white,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: Colors.white, border: Border.all(color: Colors.grey)),
-              child: Text("Rate food".toUpperCase()),
-            )
+                  ),
+            _reviewSubmit == true
+                ? SizedBox()
+                : SizedBox(
+                    height: MediaQuery.of(context).size.width * 0.02,
+                  ),
+            _reviewSubmit == true
+                ? SizedBox()
+                : Container(
+                    // width: MediaQuery.of(context).size.width / 2.5,
+                    padding: const EdgeInsets.all(8.0),
+                    //color: Colors.white,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.grey)),
+                    child: Text("Rate food".toUpperCase()),
+                  )
           ],
         ),
       ),
@@ -146,6 +161,9 @@ class _PastOrderListState extends State<PastOrderList> {
       print("Response..." + response.data.toString());
       if (response.data["state"] == 0) {
         showCustomToast(response.data["message"]);
+        setState(() {
+          _reviewSubmit = true;
+        });
       } else {
         showCustomToast(response.data["errors"][0]["message"]);
       }

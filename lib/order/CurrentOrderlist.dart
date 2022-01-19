@@ -27,7 +27,7 @@ class CurrentOrderList extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Food Name: ${orderData.foodId}",
+              "Food Name: ${orderData.foodName}",
               style: TextStyle(color: Colors.black),
             ),
             SizedBox(
