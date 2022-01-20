@@ -24,6 +24,7 @@ class _PastOrderListState extends State<PastOrderList> {
     // TODO: implement initState
     super.initState();
     _reviewSubmit = false;
+    _productRating();
   }
 
   @override
@@ -166,6 +167,25 @@ class _PastOrderListState extends State<PastOrderList> {
         });
       } else {
         showCustomToast(response.data["errors"][0]["message"]);
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _productRating() async {
+    try {
+      var params = "?food_id=" + widget.listData.foodId.toString();
+      var url = Const.productRate + params;
+      var response = await dio.get(url);
+      if (response.data["state"] == 0) {
+        setState(() {
+          _reviewSubmit = true;
+        });
+      } else {
+        setState(() {
+          _reviewSubmit = false;
+        });
       }
     } on DioError catch (e) {
       print(e.toString());

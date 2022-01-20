@@ -278,13 +278,13 @@ class PopularResturentErrors {
   int deliveryCharge;
   String description;
   String offerprice;
-  Null discount;
+  String discount;
   String offertext;
   int open;
   int ordersCount;
   String availableTimeStarts;
   String availableTimeEnds;
-  double avgRating;
+  String avgRating;
   int ratingCount;
   bool gstStatus;
   String gstCode;

@@ -24,10 +24,13 @@ class SubList extends StatefulWidget {
 class _SubListState extends State<SubList> {
   Future<SubListModel> _allSubList;
   var dio = Dio();
+  bool _pageLoad;
+  var message;
   @override
   void initState() {
     super.initState();
     _allSubList = _getAllSubList();
+    _pageLoad = false;
   }
 
   @override
@@ -54,32 +57,37 @@ class _SubListState extends State<SubList> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         color: Colors.white,
-        child: FutureBuilder(
-            initialData: null,
-            future: _allSubList,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                var respData = snapshot.data.errors.restaurants;
-                var imageUrl = snapshot.data.coverimgpath;
-                return respData.length == 0
-                    ? Center(
-                        child: Text("No Items Available Now"),
-                      )
-                    : ListView.builder(
-                        itemCount: respData.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return SubListItem(
-                              listData: respData[index],
-                              listImageUrl: imageUrl,
-                              latitude: widget.latitude,
-                              longitude: widget.longitude);
-                        });
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            }),
+        child: _pageLoad == true
+            ? Center(child: Text(message))
+            : FutureBuilder(
+                initialData: null,
+                future: _allSubList,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  print("State..." + snapshot.hasData.toString());
+                  if (snapshot.hasData) {
+                    var respData = snapshot.data.errors.restaurants;
+                    var imageUrl = snapshot.data.coverimgpath;
+                    return
+                        // state == 1
+                        //     ? Center(
+                        //         child: Text("${snapshot.data.errors}"),
+                        //       )
+                        //     :
+                        ListView.builder(
+                            itemCount: respData.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return SubListItem(
+                                  listData: respData[index],
+                                  listImageUrl: imageUrl,
+                                  latitude: widget.latitude,
+                                  longitude: widget.longitude);
+                            });
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
       ),
     );
   }
@@ -89,13 +97,22 @@ class _SubListState extends State<SubList> {
     print("ZoneId..." + widget.zoneId.toString());
     try {
       var url = Const.subCatList + "?catid=" + widget.listId.toString();
+      print("subCatUrl..." + url.toString());
       var response = await dio.post(url,
           options: Options(headers: {"zoneId": widget.zoneId}));
-      print("response data...cat List..." + response.data.toString());
+      print(
+          "response statusCode...cat List..." + response.statusCode.toString());
+      print("response data...cat List..." + response.data['state'].toString());
       if (response.data["state"] == 0) {
         return SubListModel.fromJson(response.data);
       } else {
-        showCustomToast(response.data["errors"]["message"].toString());
+        print(
+            "response data...cat List..." + response.data['errors'].toString());
+        setState(() {
+          _pageLoad = true;
+          message = response.data["errors"].toString();
+        });
+        //showCustomToast(response.data["errors"].toString());
       }
     } on DioError catch (e) {
       print(e.toString());

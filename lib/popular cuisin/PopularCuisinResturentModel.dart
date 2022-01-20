@@ -36,6 +36,7 @@ class Errors {
     if (json['restaurants'] != null) {
       restaurants = new List<RestaurantsCuisin>();
       json['restaurants'].forEach((v) {
+        print("V..." + v.toString());
         restaurants.add(new RestaurantsCuisin.fromJson(v));
       });
     }
@@ -44,7 +45,10 @@ class Errors {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.restaurants != null) {
-      data['restaurants'] = this.restaurants.map((v) => v.toJson()).toList();
+      data['restaurants'] = this.restaurants.map((v) {
+        v.toJson();
+        print("V..." + v.toString());
+      }).toList();
     }
     return data;
   }
@@ -61,7 +65,7 @@ class RestaurantsCuisin {
   String address;
   Null footerText;
   int minimumOrder;
-  Null comission;
+  int comission;
   bool scheduleOrder;
   int status;
   int vendorId;
@@ -85,7 +89,7 @@ class RestaurantsCuisin {
   String discount;
   String availableTimeStarts;
   String availableTimeEnds;
-  int avgRating;
+  String avgRating;
   int ratingCount;
   bool gstStatus;
   String gstCode;

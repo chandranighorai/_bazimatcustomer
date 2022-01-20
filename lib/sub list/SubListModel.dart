@@ -84,8 +84,8 @@ class RestaurantsSub {
   String discount;
   String availableTimeStarts;
   String availableTimeEnds;
-  int avgRating;
-  int ratingCount;
+  String avgRating;
+  String ratingCount;
   bool gstStatus;
   String gstCode;
 

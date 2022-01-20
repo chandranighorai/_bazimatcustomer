@@ -62,7 +62,10 @@ class _PastOrderState extends State<PastOrder> {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       token = pref.getString("token");
-      var response = await dio.get(Const.pastOrder,
+      var id = pref.getString("id");
+      print("id..." + id.toString());
+      var url = Const.pastOrder + "?id=" + id.toString();
+      var response = await dio.get(url,
           options: Options(headers: {"Authorization": "Bearer $token"}));
       print("response body..." + response.statusCode.toString());
       print("response body..." + response.data.toString());

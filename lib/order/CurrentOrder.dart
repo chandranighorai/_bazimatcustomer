@@ -18,9 +18,11 @@ class _CurrentOrderState extends State<CurrentOrder> {
   Future<CurrentOrderModel> _getOrder;
   Timer timer;
   var dio = Dio();
+  var _message;
   @override
   void initState() {
     super.initState();
+    _message = "";
     _getOrder = _currentOrder();
   }
 
@@ -33,32 +35,36 @@ class _CurrentOrderState extends State<CurrentOrder> {
   @override
   Widget build(BuildContext context) {
     timer = Timer(Duration(seconds: 2), () {
-      setState(() {
-        _getOrder = _currentOrder();
-      });
+      if (_message.length == 0) {
+        setState(() {
+          _getOrder = _currentOrder();
+        });
+      } else {}
     });
     return Container(
-      child: FutureBuilder(
-        initialData: null,
-        future: _currentOrder(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print("snapshotdata.." + snapshot.hasData.toString());
-          if (snapshot.hasData) {
-            var data = snapshot.data;
-            print("data..." + data.accepted.length.toString());
-            return ListView.builder(
-              itemCount: 1,
-              itemBuilder: (BuildContext context, int index) {
-                return CurrentOrderList(orderData: data);
+      child: _message.length == 0
+          ? FutureBuilder(
+              initialData: null,
+              future: _currentOrder(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                print("snapshotdata.." + snapshot.hasData.toString());
+                if (snapshot.hasData) {
+                  var data = snapshot.data;
+                  print("data..." + data.accepted.length.toString());
+                  return ListView.builder(
+                    itemCount: 1,
+                    itemBuilder: (BuildContext context, int index) {
+                      return CurrentOrderList(orderData: data);
+                    },
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
               },
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      ),
+            )
+          : Center(child: Text(_message)),
     );
   }
 
@@ -71,10 +77,17 @@ class _CurrentOrderState extends State<CurrentOrder> {
       var param = "?order_id=" + orderId;
       var url = Const.currentOrder + param;
       print("OrderId..." + url.toString());
+      print("OrderId..." + _message.length.toString());
       var response = await dio.get(url,
           options: Options(headers: {"Authorization": "Bearer $token"}));
       print("response body in current Order..." + response.data.toString());
-      return CurrentOrderModel.fromJson(response.data);
+      if (response.data["state"] == 0) {
+        return CurrentOrderModel.fromJson(response.data);
+      } else {
+        setState(() {
+          _message = "Have No Order Yet";
+        });
+      }
     } on DioError catch (e) {
       print(e.toString());
     }

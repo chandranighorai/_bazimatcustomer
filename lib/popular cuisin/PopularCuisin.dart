@@ -87,6 +87,7 @@ class _PopularCuisinState extends State<PopularCuisin> {
     try {
       var params = "?catid=" + widget.id.toString();
       var url = Const.popularCuisinResturentList + params;
+      print("url in popular cuisin..." + url.toString());
       var response = await dio.post(url,
           options: Options(headers: {"zoneId": widget.zoneId}));
       print("response body in resturentList..." + response.data.toString());
