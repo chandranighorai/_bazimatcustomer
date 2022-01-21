@@ -133,6 +133,7 @@ class _AdditionalInfoState extends State<AdditionalInfo> {
       var token = pref.getString("token");
       var params = "?customerID=" + id;
       var url = Const.ageDetails + params;
+      print("Url..." + url.toString());
       var response = await dio.get(url,
           options: Options(headers: {"Authorization": "Bearer $token"}));
       print("response data...details..." + response.data.toString());

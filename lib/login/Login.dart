@@ -11,6 +11,16 @@ import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: [
+    'email',
+//'https://www.googleapis.com/auth/contacts.readonly',
+    'https://www.googleapis.com/auth/userinfo.profile',
+  ],
+);
 
 class LogIn extends StatefulWidget {
   const LogIn({Key key}) : super(key: key);
@@ -24,10 +34,23 @@ class _LogInState extends State<LogIn> {
   bool _isHidden;
   bool _buttonDisable;
   var dio = Dio();
+  var userFirstname, userLastname, userEmail;
+  GoogleSignInAccount _currentUser;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+      setState(() {
+        _currentUser = account;
+        print("currentUser..." + _currentUser.toString());
+      });
+      if (_currentUser != null) {
+        _handleGetContact(_currentUser);
+      }
+    });
+    _googleSignIn.signInSilently();
     _isHidden = true;
     _phoneText = new TextEditingController();
     _passText = new TextEditingController();
@@ -212,14 +235,19 @@ class _LogInState extends State<LogIn> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.15,
                         ),
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.15,
-                          width: MediaQuery.of(context).size.width / 9,
-                          decoration: BoxDecoration(
-                              //color: Colors.red,
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  image: AssetImage("images/google.png"))),
+                        InkWell(
+                          onTap: () {
+                            _handleSignIn();
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.width * 0.15,
+                            width: MediaQuery.of(context).size.width / 9,
+                            decoration: BoxDecoration(
+                                //color: Colors.red,
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    image: AssetImage("images/google.png"))),
+                          ),
                         )
                       ],
                     )
@@ -314,6 +342,59 @@ class _LogInState extends State<LogIn> {
           }
         }
       }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> _handleSignIn() async {
+    print("click...");
+    try {
+      await _googleSignIn.signIn();
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future<void> _handleGetContact(GoogleSignInAccount user) async {
+    var arrName = user.displayName.split(" ");
+    print("ArrNAme..." + arrName.toString());
+    if (arrName.length > 0) {
+      print(arrName[0] + "\n");
+      print(arrName[arrName.length - 1]);
+
+      if (arrName[0] != null && arrName[0] != "") {
+        setState(() {
+          userFirstname = arrName[0];
+          print("FirstNAme..." + userFirstname.toString());
+        });
+      }
+      if (arrName.length > 1 &&
+          arrName[arrName.length - 1] != null &&
+          arrName[arrName.length - 1] != "") {
+        setState(() {
+          userLastname = arrName[arrName.length - 1];
+          print("LastNAme..." + userLastname.toString());
+        });
+      }
+      if (user.email != null) {
+        setState(() {
+          userEmail = user.email;
+          print("userNAme..." + userEmail.toString());
+        });
+      }
+      _signinGoogle();
+    }
+  }
+
+  _signinGoogle() async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      pref.setString("fName", userFirstname);
+      pref.setString("lName", userLastname);
+      pref.setString("Email", userEmail);
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => Home()), (route) => false);
     } on DioError catch (e) {
       print(e.toString());
     }

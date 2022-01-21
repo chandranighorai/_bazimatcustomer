@@ -30,6 +30,10 @@ class _OrderStatusState extends State<OrderStatus> {
     _getdata();
   }
 
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -47,10 +51,12 @@ class _OrderStatusState extends State<OrderStatus> {
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.02,
             ),
-            Text(
-              "$data",
-              //textAlign: TextAlign.center,
-            ),
+            data.length == 0
+                ? SizedBox()
+                : Text(
+                    "$data",
+                    //textAlign: TextAlign.center,
+                  ),
           ],
         ),
       ),
@@ -58,16 +64,20 @@ class _OrderStatusState extends State<OrderStatus> {
   }
 
   _getdata() {
+    data = '';
+    print("widget..." + widget.orderStatus.toString());
     switch (widget.orderStatus) {
       case "Pending":
         {
           if (widget.orderData.pending.length == 0) {
             color = Colors.white;
+            //data = '';
           } else {
             color = Colors.amber;
+            dt = DateTime.parse(widget.orderData.pending);
+            data = DateFormat('kk:mm a').format(dt);
+            print("data...length" + data.toString());
           }
-          dt = DateTime.parse(widget.orderData.pending);
-          data = DateFormat('kk:mm a').format(dt);
           break;
         }
       case "Accepted":
@@ -76,9 +86,11 @@ class _OrderStatusState extends State<OrderStatus> {
             color = Colors.white;
           } else {
             color = Colors.amber;
+            dt = DateTime.parse(widget.orderData.accepted);
+            data = DateFormat('kk:mm a').format(dt);
+            print("data...length" + data.length.toString());
           }
-          dt = DateTime.parse(widget.orderData.pending);
-          data = widget.orderData.accepted;
+
           break;
         }
       case "Confirmed":
@@ -87,9 +99,11 @@ class _OrderStatusState extends State<OrderStatus> {
             color = Colors.white;
           } else {
             color = Colors.amber;
+            dt = DateTime.parse(widget.orderData.confirmed);
+            data = DateFormat('kk:mm a').format(dt);
+            print("data...length" + data.toString());
           }
-          dt = DateTime.parse(widget.orderData.pending);
-          data = widget.orderData.confirmed;
+
           break;
         }
       case "Processing":
@@ -98,9 +112,10 @@ class _OrderStatusState extends State<OrderStatus> {
             color = Colors.white;
           } else {
             color = Colors.amber;
+            dt = DateTime.parse(widget.orderData.processing);
+            data = DateFormat('kk:mm a').format(dt);
           }
-          dt = DateTime.parse(widget.orderData.pending);
-          data = widget.orderData.processing;
+
           break;
         }
       case "Handover":
@@ -109,9 +124,10 @@ class _OrderStatusState extends State<OrderStatus> {
             color = Colors.white;
           } else {
             color = Colors.amber;
+            dt = DateTime.parse(widget.orderData.handover);
+            data = DateFormat('kk:mm a').format(dt);
           }
-          dt = DateTime.parse(widget.orderData.pending);
-          data = widget.orderData.handover;
+
           break;
         }
       case "Picked Up":
@@ -120,9 +136,10 @@ class _OrderStatusState extends State<OrderStatus> {
             color = Colors.white;
           } else {
             color = Colors.amber;
+            dt = DateTime.parse(widget.orderData.pickedUp);
+            data = DateFormat('kk:mm a').format(dt);
           }
-          dt = DateTime.parse(widget.orderData.pending);
-          data = widget.orderData.pickedUp;
+
           break;
         }
       case "Deliver":
@@ -131,9 +148,10 @@ class _OrderStatusState extends State<OrderStatus> {
             color = Colors.white;
           } else {
             color = Colors.amber;
+            dt = DateTime.parse(widget.orderData.delivered);
+            data = DateFormat('kk:mm a').format(dt);
           }
-          dt = DateTime.parse(widget.orderData.pending);
-          data = widget.orderData.delivered;
+
           break;
         }
       case "Cancel":
@@ -142,9 +160,10 @@ class _OrderStatusState extends State<OrderStatus> {
             color = Colors.white;
           } else {
             color = Colors.amber;
+            dt = DateTime.parse(widget.orderData.canceled);
+            data = DateFormat('kk:mm a').format(dt);
           }
-          dt = DateTime.parse(widget.orderData.pending);
-          data = widget.orderData.canceled;
+
           break;
         }
       case "Refund Request":
@@ -153,9 +172,10 @@ class _OrderStatusState extends State<OrderStatus> {
             color = Colors.white;
           } else {
             color = Colors.amber;
+            dt = DateTime.parse(widget.orderData.refundRequested);
+            data = DateFormat('kk:mm a').format(dt);
           }
-          dt = DateTime.parse(widget.orderData.pending);
-          data = widget.orderData.refundRequested;
+
           break;
         }
       case "Refund":
@@ -164,9 +184,10 @@ class _OrderStatusState extends State<OrderStatus> {
             color = Colors.white;
           } else {
             color = Colors.amber;
+            dt = DateTime.parse(widget.orderData.refunded);
+            data = DateFormat('kk:mm a').format(dt);
           }
-          dt = DateTime.parse(widget.orderData.pending);
-          data = widget.orderData.refunded;
+
           break;
         }
     }

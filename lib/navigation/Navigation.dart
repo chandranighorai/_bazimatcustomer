@@ -14,6 +14,7 @@ import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key key}) : super(key: key);
@@ -27,6 +28,7 @@ class _NavigationState extends State<Navigation> {
   String fullName, phone, firstLetter, email, ageStatus;
   var dio = Dio();
   var response;
+  GoogleSignIn googleSignIn = GoogleSignIn();
   @override
   void initState() {
     super.initState();
@@ -362,6 +364,9 @@ class _NavigationState extends State<Navigation> {
   void _logout(BuildContext context) {
     print("logout...");
     showAlertDialogWithCancel(context, "Are you sure?", () async {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      googleSignIn.signOut();
+      pref.clear();
       Navigator.pop(context);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LogIn()));
