@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "183721432618",
-    "project_id": "bazimat-e3e03",
-    "storage_bucket": "bazimat-e3e03.appspot.com"
+    "project_number": "606131559938",
+    "project_id": "bazimat-939b3",
+    "storage_bucket": "bazimat-939b3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:183721432618:android:a6385f5eeb85a808c29553",
+        "mobilesdk_app_id": "1:606131559938:android:90f47954fdef6a055a511b",
         "android_client_info": {
-          "package_name": "com.example.bazimat"
+          "package_name": "com.drinks.bazimat"
         }
       },
       "oauth_client": [
         {
-          "client_id": "183721432618-7gr4horvoov80vs2lteq38isps4580a3.apps.googleusercontent.com",
+          "client_id": "606131559938-63evl7c5qqr32odk951gn23id55hf40i.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyARntYr9-Cp38jrdOao8N4OsVfsBmy8nO8"
+          "current_key": "AIzaSyC3npg0NCC4jt3LiUiEnR1FJN_Ass7FLHE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "183721432618-7gr4horvoov80vs2lteq38isps4580a3.apps.googleusercontent.com",
+              "client_id": "606131559938-63evl7c5qqr32odk951gn23id55hf40i.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

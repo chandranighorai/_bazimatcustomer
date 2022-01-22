@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bazimat/age%20document/AgeDocument.dart';
 import 'package:bazimat/forget%20password/ForgetPassword.dart';
 import 'package:bazimat/home/Home.dart';
@@ -11,8 +13,11 @@ import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+//import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'dart:convert';
+//import 'package:firebase_messaging/firebase_messaging.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: [
@@ -36,11 +41,15 @@ class _LogInState extends State<LogIn> {
   var dio = Dio();
   var userFirstname, userLastname, userEmail;
   GoogleSignInAccount _currentUser;
+  String deviceToken;
+  //final _firebaseMessaging = FirebaseMessaging();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    deviceToken = '';
+    _getToken();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       setState(() {
         _currentUser = account;
@@ -60,6 +69,7 @@ class _LogInState extends State<LogIn> {
   @override
   void dispose() {
     // TODO: implement dispose
+    _googleSignIn.signIn();
     super.dispose();
   }
 
@@ -223,14 +233,19 @@ class _LogInState extends State<LogIn> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.15,
-                          width: MediaQuery.of(context).size.width / 9,
-                          decoration: BoxDecoration(
-                              //color: Colors.red,
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  image: AssetImage("images/facebook.png"))),
+                        InkWell(
+                          onTap: () {
+                            _loginFacebook();
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.width * 0.15,
+                            width: MediaQuery.of(context).size.width / 9,
+                            decoration: BoxDecoration(
+                                //color: Colors.red,
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    image: AssetImage("images/facebook.png"))),
+                          ),
                         ),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.15,
@@ -398,5 +413,22 @@ class _LogInState extends State<LogIn> {
     } on DioError catch (e) {
       print(e.toString());
     }
+  }
+
+  _getToken() async {
+    if (Platform.isIOS == TargetPlatform.iOS ||
+        Platform.isMacOS == TargetPlatform.macOS) {
+      //String token = await FirebaseMessaging.instance.getAPNSToken();
+    }
+  }
+
+  _loginFacebook() async {
+    var userObject = {};
+    // FacebookAuth.instance
+    //     .login(Permissions: ["public_profile", "email"]).then((value) {
+    //   print("Value of faceBook...." + value.toString());
+
+    //     });
+    //Fac
   }
 }

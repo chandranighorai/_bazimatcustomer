@@ -37,6 +37,7 @@ dependencies:
   #flutter_svg: any
   geolocator: ^3.0.1
   google_maps_flutter: ^2.0.0
+  #firebase_messaging: ^10.0.3
   #cached_network_image: ^3.2.0
   package_info: ^2.0.2
   carousel_pro: ^1.0.0
@@ -44,7 +45,9 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   intl: ^0.17.0
   google_sign_in: 4.5.9
-  firebase_auth: ^3.3.5
+  #firebase_auth: ^3.3.5
+  #firebase_core: any
+  #flutter_facebook_auth: ^4.0.1
   #flutter_html: ^2.0.0
 
 dev_dependencies:

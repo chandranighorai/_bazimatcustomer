@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.bazimat"
+        applicationId "com.drinks.bazimat"
         minSdkVersion 20
         targetSdkVersion 30
         multiDexEnabled true
@@ -76,3 +76,4 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation platform('com.google.firebase:firebase-bom:29.0.4')
 }
+apply plugin: 'com.google.gms.google-services'

@@ -1,4 +1,4 @@
-package com.example.bazimat
+package com.drinks.bazimat
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:bazimat/sign%20up/SignUp.dart';
+//import 'package:bazimat/sign%20up/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
+import 'sign up/SignUp.dart';
 
 void main() {
   runApp(MyApp());
