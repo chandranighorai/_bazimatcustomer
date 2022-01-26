@@ -7,12 +7,16 @@ import 'package:bazimat/sign%20up/Otp.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key key}) : super(key: key);
+  var loginType;
+  String firstName, lastName, mail;
+  SignUp({this.loginType, this.firstName, this.lastName, this.mail, Key key})
+      : super(key: key);
 
   @override
   _SignUpState createState() => _SignUpState();
@@ -20,11 +24,16 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   TextEditingController _firstName, _lastName, _email, _phone, _password;
+  FirebaseMessaging _firebaseMessaging;
   bool _isHidden;
   var dio = Dio();
   @override
   void initState() {
     super.initState();
+    _firebaseMessaging = FirebaseMessaging.instance;
+    _firebaseMessaging.getToken().then((value) {
+      print("firsebase value..." + value.toString());
+    });
     _firstName = new TextEditingController();
     _lastName = new TextEditingController();
     _email = new TextEditingController();
@@ -75,11 +84,13 @@ class _SignUpState extends State<SignUp> {
           SizedBox(
             height: MediaQuery.of(context).size.width * 0.2,
           ),
-          buildText("First Name"),
+          buildText(
+              widget.loginType == "social" ? widget.firstName : "First Name"),
           SizedBox(
             height: MediaQuery.of(context).size.width * 0.03,
           ),
-          buildText("Last Name"),
+          buildText(
+              widget.loginType == "social" ? widget.lastName : "Last Name"),
           // Container(
           //   color: Colors.white,
           //   padding: EdgeInsets.only(
@@ -95,7 +106,7 @@ class _SignUpState extends State<SignUp> {
           SizedBox(
             height: MediaQuery.of(context).size.width * 0.03,
           ),
-          buildText("Email Id"),
+          buildText(widget.loginType == "social" ? widget.mail : "Email Id"),
           // Container(
           //   color: Colors.white,
           //   padding: EdgeInsets.only(
@@ -111,7 +122,8 @@ class _SignUpState extends State<SignUp> {
           SizedBox(
             height: MediaQuery.of(context).size.width * 0.03,
           ),
-          buildText("Mobile Number"),
+          buildText(
+              widget.loginType == "social" ? "Mobile Number" : "Mobile Number"),
 
           // Container(
           //   color: Colors.white,
@@ -128,7 +140,7 @@ class _SignUpState extends State<SignUp> {
           SizedBox(
             height: MediaQuery.of(context).size.width * 0.03,
           ),
-          buildText("Password"),
+          buildText(widget.loginType == "social" ? "Password" : "Password"),
           // Container(
           //   color: Colors.white,
           //   padding: EdgeInsets.only(
@@ -186,7 +198,22 @@ class _SignUpState extends State<SignUp> {
 
   _submit() async {
     try {
+      // print("phone..." + _phone.text.length.runtimeType.toString());
+      // print("phone..." + _firstName.text.toString());
+      if (widget.loginType == "social") {
+        setState(() {
+          _firstName.text = widget.firstName.toString();
+          _lastName.text = widget.lastName.toString();
+          _email.text = widget.mail.toString();
+        });
+      }
       print("phone..." + _phone.text.length.runtimeType.toString());
+      print("phone..." + _firstName.text.toString());
+      print("phone..." + _lastName.text.toString());
+      print("phone..." + _email.text.toString());
+      print("phone..." + _phone.text.toString());
+      print("phone..." + _password.text.toString());
+
       Pattern pattern =
           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
       RegExp regExp = RegExp(pattern);
@@ -235,17 +262,22 @@ class _SignUpState extends State<SignUp> {
 
   buildText(String hintText) {
     print("HintText..." + hintText.toString());
+    print("HintText..." + _firstName.toString());
+
+    // _firstName = widget.firstName;
+    // _lastName = widget.lastName;
+    // _email = widget.mail;
     return Container(
       color: Colors.white,
       padding: EdgeInsets.only(
           left: MediaQuery.of(context).size.width * 0.07,
           right: MediaQuery.of(context).size.width * 0.07),
       child: TextFormField(
-        controller: hintText == "First Name"
+        controller: (hintText == "First Name" || hintText == widget.firstName)
             ? _firstName
-            : hintText == "Last Name"
+            : (hintText == "Last Name" || hintText == widget.lastName)
                 ? _lastName
-                : hintText == "Email Id"
+                : (hintText == "Email Id" || hintText == widget.mail)
                     ? _email
                     : hintText == "Mobile Number"
                         ? _phone
@@ -255,8 +287,17 @@ class _SignUpState extends State<SignUp> {
             ? TextInputType.number
             : hintText == "Email Id"
                 ? TextInputType.emailAddress
-                : TextInputType.name,
+                : hintText == "Email Id"
+                    ? TextInputType.visiblePassword
+                    : TextInputType.name,
         decoration: InputDecoration(
+            enabled: (hintText == "Mobile Number" ||
+                    hintText == "Password" ||
+                    hintText == "First Name" ||
+                    hintText == "Last Name" ||
+                    hintText == "Email Id")
+                ? true
+                : false,
             hintText: hintText,
             border: InputBorder.none,
             suffixIcon: hintText == "Password"
@@ -266,6 +307,9 @@ class _SignUpState extends State<SignUp> {
                         : Icon(Icons.visibility),
                     onPressed: _toggleVisibility)
                 : null),
+        onChanged: (value) {
+          print("value..." + value.toString());
+        },
       ),
     );
   }

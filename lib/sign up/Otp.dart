@@ -6,6 +6,7 @@ import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OTP extends StatefulWidget {
   var phone, forgetPass;
@@ -81,6 +82,7 @@ class _OTPState extends State<OTP> {
   void _sendButton() async {
     print("phone" + widget.phone.toString());
     print("otp" + _otpText.text.toString());
+    SharedPreferences pref = await SharedPreferences.getInstance();
 
     try {
       print("otpText..." + _otpText.text.toString());
@@ -99,9 +101,13 @@ class _OTPState extends State<OTP> {
           showCustomToast(responseOtp.data["errors"][0]["message"]);
         } else {
           showCustomToast(responseOtp.data["message"]);
+          pref.setString("Phone", widget.phone.toString());
           widget.forgetPass == "ForgetPassword"
-              ? Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ResetPassword(phone:widget.phone,otp:_otpText.text.toString())))
+              ? Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ResetPassword(
+                          phone: widget.phone, otp: _otpText.text.toString())))
               : Navigator.push(
                   context, MaterialPageRoute(builder: (context) => LogIn()));
         }

@@ -45,4 +45,5 @@ class Const {
   static String rateFood = appUrl + "products/reviews/submit";
   static String currentOrder = appUrl + "customer/order/track";
   static String productRate = appUrl + "products/rating";
+  static String checkEmail = appUrl + "auth/check-email";
 }

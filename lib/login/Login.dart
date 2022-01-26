@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:bazimat/age%20document/AgeDocument.dart';
 import 'package:bazimat/forget%20password/ForgetPassword.dart';
 import 'package:bazimat/home/Home.dart';
@@ -12,17 +11,19 @@ import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+//import 'package:intl/intl_browser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-//import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'dart:convert';
-//import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: [
     'email',
-//'https://www.googleapis.com/auth/contacts.readonly',
+    //'https://www.googleapis.com/auth/contacts.readonly',
     'https://www.googleapis.com/auth/userinfo.profile',
   ],
 );
@@ -42,12 +43,20 @@ class _LogInState extends State<LogIn> {
   var userFirstname, userLastname, userEmail;
   GoogleSignInAccount _currentUser;
   String deviceToken;
+  Map _userObj = {};
+  FirebaseMessaging _firebaseMessaging;
+  //static final FacebookLogin facebookSignIn = new FacebookLogin();
+
   //final _firebaseMessaging = FirebaseMessaging();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _firebaseMessaging = FirebaseMessaging.instance;
+    _firebaseMessaging.getToken().then((value) {
+      print("firsebase Val..." + value.toString());
+    });
     deviceToken = '';
     _getToken();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
@@ -404,12 +413,33 @@ class _LogInState extends State<LogIn> {
 
   _signinGoogle() async {
     try {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      pref.setString("fName", userFirstname);
-      pref.setString("lName", userLastname);
-      pref.setString("Email", userEmail);
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => Home()), (route) => false);
+      var param = "?email=" + userEmail.toString();
+      var url = Const.checkEmail + param;
+      print("Url..." + url.toString());
+      print("Url..." + userEmail.toString());
+      var response = await dio.post(url,
+          options: Options(headers: {"Authorization": "Bearer $deviceToken"}));
+      print("response..." + response.data.toString());
+      if (response.data['state'] == 0) {
+        showCustomToast(response.data["message"]);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SignUp(
+                    loginType: "social",
+                    firstName: userFirstname,
+                    lastName: userLastname,
+                    mail: userEmail)));
+        await _googleSignIn.signIn();
+      } else {
+        showCustomToast(response.data["errors"][0]["message"]);
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        pref.setString("fName", userFirstname);
+        pref.setString("lName", userLastname);
+        pref.setString("Email", userEmail);
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => Home()), (route) => false);
+      }
     } on DioError catch (e) {
       print(e.toString());
     }
@@ -418,17 +448,46 @@ class _LogInState extends State<LogIn> {
   _getToken() async {
     if (Platform.isIOS == TargetPlatform.iOS ||
         Platform.isMacOS == TargetPlatform.macOS) {
-      //String token = await FirebaseMessaging.instance.getAPNSToken();
+      String token = await FirebaseMessaging.instance.getAPNSToken();
+      setState(() {
+        deviceToken = token;
+      });
+    } else if (Platform.isAndroid) {
+      FirebaseMessaging.instance.getToken().then((token) {
+        print(token);
+        setState(() {
+          deviceToken = token;
+          print("deviceToken..." + deviceToken.toString());
+        });
+      });
+    } else {
+      print(
+          'FlutterFire Messaging Example: Getting an APNs token is only supported on iOS and macOS platforms.');
     }
   }
 
   _loginFacebook() async {
-    var userObject = {};
-    // FacebookAuth.instance
-    //     .login(Permissions: ["public_profile", "email"]).then((value) {
-    //   print("Value of faceBook...." + value.toString());
-
-    //     });
-    //Fac
+    //var userObject = {};
+    print("click...");
+    // var token = "EAAETsnBCNEkBACJJ8lAdRWdycr8UV9klOpBOYUT4OxeRowREO0ZCw6vTCjz68bmIdUvmf2S3N5RXNZCZB5jhCPCvTNZBPmA0hWidJefj1xEZBVJnsKGynSZA1mhZCWV8Cc9twNA4152XUjIUCEQBTuZCZBxvGS6TpInva5Caqtc4tNM1trTGjvsAIz10eFZAeQwvZAxPZAjfmzYHBYZCDhVrhXlXINfmB6QxqNKcd5WcOE4epzuNWT3sKDjT3";
+    // var graphResponse = await dio.get(
+    //     'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${FacebookAuth.instance.accessToken}');
+    // print("click..." + graphResponse.toString());
+    // print("token..." + FacebookAuth.instance.accessToken.toString());
+    // final FacebookLoginResult result = await facebookSignIn.logIn(['email']);
+    // print("accessToken..." + result.status.toString());
+    AccessToken accessToken = await FacebookAuth.instance.accessToken;
+    print("accessToken..." + accessToken.toString());
+    FacebookAuth.instance
+        .login(permissions: ['email', 'public_profile']).then((value) {
+      print("val..." + value.toString());
+      FacebookAuth.instance.getUserData().then((userData) {
+        print("UserDAta..." + userData.toString());
+        print("Name..." + userData['name'].toString());
+        setState(() {
+          _userObj = userData;
+        });
+      });
+    });
   }
 }

@@ -1,12 +1,41 @@
 import 'dart:async';
+// import 'dart:html';
 //import 'package:bazimat/sign%20up/SignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'sign up/SignUp.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-void main() {
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(
+    RemoteMessage remoteMessage) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+  print("Handling a backgrond message ${remoteMessage.messageId}");
+}
+
+AndroidNotificationChannel channel = const AndroidNotificationChannel(
+  'high_importance_channel',
+  'High Importance Notifications',
+  'This channel is used for notification',
+  importance: Importance.max,
+);
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // await flutterLocalNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<
+  //         AndroidFlutterLocalNotificationsPlugin>()
+  //     ?.createNotificationChannel(channel);
   runApp(MyApp());
 }
 
@@ -37,10 +66,28 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   Geolocator _geolocator;
   Position _position;
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   @override
   void initState() {
     super.initState();
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   RemoteNotification notification = message.notification;
+    //   AndroidNotification android = message.notification.android;
+
+    //   // If `onMessage` is triggered with a notification, construct our own
+    //   // local notification to show to users using the created channel.
+    //   if (notification != null && android != null) {
+    //     flutterLocalNotificationsPlugin.show(
+    //         notification.hashCode,
+    //         notification.title,
+    //         notification.body,
+    //         NotificationDetails(
+    //             android: AndroidNotificationDetails(
+    //                 channel.id, channel.name, channel.description,
+    //                 icon: android?.smallIcon)));
+    //   }
+    // });
     _geolocator = Geolocator();
     LocationOptions locationOptions =
         LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 1);

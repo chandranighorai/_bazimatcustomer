@@ -47,7 +47,12 @@ dependencies:
   google_sign_in: 4.5.9
   #firebase_auth: ^3.3.5
   #firebase_core: any
-  #flutter_facebook_auth: ^4.0.1
+  #permission_handler: ^5.1.0+2
+  flutter_facebook_auth: ^3.5.7
+  firebase_messaging: ^11.2.5
+  flutter_local_notifications: ^5.0.0
+  flutter_facebook_login: ^3.0.0
+  #firebase_core: ^1.11.0
   #flutter_html: ^2.0.0
 
 dev_dependencies:

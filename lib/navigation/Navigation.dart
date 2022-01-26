@@ -384,6 +384,7 @@ class _NavigationState extends State<Navigation> {
       email = pref.getString("Email");
       ageStatus = pref.getString("ageStatus");
       fullName = firstName + " " + lastName;
+      print("response of config..." + phone.toString());
     });
     _getConfigData();
   }
