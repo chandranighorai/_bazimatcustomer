@@ -1,5 +1,6 @@
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
 import 'package:bazimat/sub%20list/SubListModel.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -42,18 +43,20 @@ class _SubListItemState extends State<SubListItem> {
     print("imageUrl..." + imageUrl.toString());
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CuisinDetails(
-                    listData: widget.listData,
-                    resturentLat: widget.listData.latitude,
-                    resturentLng: widget.listData.longitude,
-                    distance: getDistanceResponse.data["rows"][0]["elements"][0]
-                        ["distance"]["text"],
-                    duration: getDistanceResponse.data["rows"][0]["elements"][0]
-                        ["duration"]["text"],
-                    section: "list")));
+        _distanceLoad == false
+            ? showCustomToast("wait a few seconds")
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CuisinDetails(
+                        listData: widget.listData,
+                        resturentLat: widget.listData.latitude,
+                        resturentLng: widget.listData.longitude,
+                        distance: getDistanceResponse.data["rows"][0]
+                            ["elements"][0]["distance"]["text"],
+                        duration: getDistanceResponse.data["rows"][0]
+                            ["elements"][0]["duration"]["text"],
+                        section: "list")));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),

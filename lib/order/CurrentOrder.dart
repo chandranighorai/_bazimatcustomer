@@ -74,7 +74,7 @@ class _CurrentOrderState extends State<CurrentOrder> {
       var orderId = pref.getString("OrderId");
       var token = pref.getString("token");
       print("OrderId..." + orderId.toString());
-      var param = "?order_id=" + orderId;
+      var param = "?order_id=" + orderId.toString();
       var url = Const.currentOrder + param;
       print("OrderId..." + url.toString());
       print("OrderId..." + _message.length.toString());

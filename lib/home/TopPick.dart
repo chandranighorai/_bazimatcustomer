@@ -1,5 +1,6 @@
 import 'package:bazimat/home/PopularResturentModel.dart';
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -31,18 +32,20 @@ class _TopPicksState extends State<TopPicks> {
     return InkWell(
       onTap: () {
         print("top cuisin..." + widget.topArr.latitude.toString());
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CuisinDetails(
-                    topPickList: widget.topArr,
-                    resturentLat: widget.topArr.latitude.toString(),
-                    resturentLng: widget.topArr.longitude.toString(),
-                    distance: distanceData.data["rows"][0]["elements"][0]
-                        ["distance"]["text"],
-                    duration: distanceData.data["rows"][0]["elements"][0]
-                        ["duration"]["text"],
-                    section: "topPicks")));
+        _distanceLoad == false
+            ? showCustomToast("wait a few seconds")
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CuisinDetails(
+                        topPickList: widget.topArr,
+                        resturentLat: widget.topArr.latitude.toString(),
+                        resturentLng: widget.topArr.longitude.toString(),
+                        distance: distanceData.data["rows"][0]["elements"][0]
+                            ["distance"]["text"],
+                        duration: distanceData.data["rows"][0]["elements"][0]
+                            ["duration"]["text"],
+                        section: "topPicks")));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),

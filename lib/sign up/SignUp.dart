@@ -26,6 +26,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController _firstName, _lastName, _email, _phone, _password;
   FirebaseMessaging _firebaseMessaging;
   bool _isHidden;
+  var typeLog;
   var dio = Dio();
   @override
   void initState() {
@@ -50,6 +51,7 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+    print("logType..." + widget.loginType.toString());
     return Scaffold(
         body: SingleChildScrollView(
       child: Column(
@@ -140,7 +142,10 @@ class _SignUpState extends State<SignUp> {
           SizedBox(
             height: MediaQuery.of(context).size.width * 0.03,
           ),
-          buildText(widget.loginType == "social" ? "Password" : "Password"),
+          widget.loginType == null
+              ? buildText(
+                  widget.loginType == "social" ? "Password" : "Password")
+              : SizedBox(),
           // Container(
           //   color: Colors.white,
           //   padding: EdgeInsets.only(
@@ -199,12 +204,14 @@ class _SignUpState extends State<SignUp> {
   _submit() async {
     try {
       // print("phone..." + _phone.text.length.runtimeType.toString());
-      // print("phone..." + _firstName.text.toString());
+      print("phone..." + widget.loginType.toString());
       if (widget.loginType == "social") {
         setState(() {
           _firstName.text = widget.firstName.toString();
           _lastName.text = widget.lastName.toString();
           _email.text = widget.mail.toString();
+          _password.text = "abcdxy";
+          typeLog = "logIn";
         });
       }
       print("phone..." + _phone.text.length.runtimeType.toString());
@@ -245,11 +252,13 @@ class _SignUpState extends State<SignUp> {
         // print("state..." + response.data["errors"][0]["message"].toString());
 
         if (response.data["state"] == 0) {
+          print("phone..." + typeLog.toString());
           showCustomToast("Registration successfully");
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => OTP(phone: _phone.text.trim())));
+                  builder: (context) =>
+                      OTP(phone: _phone.text.trim(), type: typeLog)));
         } else {
           print("response body..." + response.data["errors"].toString());
           showCustomToast(response.data["errors"][0]["message"].toString());

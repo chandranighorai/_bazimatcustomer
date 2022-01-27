@@ -569,6 +569,7 @@ class _HomeState extends State<Home> {
       print("serviceable..." + _serviceAvailable.toString());
       SharedPreferences preferences = await SharedPreferences.getInstance();
       var response = preferences.getString("token");
+      print("token..." + response.toString());
       latitude = preferences.getString("latitude");
       longitude = preferences.getString("longitude");
       // print("Latitude..." + preferences.getString("latitude"));
@@ -823,8 +824,10 @@ class _HomeState extends State<Home> {
   _getCustomerInfo() async {
     try {
       var pref = await SharedPreferences.getInstance();
+      var name = pref.getString("fName");
       var token = pref.getString("token");
       print("Token..." + token.toString());
+      print("Token..." + name.toString());
       print("Token..." + Const.customerInfo.toString());
       var response = await dio.get(Const.customerInfo,
           options: Options(headers: {

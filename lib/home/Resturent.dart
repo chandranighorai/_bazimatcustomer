@@ -5,6 +5,7 @@ import 'package:bazimat/home/ResturentList.dart';
 import 'package:bazimat/home/ResturentModel.dart';
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -45,17 +46,19 @@ class _ResturentState extends State<Resturent> {
     print("resturentData..." + widget.resturentData.name.toString());
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CuisinDetails(
-                    resturentData: widget.resturentData,
-                    resturentLat: widget.resturentData.latitude,
-                    resturentLng: widget.resturentData.longitude,
-                    distance: getDistanceResponse.data["rows"][0]["elements"][0]
-                        ["distance"]["text"],
-                    duration: getDistanceResponse.data["rows"][0]["elements"][0]
-                        ["duration"]["text"])));
+        _distanceLoad == false
+            ? showCustomToast("wait a few seconds")
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CuisinDetails(
+                        resturentData: widget.resturentData,
+                        resturentLat: widget.resturentData.latitude,
+                        resturentLng: widget.resturentData.longitude,
+                        distance: getDistanceResponse.data["rows"][0]
+                            ["elements"][0]["distance"]["text"],
+                        duration: getDistanceResponse.data["rows"][0]
+                            ["elements"][0]["duration"]["text"])));
       },
       child: Stack(
         children: [

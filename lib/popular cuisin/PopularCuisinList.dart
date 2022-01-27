@@ -1,6 +1,7 @@
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
 import 'package:bazimat/popular%20cuisin/PopularCuisinResturentModel.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -33,18 +34,20 @@ class _PopularCuisinListState extends State<PopularCuisinList> {
     print("imagePath..." + imagePath.toString());
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CuisinDetails(
-                    cuisinList: widget.cuisinList,
-                    resturentLat: widget.cuisinList.latitude,
-                    resturentLng: widget.cuisinList.longitude,
-                    distance: distanceResponse.data["rows"][0]["elements"][0]
-                        ["distance"]["text"],
-                    duration: distanceResponse.data["rows"][0]["elements"][0]
-                        ["duration"]["text"],
-                    section: "cuisin")));
+        _distanceLoad == false
+            ? showCustomToast("wait a few seconds")
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CuisinDetails(
+                        cuisinList: widget.cuisinList,
+                        resturentLat: widget.cuisinList.latitude,
+                        resturentLng: widget.cuisinList.longitude,
+                        distance: distanceResponse.data["rows"][0]["elements"]
+                            [0]["distance"]["text"],
+                        duration: distanceResponse.data["rows"][0]["elements"]
+                            [0]["duration"]["text"],
+                        section: "cuisin")));
       },
       child: Stack(
         children: [

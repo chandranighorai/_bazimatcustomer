@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:bazimat/age%20document/AgeDocument.dart';
 import 'package:bazimat/forget%20password/ForgetPassword.dart';
 import 'package:bazimat/home/Home.dart';
+import 'package:bazimat/login/Phone.dart';
 import 'package:bazimat/shapes/ShapeComponent.dart';
 import 'package:bazimat/sign%20up/Otp.dart';
 import 'package:bazimat/sign%20up/SignUp.dart';
@@ -29,7 +30,8 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 );
 
 class LogIn extends StatefulWidget {
-  const LogIn({Key key}) : super(key: key);
+  var type;
+  LogIn({this.type, Key key}) : super(key: key);
 
   @override
   _LogInState createState() => _LogInState();
@@ -132,7 +134,7 @@ class _LogInState extends State<LogIn> {
                 child: Column(
                   children: [
                     buildText("Mobile Number"),
-                    buildText("Password"),
+                    widget.type == "logIn" ? SizedBox() : buildText("Password"),
                     // Padding(
                     //   padding: const EdgeInsets.all(10.0),
                     //   child: Container(
@@ -329,6 +331,13 @@ class _LogInState extends State<LogIn> {
     try {
       print("Mobile Text..." + _phoneText.text.toString());
       print("Mobile Text..." + _passText.text.toString());
+      print("Mobile Text..." + widget.type.toString());
+
+      if (widget.type == "logIn") {
+        setState(() {
+          _passText.text = "abcdxy";
+        });
+      }
       SharedPreferences pref = await SharedPreferences.getInstance();
       if (_phoneText.text.isEmpty || _passText.text.isEmpty) {
         showCustomToast("Field should not empty");
@@ -342,16 +351,25 @@ class _LogInState extends State<LogIn> {
         print("FormData..." + formData.toString());
         var response = await dio.post(Const.login, data: formData);
         print("responsestatusCode..." + response.statusCode.toString());
-        print("responseBody..." + response.data.toString());
+        print("responseBody...login..." + response.data.toString());
         if (response.data["state"] == 1) {
+          print("responseBody...login..." + response.data.toString());
+
           showCustomToast(response.data["errors"][0]["message"]);
           setState(() {
             _buttonDisable = false;
           });
         } else {
           if (response.data["is_phone_verified"] == 1) {
+            print("responseBody...login...token..." +
+                response.data["token"].toString());
+
             //saveUserPref(response.data["token"]);
-            pref.setString("token", response.data["token"]);
+            setState(() {
+              pref.setString("token", response.data["token"].toString());
+              var ttkon = pref.getString("token");
+              print("responseBody...login...token..." + ttkon.toString());
+            });
             showCustomToast("Login Successful");
             Navigator.pushAndRemoveUntil(
                 context,
@@ -437,8 +455,10 @@ class _LogInState extends State<LogIn> {
         pref.setString("fName", userFirstname);
         pref.setString("lName", userLastname);
         pref.setString("Email", userEmail);
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => Home()), (route) => false);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Phone()));
+
+        //MaterialPageRoute(builder: (context) => Phone()), (route) => false);
       }
     } on DioError catch (e) {
       print(e.toString());

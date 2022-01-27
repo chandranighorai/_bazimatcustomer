@@ -58,11 +58,13 @@ class _AddCuisinState extends State<AddCuisin> {
   var duration, distance, addressLat, addressLng, token;
   var dio = Dio();
   String addr, restLat, restLng, addressType;
+  bool _pageLoad;
   @override
   void initState() {
     super.initState();
     couponApplied = false;
     addressLoad = false;
+    _pageLoad = false;
     couponPrice = 0.0;
     itemCount = 1;
     duration = widget.duration;
@@ -92,436 +94,486 @@ class _AddCuisinState extends State<AddCuisin> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          //height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          color: Colors.grey[100],
-          // padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.03),
-          child: Column(
-            children: [
-              AddQuantity(
-                  imageUrl: image,
-                  resturentName: widget.resturentName,
-                  resturentAddr: widget.resturenrAddr,
-                  resturentOffer: widget.resturentPrice,
-                  product: widget.product,
-                  refresh: _itemUpdate),
-              SizedBox(
-                height: MediaQuery.of(context).size.width * 0.02,
-              ),
-              Container(
-                //height: MediaQuery.of(context).size.width * 0.12,
+      body: _pageLoad == false
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Container(
+                //height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                color: Colors.white,
-                padding: EdgeInsets.all(
-                  MediaQuery.of(context).size.width * 0.02,
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.width * 0.1,
-                      width: MediaQuery.of(context).size.width / 20,
-                      decoration: BoxDecoration(
-                          //color: Colors.red,
-                          image: DecorationImage(
-                              image: AssetImage("images/discount-black.png"))),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.02,
-                    ),
-                    Text("Apply coupon".toUpperCase()),
-                    Spacer(),
-                    IconButton(
-                        icon: Icon(
-                          Icons.arrow_forward_ios_sharp,
-                          color: Colors.black,
-                        ),
-                        onPressed: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            Coupon(payPrice: payPrice)))
-                                .then((value) {
-                              print(value.toString());
-                              setState(() {
-                                couponApplied = value["cuponApplied"];
-                                couponPrice =
-                                    double.parse(value["price"].toString());
-                                payPrice =
-                                    (itemPrice + deliveryCharge + taxPrice) -
-                                        couponPrice;
-                              });
-                            }))
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.width * 0.02,
-              ),
-              Container(
-                //height: MediaQuery.of(context).size.height * 0.2,
-                width: MediaQuery.of(context).size.width,
-                color: Colors.white,
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.02,
-                  right: MediaQuery.of(context).size.width * 0.02,
-                  top: MediaQuery.of(context).size.width * 0.06,
-                  bottom: MediaQuery.of(context).size.width * 0.06,
-                ),
+                color: Colors.grey[100],
+                // padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.03),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Bill Details",
-                      style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.05,
-                          fontWeight: FontWeight.bold),
-                    ),
+                    AddQuantity(
+                        imageUrl: image,
+                        resturentName: widget.resturentName,
+                        resturentAddr: widget.resturenrAddr,
+                        resturentOffer: widget.resturentPrice,
+                        product: widget.product,
+                        refresh: _itemUpdate),
                     SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.06,
+                      height: MediaQuery.of(context).size.width * 0.02,
                     ),
-                    Row(
-                      children: [
-                        Text("Item Total"),
-                        Spacer(),
-                        Text("\u20B9$itemPrice")
-                      ],
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.04,
-                    ),
-                    IntrinsicHeight(
+                    Container(
+                      //height: MediaQuery.of(context).size.width * 0.12,
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.white,
+                      padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.02,
+                      ),
                       child: Row(
                         children: [
-                          Text(
-                            "Delivery Fee",
-                            style: TextStyle(color: AppColors.cartPage),
+                          Container(
+                            height: MediaQuery.of(context).size.width * 0.1,
+                            width: MediaQuery.of(context).size.width / 20,
+                            decoration: BoxDecoration(
+                                //color: Colors.red,
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        "images/discount-black.png"))),
                           ),
-                          VerticalDivider(
-                              thickness: 1, color: AppColors.cartPage),
-                          Text(
-                            _distanceLoad == false ? "..." : "$distance",
-                            style: TextStyle(color: AppColors.cartPage),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.02,
                           ),
+                          Text("Apply coupon".toUpperCase()),
                           Spacer(),
-                          Text("\u20B9$deliveryCharge")
+                          IconButton(
+                              icon: Icon(
+                                Icons.arrow_forward_ios_sharp,
+                                color: Colors.black,
+                              ),
+                              onPressed: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Coupon(payPrice: payPrice)))
+                                      .then((value) {
+                                    print(value.toString());
+                                    setState(() {
+                                      couponApplied = value["cuponApplied"];
+                                      couponPrice = double.parse(
+                                          value["price"].toString());
+                                      payPrice = (itemPrice +
+                                              deliveryCharge +
+                                              taxPrice) -
+                                          couponPrice;
+                                    });
+                                  }))
                         ],
                       ),
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
-                    Divider(),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.02,
-                    ),
-                    // Row(
-                    //   children: [
-                    //     Text("Delivery Tip"),
-                    //     Spacer(),
-                    //     Text(
-                    //       "Add Tip",
-                    //       style: TextStyle(
-                    //           color: AppColors.cartPage,
-                    //           fontSize:
-                    //               MediaQuery.of(context).size.width * 0.03),
-                    //     )
-                    //   ],
-                    // ),
-                    // SizedBox(
-                    //   height: MediaQuery.of(context).size.width * 0.03,
-                    // ),
-                    Row(
-                      children: [
-                        Text("Taxes and Charges"),
-                        Spacer(),
-                        Text(
-                          "\u20B9$taxPrice",
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.02,
-                    ),
-                    couponApplied == false ? SizedBox() : Divider(),
-                    // SizedBox(
-                    //   height: MediaQuery.of(context).size.width * 0.02,
-                    // ),
-                    couponApplied == false
-                        ? SizedBox()
-                        : Row(
+                    Container(
+                      //height: MediaQuery.of(context).size.height * 0.2,
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.white,
+                      padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.02,
+                        right: MediaQuery.of(context).size.width * 0.02,
+                        top: MediaQuery.of(context).size.width * 0.06,
+                        bottom: MediaQuery.of(context).size.width * 0.06,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Bill Details",
+                            style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.05,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.06,
+                          ),
+                          Row(
                             children: [
-                              Text("Coupon Applied"),
+                              Text("Item Total"),
+                              Spacer(),
+                              Text("\u20B9$itemPrice")
+                            ],
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.04,
+                          ),
+                          IntrinsicHeight(
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Delivery Fee",
+                                  style: TextStyle(color: AppColors.cartPage),
+                                ),
+                                VerticalDivider(
+                                    thickness: 1, color: AppColors.cartPage),
+                                Text(
+                                  _distanceLoad == false ? "..." : "$distance",
+                                  style: TextStyle(color: AppColors.cartPage),
+                                ),
+                                Spacer(),
+                                Text("\u20B9$deliveryCharge")
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.02,
+                          ),
+                          Divider(),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.02,
+                          ),
+                          // Row(
+                          //   children: [
+                          //     Text("Delivery Tip"),
+                          //     Spacer(),
+                          //     Text(
+                          //       "Add Tip",
+                          //       style: TextStyle(
+                          //           color: AppColors.cartPage,
+                          //           fontSize:
+                          //               MediaQuery.of(context).size.width * 0.03),
+                          //     )
+                          //   ],
+                          // ),
+                          // SizedBox(
+                          //   height: MediaQuery.of(context).size.width * 0.03,
+                          // ),
+                          Row(
+                            children: [
+                              Text("Taxes and Charges"),
                               Spacer(),
                               Text(
-                                "\u20B9$couponPrice",
+                                "\u20B9$taxPrice",
                               )
                             ],
                           ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.02,
-                    ),
-                    Divider(),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.02,
-                    ),
-                    Row(
-                      children: [
-                        Text("To Pay"),
-                        Spacer(),
-                        Text("\u20B9$payPrice")
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.width * 0.02,
-              ),
-              Container(
-                padding:
-                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                width: MediaQuery.of(context).size.width,
-                color: Colors.white,
-                child: Row(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 12,
-                      height: MediaQuery.of(context).size.width * 0.08,
-                      decoration: BoxDecoration(
-                          //color: Colors.red,
-                          image: DecorationImage(
-                              image: AssetImage("images/paper.png"),
-                              fit: BoxFit.fill)),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.02,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      child: Text(
-                        "Please ensure your address and order details are correct. A cancellation fee will be applicable post 1 minute of placing your order.",
-                        style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.03),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.width * 0.08),
-              Stack(
-                children: [
-                  Container(
-                    //height: 20,
-                    padding: EdgeInsets.all(
-                        MediaQuery.of(context).size.width * 0.02),
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.white,
-                    child: Row(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width / 6,
-                          height: MediaQuery.of(context).size.width * 0.18,
-                          //color: Colors.red,
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey)),
-                          child: Icon(
-                            Icons.location_on_outlined,
-                            size: MediaQuery.of(context).size.width * 0.08,
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.02,
                           ),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.04,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 1.6,
-                          //color: Colors.red,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          couponApplied == false ? SizedBox() : Divider(),
+                          // SizedBox(
+                          //   height: MediaQuery.of(context).size.width * 0.02,
+                          // ),
+                          couponApplied == false
+                              ? SizedBox()
+                              : Row(
+                                  children: [
+                                    Text("Coupon Applied"),
+                                    Spacer(),
+                                    Text(
+                                      "\u20B9$couponPrice",
+                                    )
+                                  ],
+                                ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.02,
+                          ),
+                          Divider(),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.02,
+                          ),
+                          Row(
                             children: [
-                              Text(
-                                "Deliver to",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.04),
+                              Text("To Pay"),
+                              Spacer(),
+                              Text("\u20B9$payPrice")
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.width * 0.02),
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.white,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width / 12,
+                            height: MediaQuery.of(context).size.width * 0.08,
+                            decoration: BoxDecoration(
+                                //color: Colors.red,
+                                image: DecorationImage(
+                                    image: AssetImage("images/paper.png"),
+                                    fit: BoxFit.fill)),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.02,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width / 1.2,
+                            child: Text(
+                              "Please ensure your address and order details are correct. A cancellation fee will be applicable post 1 minute of placing your order.",
+                              style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.03),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.width * 0.08),
+                    Stack(
+                      children: [
+                        Container(
+                          //height: 20,
+                          padding: EdgeInsets.all(
+                              MediaQuery.of(context).size.width * 0.02),
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.white,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width / 6,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.18,
+                                //color: Colors.red,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey)),
+                                child: Icon(
+                                  Icons.location_on_outlined,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.08,
+                                ),
                               ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.04,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 1.8,
+                                //color: Colors.red,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Deliver to",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.04),
+                                    ),
+                                    addressLoad == false
+                                        ? Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : addressList.length == 0
+                                            ? SizedBox()
+                                            : Text(
+                                                addr,
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.04),
+                                              ),
+                                    addressList.length == 0
+                                        ? SizedBox()
+                                        : Text(
+                                            _distanceLoad == false
+                                                ? "..."
+                                                : "$duration",
+                                            style: TextStyle(
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.03),
+                                          )
+                                  ],
+                                ),
+                              ),
+                              Spacer(),
                               addressLoad == false
                                   ? Center(
                                       child: CircularProgressIndicator(),
                                     )
                                   : addressList.length == 0
-                                      ? SizedBox()
-                                      : Text(
-                                          addr,
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.04),
-                                        ),
-                              Text(
-                                _distanceLoad == false ? "..." : "$duration",
-                                style: TextStyle(
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.03),
-                              )
+                                      ? InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            AddAddress(
+                                                                refresh:
+                                                                    _getChangeAddress)))
+                                                .then((value) {
+                                              print("Value..." +
+                                                  value["addressType"]
+                                                      .toString());
+                                              // print("resturentLat...Value..." +
+                                              //     widget.resturentLat.toString());
+                                              setState(() {
+                                                addr = value["address"];
+                                                addressType =
+                                                    value["addressType"];
+                                                addressLat = value["latitude"];
+                                                addressLat = value["longitude"];
+                                                _distanceLoad = false;
+
+                                                _getDistance(
+                                                    value["latitude"],
+                                                    value["longitude"],
+                                                    widget.resturentLat,
+                                                    widget.resturentLng);
+                                              });
+                                              print(
+                                                  "VAlue.." + value.toString());
+                                            });
+                                          },
+                                          child: Text(
+                                            "Add Address".toUpperCase(),
+                                            style: TextStyle(
+                                                color: AppColors.cartPage,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.03),
+                                            // )
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            AddAddress(
+                                                                refresh:
+                                                                    _getChangeAddress)))
+                                                .then((value) {
+                                              print("Value..." +
+                                                  value["addressType"]
+                                                      .toString());
+                                              // print("resturentLat...Value..." +
+                                              //     widget.resturentLat.toString());
+                                              setState(() {
+                                                addr = value["address"];
+                                                addressType =
+                                                    value["addressType"];
+                                                addressLat = value["latitude"];
+                                                addressLat = value["longitude"];
+                                                _distanceLoad = false;
+
+                                                _getDistance(
+                                                    value["latitude"],
+                                                    value["longitude"],
+                                                    widget.resturentLat,
+                                                    widget.resturentLng);
+                                              });
+                                              print(
+                                                  "VAlue.." + value.toString());
+                                            });
+                                          },
+                                          child: Text(
+                                            "Change".toUpperCase(),
+                                            style: TextStyle(
+                                                color: AppColors.cartPage,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.03),
+                                          ),
+                                        )
                             ],
                           ),
                         ),
-                        Spacer(),
-                        addressLoad == false
-                            ? Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : addressList.length == 0
-                                ? InkWell(
-                                    onTap: () {
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) =>
-                                      //             AddAddress()));
-                                    },
-                                    child: Text(
-                                      "Add Address".toUpperCase(),
-                                      style: TextStyle(
-                                          color: AppColors.cartPage,
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.03),
-                                      // )
-                                    ),
-                                  )
-                                : InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => AddAddress(
-                                                  refresh:
-                                                      _getChangeAddress))).then(
-                                          (value) {
-                                        print("Value..." +
-                                            value["addressType"].toString());
-                                        // print("resturentLat...Value..." +
-                                        //     widget.resturentLat.toString());
-                                        setState(() {
-                                          addr = value["address"];
-                                          addressType = value["addressType"];
-                                          addressLat = value["latitude"];
-                                          addressLat = value["longitude"];
-                                          _distanceLoad = false;
-
-                                          _getDistance(
-                                              value["latitude"],
-                                              value["longitude"],
-                                              widget.resturentLat,
-                                              widget.resturentLng);
-                                        });
-                                        print("VAlue.." + value.toString());
-                                      });
-                                    },
-                                    child: Text(
-                                      "Change".toUpperCase(),
-                                      style: TextStyle(
-                                          color: AppColors.cartPage,
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.03),
-                                    ),
-                                  )
+                        Positioned(
+                            top: MediaQuery.of(context).size.width * 0.02,
+                            left: MediaQuery.of(context).size.width * 0.15,
+                            child: Container(
+                              height: MediaQuery.of(context).size.width * 0.06,
+                              width: MediaQuery.of(context).size.width * 0.06,
+                              decoration: BoxDecoration(
+                                  //color: Colors.amber,
+                                  image: DecorationImage(
+                                      image: AssetImage("images/check.png"))),
+                            ))
                       ],
                     ),
-                  ),
-                  Positioned(
-                      top: MediaQuery.of(context).size.width * 0.02,
-                      left: MediaQuery.of(context).size.width * 0.15,
-                      child: Container(
-                        height: MediaQuery.of(context).size.width * 0.06,
-                        width: MediaQuery.of(context).size.width * 0.06,
-                        decoration: BoxDecoration(
-                            //color: Colors.amber,
-                            image: DecorationImage(
-                                image: AssetImage("images/check.png"))),
-                      ))
-                ],
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.02,
-                    right: MediaQuery.of(context).size.width * 0.02),
-                child: Row(
-                  children: [
                     Container(
-                      alignment: Alignment.centerLeft,
-                      width: MediaQuery.of(context).size.width / 2.2,
-                      //color: Colors.amber,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.02,
+                          right: MediaQuery.of(context).size.width * 0.02),
+                      child: Row(
                         children: [
-                          Text(
-                            "\u20B9$payPrice",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            width: MediaQuery.of(context).size.width / 2.2,
+                            //color: Colors.amber,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "\u20B9$payPrice",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                // SizedBox(
+                                //   height: MediaQuery.of(context).size.width * 0.01,
+                                // ),
+                                // Text(
+                                //   "view detailed bill".toUpperCase(),
+                                //   style: TextStyle(
+                                //       color: AppColors.cartPage,
+                                //       fontSize:
+                                //           MediaQuery.of(context).size.width * 0.03),
+                                // )
+                              ],
+                            ),
                           ),
-                          // SizedBox(
-                          //   height: MediaQuery.of(context).size.width * 0.01,
-                          // ),
-                          // Text(
-                          //   "view detailed bill".toUpperCase(),
-                          //   style: TextStyle(
-                          //       color: AppColors.cartPage,
-                          //       fontSize:
-                          //           MediaQuery.of(context).size.width * 0.03),
-                          // )
+                          Spacer(),
+                          InkWell(
+                            onTap: () {
+                              if (addressList.length == 0) {
+                                showCustomToast("Please select an address");
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Cart(
+                                            totalAmount: payPrice,
+                                            resturentName: widget.resturentName,
+                                            resturentId: widget.resturentId,
+                                            duration: duration,
+                                            distance: distance,
+                                            address: addr,
+                                            addressType: addressType,
+                                            addressLat: addressLat,
+                                            addressLng: addressLng,
+                                            token: token,
+                                            quantity: itemCount,
+                                            foodID: widget.product.id)));
+                              }
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 2.2,
+                              height: MediaQuery.of(context).size.width * 0.12,
+                              alignment: Alignment.center,
+                              color: AppColors.cartPage,
+                              child: Text(
+                                "Proceed To Pay",
+                                style: TextStyle(color: Colors.white),
+                                //textAlign: TextAlign.center,
+                              ),
+                            ),
+                          )
                         ],
-                      ),
-                    ),
-                    Spacer(),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Cart(
-                                    totalAmount: payPrice,
-                                    resturentName: widget.resturentName,
-                                    resturentId: widget.resturentId,
-                                    duration: duration,
-                                    distance: distance,
-                                    address: addr,
-                                    addressType: addressType,
-                                    addressLat: addressLat,
-                                    addressLng: addressLng,
-                                    token: token,
-                                    quantity: itemCount,
-                                    foodID: widget.product.id)));
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 2.2,
-                        height: MediaQuery.of(context).size.width * 0.12,
-                        alignment: Alignment.center,
-                        color: AppColors.cartPage,
-                        child: Text(
-                          "Proceed To Pay",
-                          style: TextStyle(color: Colors.white),
-                          //textAlign: TextAlign.center,
-                        ),
                       ),
                     )
                   ],
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
+              ),
+            ),
     );
   }
 
@@ -559,13 +611,20 @@ class _AddCuisinState extends State<AddCuisin> {
       if (response.data["state"] == 0) {
         addressList = response.data["error"];
         print("addresslength..." + addressList.length.toString());
-        setState(() {
-          addr = addressList[0]["address"];
-          addressType = addressList[0]["address_type"];
-          addressLat = addressList[0]["latitude"];
-          addressLng = addressList[0]["longitude"];
-          addressLoad = true;
-        });
+        if (response.data['error'].length == 0) {
+          setState(() {
+            addressLoad = true;
+            _pageLoad = true;
+          });
+        } else
+          setState(() {
+            addr = addressList[0]["address"];
+            addressType = addressList[0]["address_type"];
+            addressLat = addressList[0]["latitude"];
+            addressLng = addressList[0]["longitude"];
+            addressLoad = true;
+            _pageLoad = true;
+          });
       } else {
         showCustomToast(response.data["errors"][0]["message"]);
       }

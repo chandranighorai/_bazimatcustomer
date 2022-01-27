@@ -1,6 +1,7 @@
 import 'package:bazimat/home/CampaignDetailsModel.dart';
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -48,22 +49,26 @@ class _AllResturentListState extends State<AllResturentList> {
     print("Image..." + image.toString());
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CuisinDetails(
-                    resturentData:
-                        widget.section == "campaign" ? null : widget.resturent,
-                    campaignData:
-                        widget.section == "campaign" ? widget.resturent1 : null,
-                    distance: getDistanceResponse.data["rows"][0]["elements"][0]
-                        ["distance"]["text"],
-                    duration: getDistanceResponse.data["rows"][0]["elements"][0]
-                        ["duration"]["text"],
-                    resturentLat: destinationLat,
-                    resturentLng: destinationLng,
-                    section: widget.section,
-                    couponList: widget.couponList)));
+        _distanceLoad == false
+            ? showCustomToast("wait a few seconds")
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CuisinDetails(
+                        resturentData: widget.section == "campaign"
+                            ? null
+                            : widget.resturent,
+                        campaignData: widget.section == "campaign"
+                            ? widget.resturent1
+                            : null,
+                        distance: getDistanceResponse.data["rows"][0]
+                            ["elements"][0]["distance"]["text"],
+                        duration: getDistanceResponse.data["rows"][0]
+                            ["elements"][0]["duration"]["text"],
+                        resturentLat: destinationLat,
+                        resturentLng: destinationLng,
+                        section: widget.section,
+                        couponList: widget.couponList)));
       },
       child: Stack(
         children: [

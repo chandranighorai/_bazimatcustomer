@@ -228,6 +228,8 @@ class _AddAddressState extends State<AddAddress> {
       name = firstName + " " + lastName;
       phone = pref.getString("Phone");
       token = pref.getString("token");
+      print("token..." + token.toString());
+
       Position position = await _geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best);
       print("latitude..." + position.latitude.toString());

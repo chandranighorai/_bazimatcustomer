@@ -365,8 +365,9 @@ class _NavigationState extends State<Navigation> {
     print("logout...");
     showAlertDialogWithCancel(context, "Are you sure?", () async {
       SharedPreferences pref = await SharedPreferences.getInstance();
-      googleSignIn.signOut();
       pref.clear();
+      googleSignIn.signOut();
+
       Navigator.pop(context);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LogIn()));

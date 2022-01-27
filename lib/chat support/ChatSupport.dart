@@ -59,14 +59,16 @@ class _ChatSupportState extends State<ChatSupport> {
                     if (snapshot.hasData) {
                       print("hasData..." + snapshot.hasData.toString());
                       var msgList = snapshot.data.errors;
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          reverse: true,
-                          padding: EdgeInsets.all(0),
-                          itemCount: msgList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Chat(chatList: msgList[index]);
-                          });
+                      return msgList.length == 0
+                          ? Center(child: Text("Have no conversation yet"))
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              reverse: true,
+                              padding: EdgeInsets.all(0),
+                              itemCount: msgList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Chat(chatList: msgList[index]);
+                              });
                     } else {
                       return Center(
                         child: CircularProgressIndicator(),

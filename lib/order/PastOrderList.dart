@@ -175,9 +175,17 @@ class _PastOrderListState extends State<PastOrderList> {
 
   _productRating() async {
     try {
-      var params = "?food_id=" + widget.listData.foodId.toString();
+      print("userId..." + widget.listData.userId.toString());
+      print("userId..." + widget.listData.foodId.toString());
+
+      var params = "?food_id=" +
+          widget.listData.foodId.toString() +
+          "&user_id=" +
+          widget.listData.userId.toString();
       var url = Const.productRate + params;
+      print("userId..." + url.toString());
       var response = await dio.get(url);
+      print("userId..." + response.data.toString());
       if (response.data["state"] == 0) {
         setState(() {
           _reviewSubmit = true;
@@ -187,6 +195,7 @@ class _PastOrderListState extends State<PastOrderList> {
           _reviewSubmit = false;
         });
       }
+      print("reviewSubmit..." + _reviewSubmit.toString());
     } on DioError catch (e) {
       print(e.toString());
     }

@@ -17,6 +17,9 @@ class _PastOrderState extends State<PastOrder> {
   Future<PostOrderModel> _pastOrder;
   var dio = Dio();
   var token;
+  var state = 0;
+  var response;
+
   @override
   void initState() {
     super.initState();
@@ -33,28 +36,32 @@ class _PastOrderState extends State<PastOrder> {
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      child: FutureBuilder(
-        initialData: null,
-        future: _getAllOder(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print("snapData..." + snapshot.hasData.toString());
-          if (snapshot.hasData) {
-            var errorData = snapshot.data.errors;
-            return ListView.builder(
-                itemCount: errorData.length,
-                itemBuilder: (BuildContext context, int index) {
-                  print("listDAta..." + errorData[index].toString());
-                  return PastOrderList(
-                      listData: errorData[index], token: token);
-                });
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-        //child: ,
-      ),
+      child: state == 1
+          ? Center(
+              child: Text(response.data["message"]),
+            )
+          : FutureBuilder(
+              initialData: null,
+              future: _getAllOder(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                print("snapData..." + snapshot.hasData.toString());
+                if (snapshot.hasData) {
+                  var errorData = snapshot.data.errors;
+                  return ListView.builder(
+                      itemCount: errorData.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        print("listDAta..." + errorData[index].toString());
+                        return PastOrderList(
+                            listData: errorData[index], token: token);
+                      });
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+              //child: ,
+            ),
     );
   }
 
@@ -65,7 +72,7 @@ class _PastOrderState extends State<PastOrder> {
       var id = pref.getString("id");
       print("id..." + id.toString());
       var url = Const.pastOrder + "?id=" + id.toString();
-      var response = await dio.get(url,
+      response = await dio.get(url,
           options: Options(headers: {"Authorization": "Bearer $token"}));
       print("response body..." + response.statusCode.toString());
       print("response body..." + response.data.toString());
@@ -74,8 +81,11 @@ class _PastOrderState extends State<PastOrder> {
         print("response body..." + data.toString());
         return PostOrderModel.fromJson(response.data);
       } else {
-        showCustomToast(response.data["errors"][0]["message"]);
+        //showCustomToast(response.data["message"]);
       }
+      setState(() {
+        state = response.data["state"];
+      });
     } on DioError catch (e) {
       print(e.toString());
     }

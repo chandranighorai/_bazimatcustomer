@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OTP extends StatefulWidget {
-  var phone, forgetPass;
-  OTP({this.phone, this.forgetPass});
+  var phone, forgetPass, type;
+  OTP({this.phone, this.forgetPass, this.type});
 
   @override
   _OTPState createState() => _OTPState();
@@ -108,8 +108,13 @@ class _OTPState extends State<OTP> {
                   MaterialPageRoute(
                       builder: (context) => ResetPassword(
                           phone: widget.phone, otp: _otpText.text.toString())))
-              : Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => LogIn()));
+              : widget.type == "social"
+                  ? Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => Home()))
+                  : Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LogIn(type: widget.type)));
         }
         //showCustomToast("Otp is incorrect");
       }
