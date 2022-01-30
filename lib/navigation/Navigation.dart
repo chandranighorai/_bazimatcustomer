@@ -141,29 +141,29 @@ class _NavigationState extends State<Navigation> {
                           MaterialPageRoute(builder: (context) => Order()))
                     },
                   ),
-                  ListTile(
-                    visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                    title: Row(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.05,
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          decoration: BoxDecoration(
-                              //color: Colors.red,
-                              image: DecorationImage(
-                                  image: AssetImage("images/share.png"))),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.04,
-                        ),
-                        Text("Refer & Earn"),
-                      ],
-                    ),
-                    onTap: () => {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => ReferEarn()))
-                    },
-                  ),
+                  // ListTile(
+                  //   visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                  //   title: Row(
+                  //     children: [
+                  //       Container(
+                  //         height: MediaQuery.of(context).size.width * 0.05,
+                  //         width: MediaQuery.of(context).size.width * 0.05,
+                  //         decoration: BoxDecoration(
+                  //             //color: Colors.red,
+                  //             image: DecorationImage(
+                  //                 image: AssetImage("images/share.png"))),
+                  //       ),
+                  //       SizedBox(
+                  //         width: MediaQuery.of(context).size.width * 0.04,
+                  //       ),
+                  //       Text("Refer & Earn"),
+                  //     ],
+                  //   ),
+                  //   onTap: () => {
+                  //     Navigator.push(context,
+                  //         MaterialPageRoute(builder: (context) => ReferEarn()))
+                  //   },
+                  // ),
                   ListTile(
                     visualDensity: VisualDensity(horizontal: 0, vertical: -4),
                     title: Row(

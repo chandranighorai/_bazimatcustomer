@@ -569,14 +569,16 @@ class _HomeState extends State<Home> {
       print("serviceable..." + _serviceAvailable.toString());
       SharedPreferences preferences = await SharedPreferences.getInstance();
       var response = preferences.getString("token");
+      var userId = preferences.getString("id");
       print("token..." + response.toString());
       latitude = preferences.getString("latitude");
       longitude = preferences.getString("longitude");
-      // print("Latitude..." + preferences.getString("latitude"));
-      // print("Longitude..." + preferences.getString("longitude"));
+      print("Latitude...in home..." + latitude.toString());
+      print("Longitude...in home..." + longitude.toString());
       // print("Token..." + response.toString());
       //var getZone = "?lat=" + latitude + "&lng=" + longitude;
       var getZone =
+          //"?lat=" + latitude.toString() + "&lng=" + longitude.toString();
           "?lat=" + "22.584990444621944" + "&lng=" + "88.4202935801241";
       print("FullUrl.." + Const.zoneId + getZone);
       var zoneUrl = Const.zoneId + getZone;
@@ -593,6 +595,8 @@ class _HomeState extends State<Home> {
         _getBanner();
         _getCampaignBanner();
         _getCustomerInfo();
+        _getCustomerUpdateFcm(response, userId);
+
         //_getConfigDetails();
         _getCouponList = _getAllCoupon();
         _popularCuisin();
@@ -882,6 +886,24 @@ class _HomeState extends State<Home> {
         return CouponModel.fromJson(response.data);
       } else {
         showCustomToast(response.data["errors"][0]["message"]);
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _getCustomerUpdateFcm(String token, String userId) async {
+    try {
+      var param =
+          "?user_id=" + userId.toString() + "&fcm_token=" + token.toString();
+      var url = Const.updateCustomerFcm + param;
+      print("Url in customer Fcm..." + url.toString());
+      var response = await dio.put(url,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      if (response.data["state"] == 0) {
+        showCustomToast(response.data["message"].toString());
+      } else {
+        showCustomToast(response.data["errors"][0]["message"].toString());
       }
     } on DioError catch (e) {
       print(e.toString());

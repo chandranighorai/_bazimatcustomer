@@ -92,6 +92,30 @@ class _MyHomePageState extends State<MyHomePage> {
     //                 icon: android?.smallIcon)));
     //   }
     // });
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings("@mipmap/ic_launcher");
+    var initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification notification = message.notification;
+      print("message..." + message.notification.toString());
+      AndroidNotification android = message.notification.android;
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+                android: AndroidNotificationDetails(
+                    channel.id, channel.name, channel.description,
+                    icon: 'launch_background')));
+        FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+          print("A new onMessageOpenedApp event was published!" +
+              message.data.toString());
+        });
+      }
+    });
     _geolocator = Geolocator();
     LocationOptions locationOptions =
         LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 1);

@@ -46,4 +46,6 @@ class Const {
   static String currentOrder = appUrl + "customer/order/track";
   static String productRate = appUrl + "products/user-rating";
   static String checkEmail = appUrl + "auth/check-email";
+  static String updateCustomerFcm = appUrl + "customer/cm-firebase-token";
+  static String notificationList = appUrl + "customer/cm-notifications";
 }

@@ -51,9 +51,11 @@ class _CartState extends State<Cart> {
   Dio dio = Dio();
   SingingCharacter _character = SingingCharacter.cash;
   String _transactionId;
+  bool _payNowEnable;
   @override
   void initState() {
     super.initState();
+    _payNowEnable = true;
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -152,31 +154,47 @@ class _CartState extends State<Cart> {
             Expanded(
               child: Align(
                 alignment: FractionalOffset.bottomCenter,
-                child: InkWell(
-                  onTap: () {
-                    print("Character...0.." + _character.toString());
-                    if (_character.toString() == "SingingCharacter.cash") {
-                      _transactionId = "";
-                      _payNow(_transactionId);
-                    } else {
-                      openCheckout();
-                    }
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) => ThankYou()));
-                  },
-                  child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      color: AppColors.buttonColor,
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(
-                        "Pay Now",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: MediaQuery.of(context).size.width * 0.04),
-                      )),
-                ),
+                child: _payNowEnable == false
+                    ? Container(
+                        width: MediaQuery.of(context).size.width,
+                        color: AppColors.buttonColor.withOpacity(0.2),
+                        padding: const EdgeInsets.all(15.0),
+                        child: Text(
+                          "Pay Now",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.04),
+                        ))
+                    : InkWell(
+                        onTap: () {
+                          print("Character...0.." + _character.toString());
+                          if (_character.toString() ==
+                              "SingingCharacter.cash") {
+                            _transactionId = "";
+                            _payNow(_transactionId);
+                          } else {
+                            openCheckout();
+                          }
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (context) => ThankYou()));
+                        },
+                        child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            color: AppColors.buttonColor,
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              "Pay Now",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.04),
+                            )),
+                      ),
               ),
             )
           ],
@@ -187,11 +205,16 @@ class _CartState extends State<Cart> {
 
   _payNow(String transactionId) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      _payNowEnable = false;
+    });
     try {
       print("distance..." + transactionId.toString());
       // print("address..." + widget.address.toString());
       // print("latitude..." + widget.addressLat.toString());
       //print("longitude..." + paymentMethod.toString());
+      var userId = pref.getString("id");
+      print("userId..." + userId.toString());
       var distance = widget.distance.split(" ");
       print("longitude..." + distance[1].toString());
       var newDistance = distance[1] == "km" ? distance[0] : distance[0] / 1000;
@@ -219,13 +242,15 @@ class _CartState extends State<Cart> {
           "&food_id=" +
           widget.foodID.toString() +
           "&quantity=" +
-          widget.quantity.toString();
+          widget.quantity.toString() +
+          "&user_id=" +
+          userId.toString();
       var url = Const.orderPlace + params;
       print("Url..." + url.toString());
       var response = await dio.post(
         url,
         options: Options(headers: {"Authorization": "Bearer ${widget.token}"}),
-        // queryParameters: {
+        // queryParame.ters: {
         //   "order_amount": widget.totalAmount,
         //   "payment_method": (_character.toString() == "SingingCharacter.cash")
         //       ? "cash_on_delivery"
@@ -245,6 +270,9 @@ class _CartState extends State<Cart> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ThankYou()));
       } else {
+        setState(() {
+          _payNowEnable = true;
+        });
         showCustomToast(response.data["errors"][0]["message"]);
       }
     } on DioError catch (e) {

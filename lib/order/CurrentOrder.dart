@@ -73,7 +73,8 @@ class _CurrentOrderState extends State<CurrentOrder> {
       SharedPreferences pref = await SharedPreferences.getInstance();
       var orderId = pref.getString("OrderId");
       var token = pref.getString("token");
-      print("OrderId..." + orderId.toString());
+      print("OrderId...current order..." + orderId.toString());
+      print("OrderId...current order..." + token.toString());
       var param = "?order_id=" + orderId.toString();
       var url = Const.currentOrder + param;
       print("OrderId..." + url.toString());

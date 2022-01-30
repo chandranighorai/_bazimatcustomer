@@ -1,3 +1,4 @@
+import 'package:bazimat/add%20cuisin/AddCuisin.dart';
 import 'package:bazimat/favourites/FavouriteModel.dart';
 import 'package:bazimat/home/CampaignDetailsModel.dart';
 import 'package:bazimat/home/PopularResturentModel.dart';
@@ -47,6 +48,9 @@ class _CuisinDetailsState extends State<CuisinDetails> {
   var dataId, zoneId;
   var token;
   bool _resturentLike;
+  bool _dataAdded;
+  var configData;
+  bool configLoad;
   var resturentId,
       resturentName,
       resturentDesc,
@@ -116,6 +120,10 @@ class _CuisinDetailsState extends State<CuisinDetails> {
     //             : "${widget.resturentData.name}",
     _resturentLike = false;
     _recommendedProduct = _getAllRecommendedProduct();
+    _dataAdded = false;
+    configData = false;
+    _getConfig();
+    _viewCartShow(_dataAdded);
   }
 
   @override
@@ -167,6 +175,36 @@ class _CuisinDetailsState extends State<CuisinDetails> {
           )
         ],
       ),
+      bottomSheet: _dataAdded == false
+          ? SizedBox()
+          : InkWell(
+            onTap: ()
+            {
+            //   Navigator.push(
+            // context,
+            // MaterialPageRoute(
+            //     builder: (context) => AddCuisin(
+            //         duration: widget.duration,
+            //         distance: widget.distance,
+            //         resturentLat:widget.resturentLat,
+            //         resturentLng:widget.resturentLng,
+            //         product: widget.productList,
+            //         imageUrl: widget.imageUrl,
+            //         resturentName: resturentName,
+            //         resturentId:resturentId,
+            //         resturenrAddr: resturentAddr,
+            //         resturentPrice: resturentOfferPrice,
+            //         configData: configData,
+            //         couponList: widget.couponList)
+            //         ));
+            },
+            child: Container(
+                height: MediaQuery.of(context).size.width * 0.06,
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width,
+                child: Text("View Cart"),
+              ),
+          ),
       body: SingleChildScrollView(
         child: Container(
           //height: MediaQuery.of(context).size.height,
@@ -481,7 +519,8 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                                         resturentAddress: resturentAddr,
                                         resturentOfferPrice:
                                             resturentOfferPrice,
-                                        couponList: widget.couponList);
+                                        couponList: widget.couponList,
+                                        viewCart:_viewCartShow);
                                   });
                         } else {
                           return Center(child: CircularProgressIndicator());
@@ -490,7 +529,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                     )
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -592,6 +631,25 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       } else {
         showCustomToast(response.data["errors"][0]["message"]);
       }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _viewCartShow(bool dataAdded) {
+    setState(() {
+      _dataAdded = dataAdded;
+    });
+  }
+  _getConfig() async {
+    try {
+      var response = await dio.get(Const.config);
+      print("response of Config..." + response.data.toString());
+      setState(() {
+        configLoad = true;
+      });
+      configData = response.data;
+      // Configmodel.fromJson(response.data);
     } on DioError catch (e) {
       print(e.toString());
     }

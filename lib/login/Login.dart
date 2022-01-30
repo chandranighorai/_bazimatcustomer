@@ -12,6 +12,7 @@ import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 //import 'package:intl/intl_browser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
@@ -354,7 +355,6 @@ class _LogInState extends State<LogIn> {
         print("responseBody...login..." + response.data.toString());
         if (response.data["state"] == 1) {
           print("responseBody...login..." + response.data.toString());
-
           showCustomToast(response.data["errors"][0]["message"]);
           setState(() {
             _buttonDisable = false;
@@ -496,6 +496,11 @@ class _LogInState extends State<LogIn> {
     // print("token..." + FacebookAuth.instance.accessToken.toString());
     // final FacebookLoginResult result = await facebookSignIn.logIn(['email']);
     // print("accessToken..." + result.status.toString());
+    final facebookLogin = FacebookLogin();
+    //final result = await facebookLogin.logIn(['email']);
+    final result = await facebookLogin.logIn(['email']);
+
+    print("result Status..." + result.status.toString());
     AccessToken accessToken = await FacebookAuth.instance.accessToken;
     print("accessToken..." + accessToken.toString());
     FacebookAuth.instance
