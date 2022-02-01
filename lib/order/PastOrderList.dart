@@ -23,7 +23,7 @@ class _PastOrderListState extends State<PastOrderList> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _reviewSubmit = false;
+    _reviewSubmit = true;
     _productRating();
   }
 
@@ -177,7 +177,6 @@ class _PastOrderListState extends State<PastOrderList> {
     try {
       print("userId..." + widget.listData.userId.toString());
       print("userId..." + widget.listData.foodId.toString());
-
       var params = "?food_id=" +
           widget.listData.foodId.toString() +
           "&user_id=" +
@@ -185,7 +184,7 @@ class _PastOrderListState extends State<PastOrderList> {
       var url = Const.productRate + params;
       print("userId..." + url.toString());
       var response = await dio.get(url);
-      print("userId..." + response.data.toString());
+      print("userId...product review..." + response.data.toString());
       if (response.data["state"] == 0) {
         setState(() {
           _reviewSubmit = true;

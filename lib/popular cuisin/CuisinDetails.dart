@@ -3,6 +3,7 @@ import 'package:bazimat/favourites/FavouriteModel.dart';
 import 'package:bazimat/home/CampaignDetailsModel.dart';
 import 'package:bazimat/home/PopularResturentModel.dart';
 import 'package:bazimat/home/ResturentModel.dart';
+import 'package:bazimat/popular%20cuisin/GetCartModel.dart';
 import 'package:bazimat/popular%20cuisin/Recomended.dart';
 import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/popular%20cuisin/PopularCuisinResturentModel.dart';
@@ -46,11 +47,12 @@ class _CuisinDetailsState extends State<CuisinDetails> {
   Future<RecommendedModel> _recommendedProduct;
   var dio = Dio();
   var dataId, zoneId;
-  var token;
+  var token, id;
   bool _resturentLike;
   bool _dataAdded;
   var configData;
-  bool configLoad;
+  bool configLoad, getCartLoad;
+  var allCartData;
   var resturentId,
       resturentName,
       resturentDesc,
@@ -122,8 +124,10 @@ class _CuisinDetailsState extends State<CuisinDetails> {
     _recommendedProduct = _getAllRecommendedProduct();
     _dataAdded = false;
     configData = false;
+    getCartLoad = false;
     _getConfig();
-    _viewCartShow(_dataAdded);
+    _getCartShow();
+    //_viewCartShow(_dataAdded);
   }
 
   @override
@@ -166,10 +170,10 @@ class _CuisinDetailsState extends State<CuisinDetails> {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.03,
           ),
-          Icon(
-            Icons.search,
-            color: Colors.grey,
-          ),
+          // Icon(
+          //   Icons.search,
+          //   color: Colors.grey,
+          // ),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.03,
           )
@@ -178,33 +182,32 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       bottomSheet: _dataAdded == false
           ? SizedBox()
           : InkWell(
-            onTap: ()
-            {
-            //   Navigator.push(
-            // context,
-            // MaterialPageRoute(
-            //     builder: (context) => AddCuisin(
-            //         duration: widget.duration,
-            //         distance: widget.distance,
-            //         resturentLat:widget.resturentLat,
-            //         resturentLng:widget.resturentLng,
-            //         product: widget.productList,
-            //         imageUrl: widget.imageUrl,
-            //         resturentName: resturentName,
-            //         resturentId:resturentId,
-            //         resturenrAddr: resturentAddr,
-            //         resturentPrice: resturentOfferPrice,
-            //         configData: configData,
-            //         couponList: widget.couponList)
-            //         ));
-            },
-            child: Container(
+              onTap: () {
+                //   Navigator.push(
+                // context,
+                // MaterialPageRoute(
+                //     builder: (context) => AddCuisin(
+                //         duration: widget.duration,
+                //         distance: widget.distance,
+                //         resturentLat:widget.resturentLat,
+                //         resturentLng:widget.resturentLng,
+                //         product: widget.productList,
+                //         imageUrl: widget.imageUrl,
+                //         resturentName: resturentName,
+                //         resturentId:resturentId,
+                //         resturenrAddr: resturentAddr,
+                //         resturentPrice: resturentOfferPrice,
+                //         configData: configData,
+                //         couponList: widget.couponList)
+                //         ));
+              },
+              child: Container(
                 height: MediaQuery.of(context).size.width * 0.06,
                 alignment: Alignment.center,
                 width: MediaQuery.of(context).size.width,
                 child: Text("View Cart"),
               ),
-          ),
+            ),
       body: SingleChildScrollView(
         child: Container(
           //height: MediaQuery.of(context).size.height,
@@ -324,19 +327,20 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                                       //                 : "${widget.resturentData.avgRating}",
                                       style: TextStyle(color: Colors.black))
                                 ])),
-                                Text(
-                                  resturentRatingCount.toString() + "ratings",
-                                  // widget.section == "cuisin"
-                                  //     ? "${widget.cuisinList.ratingCount}+ ratings"
-                                  //     : widget.section == "list"
-                                  //         ? "${widget.listData.ratingCount}+ raintgs"
-                                  //         : widget.section == "topPicks"
-                                  //             ? "${widget.topPickList.ratingCount}+ raintgs"
-                                  //             : widget.section == "campaign"
-                                  //                 ? "${widget.campaignData.ratingCount}+ raintgs"
-                                  //                 : "${widget.resturentData.ratingCount}+ raintgs",
-                                  style: TextStyle(color: Colors.grey),
-                                )
+                                Text("Rating")
+                                // Text(
+                                //   resturentRatingCount.toString() + "ratings",
+                                //   // widget.section == "cuisin"
+                                //   //     ? "${widget.cuisinList.ratingCount}+ ratings"
+                                //   //     : widget.section == "list"
+                                //   //         ? "${widget.listData.ratingCount}+ raintgs"
+                                //   //         : widget.section == "topPicks"
+                                //   //             ? "${widget.topPickList.ratingCount}+ raintgs"
+                                //   //             : widget.section == "campaign"
+                                //   //                 ? "${widget.campaignData.ratingCount}+ raintgs"
+                                //   //                 : "${widget.resturentData.ratingCount}+ raintgs",
+                                //   style: TextStyle(color: Colors.grey),
+                                // )
                               ],
                             ),
                           ),
@@ -466,70 +470,78 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              Container(
-                //height: 420,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: Flex(
-                  direction: Axis.vertical,
-                  children: [
-                    FutureBuilder(
-                      initialData: null,
-                      future: _recommendedProduct,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          var products = snapshot.data.errors.products;
-                          print("recommended product..." +
-                              products[0].toString());
-                          var imagePath = snapshot.data.proimgpath;
-                          return products.length == 0
-                              ? Center(
-                                  child: Text("No Iteams available now"),
-                                )
-                              : GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: products.length,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          childAspectRatio:
-                                              (MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  MediaQuery.of(context)
-                                                      .size
-                                                      .height /
-                                                  0.55)),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    print("recommended product..." +
-                                        products[index].toString());
-                                    print("recommended product..." +
-                                        widget.resturentLat.toString());
-                                    return Recommended(
-                                        productList: products[index],
-                                        imageUrl: imagePath,
-                                        duration: widget.duration,
-                                        distance: widget.distance,
-                                        resturentLat: widget.resturentLat,
-                                        resturentLng: widget.resturentLng,
-                                        resturentName: resturentName,
-                                        resturentId: resturentId,
-                                        resturentAddress: resturentAddr,
-                                        resturentOfferPrice:
-                                            resturentOfferPrice,
-                                        couponList: widget.couponList,
-                                        viewCart:_viewCartShow);
-                                  });
-                        } else {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                      },
+              getCartLoad == false
+                  ? Center(
+                      child: CircularProgressIndicator(),
                     )
-                  ],
-                ),
-              ),
+                  : Container(
+                      //height: 420,
+                      color: Colors.white,
+                      width: MediaQuery.of(context).size.width,
+                      child: Flex(
+                        direction: Axis.vertical,
+                        children: [
+                          FutureBuilder(
+                            initialData: null,
+                            future: _recommendedProduct,
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                var products = snapshot.data.errors.products;
+                                print("recommended product..." +
+                                    products[0].toString());
+                                var imagePath = snapshot.data.proimgpath;
+                                return products.length == 0
+                                    ? Center(
+                                        child: Text("No Iteams available now"),
+                                      )
+                                    : GridView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: products.length,
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2,
+                                                childAspectRatio:
+                                                    (MediaQuery.of(context)
+                                                            .size
+                                                            .width /
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .height /
+                                                        0.55)),
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          print("recommended product..." +
+                                              products[index].toString());
+                                          print("recommended product..." +
+                                              widget.resturentLat.toString());
+                                          return Recommended(
+                                              productList: products[index],
+                                              imageUrl: imagePath,
+                                              duration: widget.duration,
+                                              distance: widget.distance,
+                                              resturentLat: widget.resturentLat,
+                                              resturentLng: widget.resturentLng,
+                                              resturentName: resturentName,
+                                              resturentId: resturentId,
+                                              resturentAddress: resturentAddr,
+                                              token: token,
+                                              resturentOfferPrice:
+                                                  resturentOfferPrice,
+                                              couponList: widget.couponList,
+                                              allCartData: allCartData,
+                                              viewCart: _viewCartShow);
+                                        });
+                              } else {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              }
+                            },
+                          )
+                        ],
+                      ),
+                    ),
             ],
           ),
         ),
@@ -636,11 +648,35 @@ class _CuisinDetailsState extends State<CuisinDetails> {
     }
   }
 
-  _viewCartShow(bool dataAdded) {
+  _viewCartShow(
+      bool dataAdded, String foodId, String foodAmt, String qty) async {
+    print("dataAdded..." + dataAdded.toString());
+    // SharedPreferences pref = await SharedPreferences.getInstance();
+    // var id = pref.getString("id");
+    // print("Id of cart..." + id.toString());
+    if (dataAdded == true) {
+      var param = "?user_id=" +
+          id.toString() +
+          "&food_id=" +
+          foodId +
+          "&food_amount=" +
+          foodAmt +
+          "&quantity=" +
+          qty +
+          "&restaurant_id=" +
+          resturentId.toString();
+      var url = Const.addToCart + param;
+      print("Url..." + url.toString());
+      var response = await dio.post(url,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print("response data in add Cart..." + response.data.toString());
+      return GetCartModel.fromJson(response.data);
+    } else {}
     setState(() {
       _dataAdded = dataAdded;
     });
   }
+
   _getConfig() async {
     try {
       var response = await dio.get(Const.config);
@@ -650,6 +686,35 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       });
       configData = response.data;
       // Configmodel.fromJson(response.data);
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _getCartShow() async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      id = pref.getString("id");
+      var params = "?user_id=" +
+          id.toString() +
+          "&restaurant_id=" +
+          resturentId.toString();
+      print("params..." + params.toString());
+      var response = await dio.post(Const.getCart + params,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      allCartData = response.data["respData"];
+      print("respons body...in getCart..." + response.data.toString());
+      if (response.data['state'] == 1) {
+        setState(() {
+          _dataAdded = false;
+          getCartLoad = true;
+        });
+      } else {
+        setState(() {
+          _dataAdded = true;
+          getCartLoad = true;
+        });
+      }
     } on DioError catch (e) {
       print(e.toString());
     }

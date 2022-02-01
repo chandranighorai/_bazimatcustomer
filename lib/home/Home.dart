@@ -901,7 +901,7 @@ class _HomeState extends State<Home> {
       var response = await dio.put(url,
           options: Options(headers: {"Authorization": "Bearer $token"}));
       if (response.data["state"] == 0) {
-        showCustomToast(response.data["message"].toString());
+        //showCustomToast(response.data["message"].toString());
       } else {
         showCustomToast(response.data["errors"][0]["message"].toString());
       }

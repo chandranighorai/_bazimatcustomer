@@ -48,4 +48,8 @@ class Const {
   static String checkEmail = appUrl + "auth/check-email";
   static String updateCustomerFcm = appUrl + "customer/cm-firebase-token";
   static String notificationList = appUrl + "customer/cm-notifications";
+  static String addToCart = appUrl + "customer/cart/add-to-cart";
+  static String getCart = appUrl + "customer/cart/get-cart";
+  static String updateCart = appUrl + "customer/cart/update-cart";
+  static String deleteCart = appUrl + "customer/cart/delete-cart";
 }
