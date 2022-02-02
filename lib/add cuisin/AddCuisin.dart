@@ -16,26 +16,28 @@ class AddCuisin extends StatefulWidget {
       distance,
       resturentLat,
       resturentLng,
-      imageUrl,
+      //productList,
+      // imageUrl,
       resturentName,
       resturentId,
       resturenrAddr,
-      resturentPrice,
+      // resturentPrice,
       configData;
-  Products product;
+  //Products product;
   Function() couponList;
   AddCuisin(
       {this.duration,
       this.distance,
       this.resturentLat,
       this.resturentLng,
-      this.imageUrl,
+      //this.productList,
+      // this.imageUrl,
       this.resturentName,
       this.resturentId,
       this.resturenrAddr,
-      this.resturentPrice,
+      // this.resturentPrice,
       this.configData,
-      this.product,
+      //this.product,
       Key key,
       this.couponList})
       : super(key: key);
@@ -72,7 +74,7 @@ class _AddCuisinState extends State<AddCuisin> {
     restLat = widget.resturentLat;
     restLng = widget.resturentLng;
     _getAddress();
-    _itemUpdate(widget.product.price.toString(), itemCount);
+    //_itemUpdate(widget.product.price.toString(), itemCount);
   }
 
   @override
@@ -80,7 +82,8 @@ class _AddCuisinState extends State<AddCuisin> {
     // print("Shipping Charge...." +
     //     widget.configData["per_km_shipping_charge"].toString());
     print("ResturentLat...." + widget.resturentLat.toString());
-    var image = widget.imageUrl + widget.product.image;
+    //print("ProductList..." + widget.productList.toString());
+    //var image = widget.imageUrl + widget.product.image;
 
     return Scaffold(
       appBar: AppBar(
@@ -107,12 +110,15 @@ class _AddCuisinState extends State<AddCuisin> {
                 child: Column(
                   children: [
                     AddQuantity(
-                        imageUrl: image,
+                        //imageUrl: image,
                         resturentName: widget.resturentName,
                         resturentAddr: widget.resturenrAddr,
-                        resturentOffer: widget.resturentPrice,
-                        product: widget.product,
-                        refresh: _itemUpdate),
+                        resturentId: widget.resturentId
+                        // resturentOffer: widget.resturentPrice,
+                        //product: widget.product,
+                        //product: widget.productList,
+                        //refresh: _itemUpdate
+                        ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
@@ -541,18 +547,19 @@ class _AddCuisinState extends State<AddCuisin> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => Cart(
-                                            totalAmount: payPrice,
-                                            resturentName: widget.resturentName,
-                                            resturentId: widget.resturentId,
-                                            duration: duration,
-                                            distance: distance,
-                                            address: addr,
-                                            addressType: addressType,
-                                            addressLat: addressLat,
-                                            addressLng: addressLng,
-                                            token: token,
-                                            quantity: itemCount,
-                                            foodID: widget.product.id)));
+                                              totalAmount: payPrice,
+                                              // resturentName: widget.resturentName,
+                                              // resturentId: widget.resturentId,
+                                              duration: duration,
+                                              distance: distance,
+                                              address: addr,
+                                              addressType: addressType,
+                                              addressLat: addressLat,
+                                              addressLng: addressLng,
+                                              token: token,
+                                              quantity: itemCount,
+                                              //foodID: widget.product.id
+                                            )));
                               }
                             },
                             child: Container(
@@ -590,10 +597,10 @@ class _AddCuisinState extends State<AddCuisin> {
       //print("deliveryCharge..." + deliveryCharge.toString());
       itemPrice = double.parse(productPrice);
       // print("itemPrice...." + itemPrice.toString());
-      taxPrice = double.parse(widget.product.tax.toString());
+      //taxPrice = double.parse(widget.product.tax.toString());
       // print("taxPrice...." + taxPrice.toString());
       // print("taxPrice...." + deliveryCharge.toString());
-      payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
+      //payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
       //print("payPrice...." + payPrice.toString());
     });
   }
@@ -684,7 +691,7 @@ class _AddCuisinState extends State<AddCuisin> {
         duration = getDistanceResponse.data["rows"][0]["elements"][0]
                 ["duration"]["text"]
             .toString();
-        _itemUpdate(widget.product.price.toString(), itemCount);
+        //_itemUpdate(widget.product.price.toString(), itemCount);
       });
     } on DioError catch (e) {
       print(e.toString());

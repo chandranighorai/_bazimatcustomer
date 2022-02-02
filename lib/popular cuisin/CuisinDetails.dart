@@ -183,23 +183,23 @@ class _CuisinDetailsState extends State<CuisinDetails> {
           ? SizedBox()
           : InkWell(
               onTap: () {
-                //   Navigator.push(
-                // context,
-                // MaterialPageRoute(
-                //     builder: (context) => AddCuisin(
-                //         duration: widget.duration,
-                //         distance: widget.distance,
-                //         resturentLat:widget.resturentLat,
-                //         resturentLng:widget.resturentLng,
-                //         product: widget.productList,
-                //         imageUrl: widget.imageUrl,
-                //         resturentName: resturentName,
-                //         resturentId:resturentId,
-                //         resturenrAddr: resturentAddr,
-                //         resturentPrice: resturentOfferPrice,
-                //         configData: configData,
-                //         couponList: widget.couponList)
-                //         ));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddCuisin(
+                            duration: widget.duration,
+                            distance: widget.distance,
+                            resturentLat: widget.resturentLat,
+                            resturentLng: widget.resturentLng,
+                            //productList: allCartData,
+                            // product: widget.productList,
+                            // imageUrl: widget.imageUrl,
+                            resturentName: resturentName,
+                            resturentId: resturentId,
+                            resturenrAddr: resturentAddr,
+                            //resturentPrice: resturentOfferPrice,
+                            configData: configData,
+                            couponList: widget.couponList)));
               },
               child: Container(
                 height: MediaQuery.of(context).size.width * 0.06,
@@ -670,7 +670,11 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       var response = await dio.post(url,
           options: Options(headers: {"Authorization": "Bearer $token"}));
       print("response data in add Cart..." + response.data.toString());
-      return GetCartModel.fromJson(response.data);
+      if (response.data["state"] == 0) {
+        showCustomToast(response.data["message"]);
+        _getCartShow();
+        return GetCartModel.fromJson(response.data);
+      }
     } else {}
     setState(() {
       _dataAdded = dataAdded;

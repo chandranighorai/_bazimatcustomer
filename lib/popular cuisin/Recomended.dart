@@ -227,6 +227,7 @@ class _RecommendedState extends State<Recommended> {
                                           _dataAdded = true;
                                           widget.viewCart(
                                               _dataAdded,
+                                         
                                               widget.productList.id.toString(),
                                               widget.productList.price
                                                   .toString(),
@@ -361,6 +362,7 @@ class _RecommendedState extends State<Recommended> {
               Options(headers: {"Authorization": "Bearer ${widget.token}"}));
       if (response.data["state"] == 0) {
         showCustomToast(response.data["message"]);
+        
       }
     } on DioError catch (e) {
       print(e.toString());
