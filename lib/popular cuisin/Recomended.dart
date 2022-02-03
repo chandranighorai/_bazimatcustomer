@@ -361,8 +361,7 @@ class _RecommendedState extends State<Recommended> {
           options:
               Options(headers: {"Authorization": "Bearer ${widget.token}"}));
       if (response.data["state"] == 0) {
-        showCustomToast(response.data["message"]);
-        
+        showCustomToast(response.data["message"]);       
       }
     } on DioError catch (e) {
       print(e.toString());

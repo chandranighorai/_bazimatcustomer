@@ -191,7 +191,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                             distance: widget.distance,
                             resturentLat: widget.resturentLat,
                             resturentLng: widget.resturentLng,
-                            //productList: allCartData,
+                            productList: allCartData,
                             // product: widget.productList,
                             // imageUrl: widget.imageUrl,
                             resturentName: resturentName,
@@ -672,13 +672,17 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       print("response data in add Cart..." + response.data.toString());
       if (response.data["state"] == 0) {
         showCustomToast(response.data["message"]);
+        setState(() {
+          _dataAdded = dataAdded;
+        });
         _getCartShow();
         return GetCartModel.fromJson(response.data);
       }
-    } else {}
-    setState(() {
-      _dataAdded = dataAdded;
-    });
+    } else {
+      setState(() {
+        _getCartShow();
+      });
+    }
   }
 
   _getConfig() async {

@@ -70,15 +70,21 @@ class _AddQuantityState extends State<AddQuantity> {
         children: [
           Row(
             children: [
-              // Container(
-              //   width: MediaQuery.of(context).size.width / 3.5,
-              //   height: MediaQuery.of(context).size.height * 0.12,
-              //   decoration: BoxDecoration(
-              //       color: Colors.red,
-              //       image: DecorationImage(
-              //           image: NetworkImage(widget.imageUrl),
-              //           fit: BoxFit.fill)),
-              // ),
+              getCartLoad == false
+                  ? Container(
+                      width: MediaQuery.of(context).size.width / 3.5,
+                      height: MediaQuery.of(context).size.height * 0.12,
+                      color: Colors.grey.withOpacity(0.2),
+                    )
+                  : Container(
+                      width: MediaQuery.of(context).size.width / 3.5,
+                      height: MediaQuery.of(context).size.height * 0.12,
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          image: DecorationImage(
+                              image: NetworkImage(allCartData[0]["food_image"]),
+                              fit: BoxFit.fill)),
+                    ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.02,
               ),
@@ -139,10 +145,10 @@ class _AddQuantityState extends State<AddQuantity> {
                           child: Row(
                             children: [
                               Container(
-                                width: MediaQuery.of(context).size.width / 1.8,
-                                //color: Colors.amber,
-                                //child: Text("${widget.product[index]["cart_id"]}")
-                              ),
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.8,
+                                  //color: Colors.amber,
+                                  child: Text(allCartData[index]["food_name"])),
                               Spacer(),
                               Container(
                                 width: MediaQuery.of(context).size.width / 5,

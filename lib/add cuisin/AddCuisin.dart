@@ -16,7 +16,7 @@ class AddCuisin extends StatefulWidget {
       distance,
       resturentLat,
       resturentLng,
-      //productList,
+      productList,
       // imageUrl,
       resturentName,
       resturentId,
@@ -30,7 +30,7 @@ class AddCuisin extends StatefulWidget {
       this.distance,
       this.resturentLat,
       this.resturentLng,
-      //this.productList,
+      this.productList,
       // this.imageUrl,
       this.resturentName,
       this.resturentId,
@@ -68,6 +68,8 @@ class _AddCuisinState extends State<AddCuisin> {
     addressLoad = false;
     _pageLoad = false;
     couponPrice = 0.0;
+    itemPrice = 0.0;
+    taxPrice = 0.0;
     itemCount = 1;
     duration = widget.duration;
     distance = widget.distance;
@@ -75,6 +77,7 @@ class _AddCuisinState extends State<AddCuisin> {
     restLng = widget.resturentLng;
     _getAddress();
     //_itemUpdate(widget.product.price.toString(), itemCount);
+    _itemUpdate1(widget.productList);
   }
 
   @override
@@ -82,7 +85,7 @@ class _AddCuisinState extends State<AddCuisin> {
     // print("Shipping Charge...." +
     //     widget.configData["per_km_shipping_charge"].toString());
     print("ResturentLat...." + widget.resturentLat.toString());
-    //print("ProductList..." + widget.productList.toString());
+    print("ProductList..." + widget.productList.toString());
     //var image = widget.imageUrl + widget.product.image;
 
     return Scaffold(
@@ -696,5 +699,29 @@ class _AddCuisinState extends State<AddCuisin> {
     } on DioError catch (e) {
       print(e.toString());
     }
+  }
+
+  _itemUpdate1(productList) {
+    print("productList1..." + productList.length.toString());
+    print("productList1..." + productList.toString());
+
+    for (int i = 0; i < productList.length; i++) {
+      print("productList1..." +
+          productList[i]["food_amount"].runtimeType.toString());
+      var qty = int.parse(productList[i]["quantity"].toString());
+      print("Qty..." + qty.toString());
+      itemPrice = itemPrice +
+          double.parse((double.parse(productList[i]["quantity"].toString()) *
+                  double.parse(productList[i]["food_amount"]))
+              .toString());
+      //taxPrice = taxPrice+
+    }
+    var distanceCal = distance.split(" ");
+    // print("deliveryCharge..." + distanceCal.toString());
+    deliveryCharge = widget.configData["per_km_shipping_charge"] *
+        double.parse(distanceCal[0]);
+    payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
+    print("ItemPrice...qty..." + itemPrice.toString());
+    print("ItemPrice...qty...payprice..." + payPrice.toString());
   }
 }

@@ -32,6 +32,8 @@ class GetCartData {
   int userId;
   int restaurantId;
   int foodId;
+  String foodName;
+  String foodImage;
   int quantity;
   String foodAmount;
   int isOdered;
@@ -42,6 +44,8 @@ class GetCartData {
       this.userId,
       this.restaurantId,
       this.foodId,
+      this.foodName,
+      this.foodImage,
       this.quantity,
       this.foodAmount,
       this.isOdered,
@@ -52,6 +56,8 @@ class GetCartData {
     userId = json['user_id'];
     restaurantId = json['restaurant_id'];
     foodId = json['food_id'];
+    foodName = json['food_name'];
+    foodImage = json['food_image'];
     quantity = json['quantity'];
     foodAmount = json['food_amount'];
     isOdered = json['is_odered'];
@@ -64,6 +70,8 @@ class GetCartData {
     data['user_id'] = this.userId;
     data['restaurant_id'] = this.restaurantId;
     data['food_id'] = this.foodId;
+    data['food_name'] = this.foodName;
+    data['food_image'] = this.foodImage;
     data['quantity'] = this.quantity;
     data['food_amount'] = this.foodAmount;
     data['is_odered'] = this.isOdered;
