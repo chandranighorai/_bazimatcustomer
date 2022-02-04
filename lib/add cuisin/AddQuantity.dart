@@ -1,3 +1,4 @@
+import 'package:bazimat/add%20cuisin/QuantityList.dart';
 import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/Const.dart';
@@ -14,7 +15,7 @@ class AddQuantity extends StatefulWidget {
   //resturentOffer,
   //product;
   //Products product;
-  Function(String itemPrice, int itemcount) refresh;
+  Function(dynamic productList) refresh;
   AddQuantity(
       {
       //this.imageUrl,
@@ -33,8 +34,7 @@ class AddQuantity extends StatefulWidget {
 
 class _AddQuantityState extends State<AddQuantity> {
   int price;
-  int itemCount;
-  double finalPrice;
+  
   bool getCartLoad;
   var dio = Dio();
   var allCartData;
@@ -125,97 +125,13 @@ class _AddQuantityState extends State<AddQuantity> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: allCartData.length,
                     itemBuilder: (BuildContext context, int index) {
-                      print("ItemCount..." +
-                          allCartData[index]["quantity"].toString());
-                      print("ItemCount..." +
-                          allCartData[index]["food_amount"]
-                              .runtimeType
-                              .toString());
-                      itemCount =
-                          int.parse(allCartData[index]["quantity"].toString());
-                      finalPrice = itemCount *
-                          double.parse(
-                              allCartData[index]["food_amount"].toString());
-                      print("ItemCount..." + itemCount.toString());
-                      print("ItemCount..." + finalPrice.toString());
-
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          child: Row(
-                            children: [
-                              Container(
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.8,
-                                  //color: Colors.amber,
-                                  child: Text(allCartData[index]["food_name"])),
-                              Spacer(),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 5,
-                                //color: Colors.red,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey)),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    InkWell(
-                                      // onTap: () {
-                                      //   if (itemCount > 1) {
-                                      //     setState(() {
-                                      //       itemCount = itemCount - 1;
-                                      //       //finalPrice = price * itemCount;
-                                      //       widget.refresh(
-                                      //           finalPrice.toString(), itemCount);
-                                      //     });
-                                      //   } else {
-                                      //     itemCount = 1;
-                                      //   }
-                                      // },
-                                      child: Text(
-                                        "- ",
-                                        style: TextStyle(
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.08,
-                                            color: AppColors.addTextColor),
-                                      ),
-                                    ),
-                                    Text(
-                                      itemCount.toString(),
-                                      style: TextStyle(
-                                          color: AppColors.addTextColor),
-                                    ),
-                                    InkWell(
-                                      // onTap: () {
-                                      //   setState(() {
-                                      //     itemCount = itemCount + 1;
-                                      //     // finalPrice = price * itemCount;
-                                      //     widget.refresh(
-                                      //         finalPrice.toString(), itemCount);
-                                      //   });
-                                      //   print("PriceItem...." +
-                                      //       price.runtimeType.toString());
-                                      // },
-                                      child: Text(
-                                        " + ",
-                                        style: TextStyle(
-                                            color: AppColors.addTextColor),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Spacer(),
-                              Container(
-                                  alignment: Alignment.centerRight,
-                                  //color: Colors.amber,
-                                  //width: MediaQuery.of(context).size.width / 5.5,
-                                  child: Text("\u20B9$finalPrice"))
-                            ],
-                          ),
-                        ),
-                      );
+                      // print("ItemCount..." +
+                      //     allCartData[index]["quantity"].toString());
+                      // print("ItemCount..." +
+                      //     allCartData[index]["food_amount"]
+                      //         .runtimeType
+                      //         .toString());
+                      return QuantityList(dataList: allCartData[index],refresh:widget.refresh);
                     },
                   ),
           )

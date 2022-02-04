@@ -23,6 +23,8 @@ class Cart extends StatefulWidget {
       token,
       quantity,
       foodID;
+  List cartIdList;
+
   Cart(
       {this.totalAmount,
       this.resturentName,
@@ -36,6 +38,7 @@ class Cart extends StatefulWidget {
       this.token,
       this.quantity,
       this.foodID,
+      this.cartIdList,
       Key key})
       : super(key: key);
 
@@ -52,10 +55,15 @@ class _CartState extends State<Cart> {
   SingingCharacter _character = SingingCharacter.cash;
   String _transactionId;
   bool _payNowEnable;
+  //List data = [];
   @override
   void initState() {
     super.initState();
     _payNowEnable = true;
+    for (int i = 0; i < widget.cartIdList.length; i++) {
+      //data.add(widget.cartIdList[i]);
+    }
+    //print("Data..." + data.toString());
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -72,6 +80,7 @@ class _CartState extends State<Cart> {
   Widget build(BuildContext context) {
     print("itemCount..." + widget.quantity.toString());
     print("itemCount..." + widget.foodID.toString());
+    print("cartIdList..." + widget.cartIdList.runtimeType.toString());
 
     return Scaffold(
       appBar: AppBar(
@@ -210,8 +219,8 @@ class _CartState extends State<Cart> {
     });
     try {
       print("distance..." + transactionId.toString());
-      // print("address..." + widget.address.toString());
-      // print("latitude..." + widget.addressLat.toString());
+      print("address..." + _character.toString());
+      //print("latitude..." + data.toString());
       //print("longitude..." + paymentMethod.toString());
       var userId = pref.getString("id");
       print("userId..." + userId.toString());
@@ -239,12 +248,14 @@ class _CartState extends State<Cart> {
           widget.addressLng.toString() +
           "&transaction_id=" +
           transactionId +
-          "&food_id=" +
-          widget.foodID.toString() +
-          "&quantity=" +
-          widget.quantity.toString() +
+          // "&food_id=" +
+          // widget.foodID.toString() +
+          // "&quantity=" +
+          // widget.quantity.toString() +
           "&user_id=" +
-          userId.toString();
+          userId.toString() +
+          "&cart[]=" +
+          widget.cartIdList.toString();
       var url = Const.orderPlace + params;
       print("Url..." + url.toString());
       var response = await dio.post(
@@ -307,7 +318,7 @@ class _CartState extends State<Cart> {
     print("phone..." + email.toString());
     var options = {
       'key': 'rzp_test_1DP5mmOlF5G5ag',
-      'amount': widget.totalAmount,
+      'amount': widget.totalAmount * 100,
       'name': widget.resturentName,
       'prefill': {'contact': phone, 'email': email},
       'external': {

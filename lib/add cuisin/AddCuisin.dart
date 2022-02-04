@@ -61,6 +61,7 @@ class _AddCuisinState extends State<AddCuisin> {
   var dio = Dio();
   String addr, restLat, restLng, addressType;
   bool _pageLoad;
+  List cartArr = [];
   @override
   void initState() {
     super.initState();
@@ -116,12 +117,11 @@ class _AddCuisinState extends State<AddCuisin> {
                         //imageUrl: image,
                         resturentName: widget.resturentName,
                         resturentAddr: widget.resturenrAddr,
-                        resturentId: widget.resturentId
+                        resturentId: widget.resturentId,
                         // resturentOffer: widget.resturentPrice,
                         //product: widget.product,
                         //product: widget.productList,
-                        //refresh: _itemUpdate
-                        ),
+                        refresh: _itemUpdate1),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
@@ -550,18 +550,19 @@ class _AddCuisinState extends State<AddCuisin> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => Cart(
-                                              totalAmount: payPrice,
-                                              // resturentName: widget.resturentName,
-                                              // resturentId: widget.resturentId,
-                                              duration: duration,
-                                              distance: distance,
-                                              address: addr,
-                                              addressType: addressType,
-                                              addressLat: addressLat,
-                                              addressLng: addressLng,
-                                              token: token,
-                                              quantity: itemCount,
-                                              //foodID: widget.product.id
+                                            totalAmount: payPrice,
+                                            resturentName: widget.resturentName,
+                                            resturentId: widget.resturentId,
+                                            duration: duration,
+                                            distance: distance,
+                                            address: addr,
+                                            addressType: addressType,
+                                            addressLat: addressLat,
+                                            addressLng: addressLng,
+                                            token: token,
+                                            quantity: itemCount,
+                                            cartIdList: cartArr
+                                            //foodID: widget.product.id
                                             )));
                               }
                             },
@@ -709,19 +710,22 @@ class _AddCuisinState extends State<AddCuisin> {
       print("productList1..." +
           productList[i]["food_amount"].runtimeType.toString());
       var qty = int.parse(productList[i]["quantity"].toString());
+      print("Qty..." + productList[i]["tax"].toString());
       print("Qty..." + qty.toString());
       itemPrice = itemPrice +
           double.parse((double.parse(productList[i]["quantity"].toString()) *
                   double.parse(productList[i]["food_amount"]))
               .toString());
-      //taxPrice = taxPrice+
+      taxPrice = taxPrice + double.parse(productList[i]["tax"]);
+      cartArr.add(productList[i]["cart_id"]);
     }
     var distanceCal = distance.split(" ");
-    // print("deliveryCharge..." + distanceCal.toString());
+    print("deliveryCharge..." + taxPrice.toString());
     deliveryCharge = widget.configData["per_km_shipping_charge"] *
         double.parse(distanceCal[0]);
     payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
     print("ItemPrice...qty..." + itemPrice.toString());
     print("ItemPrice...qty...payprice..." + payPrice.toString());
+    print("cartArr..." + cartArr.toString());
   }
 }

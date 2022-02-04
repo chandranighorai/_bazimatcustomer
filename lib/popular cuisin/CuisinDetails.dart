@@ -648,8 +648,8 @@ class _CuisinDetailsState extends State<CuisinDetails> {
     }
   }
 
-  _viewCartShow(
-      bool dataAdded, String foodId, String foodAmt, String qty) async {
+  _viewCartShow(bool dataAdded, String tax, String foodId, String foodAmt,
+      String qty) async {
     print("dataAdded..." + dataAdded.toString());
     // SharedPreferences pref = await SharedPreferences.getInstance();
     // var id = pref.getString("id");
@@ -664,7 +664,9 @@ class _CuisinDetailsState extends State<CuisinDetails> {
           "&quantity=" +
           qty +
           "&restaurant_id=" +
-          resturentId.toString();
+          resturentId.toString() +
+          "&tax=" +
+          tax;
       var url = Const.addToCart + param;
       print("Url..." + url.toString());
       var response = await dio.post(url,

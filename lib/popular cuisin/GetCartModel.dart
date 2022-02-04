@@ -35,6 +35,7 @@ class GetCartData {
   String foodName;
   String foodImage;
   int quantity;
+  String tax;
   String foodAmount;
   int isOdered;
   String addedDtime;
@@ -47,6 +48,7 @@ class GetCartData {
       this.foodName,
       this.foodImage,
       this.quantity,
+      this.tax,
       this.foodAmount,
       this.isOdered,
       this.addedDtime});
@@ -59,6 +61,7 @@ class GetCartData {
     foodName = json['food_name'];
     foodImage = json['food_image'];
     quantity = json['quantity'];
+    tax = json['tax'];
     foodAmount = json['food_amount'];
     isOdered = json['is_odered'];
     addedDtime = json['added_dtime'];
@@ -73,6 +76,7 @@ class GetCartData {
     data['food_name'] = this.foodName;
     data['food_image'] = this.foodImage;
     data['quantity'] = this.quantity;
+    data['tax'] = this.tax;
     data['food_amount'] = this.foodAmount;
     data['is_odered'] = this.isOdered;
     data['added_dtime'] = this.addedDtime;

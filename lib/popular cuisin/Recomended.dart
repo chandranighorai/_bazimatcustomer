@@ -21,7 +21,7 @@ class Recommended extends StatefulWidget {
       resturentOfferPrice;
   Function() couponList;
   var allCartData;
-  Function(bool cartShow, String foodId, String foodAmt, String qty) viewCart;
+  Function(bool cartShow,String tax, String foodId, String foodAmt, String qty) viewCart;
   Recommended(
       {this.productList,
       this.imageUrl,
@@ -193,6 +193,7 @@ class _RecommendedState extends State<Recommended> {
                                                   itemCount = 1;
                                                   widget.viewCart(
                                                       _dataAdded,
+                                                      widget.productList.tax.toString(),
                                                       widget.productList.id
                                                           .toString(),
                                                       widget.productList.price
@@ -227,7 +228,7 @@ class _RecommendedState extends State<Recommended> {
                                           _dataAdded = true;
                                           widget.viewCart(
                                               _dataAdded,
-                                         
+                                              widget.productList.tax.toString(),
                                               widget.productList.id.toString(),
                                               widget.productList.price
                                                   .toString(),
