@@ -57,9 +57,10 @@ class _AddCuisinState extends State<AddCuisin> {
   int itemCount;
   var addressList;
   bool addressLoad, _distanceLoad;
-  var duration, distance, addressLat, addressLng, token;
+  var duration, distance, addressLat, addressLng, token, productDatalist;
   var dio = Dio();
-  String addr, restLat, restLng, addressType;
+  String addr, restLat, restLng, addressType, type = "";
+  //dynamic type;
   bool _pageLoad;
   List cartArr = [];
   @override
@@ -76,9 +77,10 @@ class _AddCuisinState extends State<AddCuisin> {
     distance = widget.distance;
     restLat = widget.resturentLat;
     restLng = widget.resturentLng;
+    productDatalist = widget.productList;
     _getAddress();
     //_itemUpdate(widget.product.price.toString(), itemCount);
-    _itemUpdate1(widget.productList);
+    _itemUpdate1(widget.productList, type);
   }
 
   @override
@@ -588,26 +590,26 @@ class _AddCuisinState extends State<AddCuisin> {
     );
   }
 
-  _itemUpdate(String productPrice, int itemcount) {
-    print("productPrice..." + itemcount.toString());
-    // print("productPrice..." +
-    //     widget.configData["per_km_shipping_charge"].toString());
-    setState(() {
-      itemCount = itemcount;
-      var distanceCal = distance.split(" ");
-      // print("deliveryCharge..." + distanceCal.toString());
-      deliveryCharge = widget.configData["per_km_shipping_charge"] *
-          double.parse(distanceCal[0]);
-      //print("deliveryCharge..." + deliveryCharge.toString());
-      itemPrice = double.parse(productPrice);
-      // print("itemPrice...." + itemPrice.toString());
-      //taxPrice = double.parse(widget.product.tax.toString());
-      // print("taxPrice...." + taxPrice.toString());
-      // print("taxPrice...." + deliveryCharge.toString());
-      //payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
-      //print("payPrice...." + payPrice.toString());
-    });
-  }
+  // _itemUpdate(String productPrice, int itemcount) {
+  //   print("productPrice..." + itemcount.toString());
+  //   // print("productPrice..." +
+  //   //     widget.configData["per_km_shipping_charge"].toString());
+  //   setState(() {
+  //     itemCount = itemcount;
+  //     var distanceCal = distance.split(" ");
+  //     // print("deliveryCharge..." + distanceCal.toString());
+  //     deliveryCharge = widget.configData["per_km_shipping_charge"] *
+  //         double.parse(distanceCal[0]);
+  //     //print("deliveryCharge..." + deliveryCharge.toString());
+  //     itemPrice = double.parse(productPrice);
+  //     // print("itemPrice...." + itemPrice.toString());
+  //     //taxPrice = double.parse(widget.product.tax.toString());
+  //     // print("taxPrice...." + taxPrice.toString());
+  //     // print("taxPrice...." + deliveryCharge.toString());
+  //     //payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
+  //     //print("payPrice...." + payPrice.toString());
+  //   });
+  // }
 
   _getAddress() async {
     try {
@@ -702,23 +704,101 @@ class _AddCuisinState extends State<AddCuisin> {
     }
   }
 
-  _itemUpdate1(productList) {
+  _itemUpdate1(productList, String type) async {
     print("productList1..." + productList.length.toString());
-    print("productList1..." + productList.toString());
+    print("card_id..." + productList.toString());
+    print("card_id..." + productList.length.toString());
+    print("productList1..." + productDatalist.toString());
+    print("productList1...type..." + type.toString());
+    if (type == "update") {
+      var param = "?cart_id=" +
+          productList[0]["cart_id"].toString() +
+          "&quantity=" +
+          productList[0]["quantity"].toString();
+      var url = Const.updateCart + param;
+      var response = await dio.post(url,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print("Response..." + response.data.toString());
+      for (int i = 0; i < productDatalist.length; i++) {
+        print("cart_id..." + productList[0]["cart_id"].toString());
+        if (productList[0]["cart_id"].toString() ==
+            productDatalist[i]["cart_id"].toString()) {
+          setState(() {
+            // print("productDataList...0..." +
+            //     productDatalist[i]["quantity"].toString());
+            productDatalist[i]["quantity"] = productList[0]["quantity"];
+            //productDatalist[i]["food_amount"] = productList[0]["food_amount"];
+            // print("productDataList...0..." +
+            //     productDatalist[i]["quantity"].toString());
+            itemPrice = 0.0;
+          });
+        }
+      }
+    } else if (type == "delete") {
+      var param = "?cart_id=" + productList[0]["cart_id"].toString();
+      var url = Const.deleteCart + param;
+      print("Url delete..." + url.toString());
+      // setState(() {
+      //   productDatalist = productDatalist
+      //       .removeWhere(
+      //           (e) => e["cart_id"].toString() == productList[0]["cart_id"])
+      //       .toList();
+      //   print(
+      //       "productListLength...0000..." + productDatalist.length.toString());
+      // });
+      var response1 = await dio.post(url,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      showCustomToast(response1.data["message"]);
+      print("response DAta..." + response1.data.toString());
+      print("response DAta..." + productList.toString());
+      cartArr.clear();
+      itemPrice = 0.0;
+      //print("productDataList...003..." + productDatalist.toString());
+      // for (int i = 0; i < productDatalist.length; i++) {
+      //   if (productList[0]["cart_id"].toString() ==
+      //       productDatalist[i]["cart_id"].toString()) {
+      setState(() {
+        productDatalist = productDatalist
+            .removeWhere((e) =>
+                    e["cart_id"].toString() ==
+                    productList[0]["cart_id"].toString()
+                // {
+                //   print("iii..." + e["cart_id"].toString());
+                //   print("iii...0.." + productList[0]["cart_id"].toString());
+                // }
+                //print("cart_idd..." + e["cart_id"].toString());
+                )
+            .toList();
+      });
+      print("productDataList...002..." + productDatalist.toString());
 
-    for (int i = 0; i < productList.length; i++) {
-      print("productList1..." +
-          productList[i]["food_amount"].runtimeType.toString());
-      var qty = int.parse(productList[i]["quantity"].toString());
-      print("Qty..." + productList[i]["tax"].toString());
-      print("Qty..." + qty.toString());
-      itemPrice = itemPrice +
-          double.parse((double.parse(productList[i]["quantity"].toString()) *
-                  double.parse(productList[i]["food_amount"]))
-              .toString());
-      taxPrice = taxPrice + double.parse(productList[i]["tax"]);
-      cartArr.add(productList[i]["cart_id"]);
+      // }
+      // }
     }
+    print("productDataList...001..." + productDatalist.toString());
+    for (int i = 0; i < productDatalist.length; i++) {
+      print("productList1...000..." + productDatalist.length.toString());
+      print("productList1...000..." + productDatalist.toString());
+      var qty = int.parse(productDatalist[i]["quantity"].toString());
+      //print("Qty..." + productList[i]["tax"].toString());
+      print("Qty..." + qty.toString());
+      print("Qty..." +
+          double.parse(productDatalist[i]["quantity"].toString()).toString());
+      print("Qty..." +
+          double.parse(productDatalist[i]["food_amount"]).toString());
+
+      //setState(() {
+      itemPrice = itemPrice +
+          double.parse(
+              (double.parse(productDatalist[i]["quantity"].toString()) *
+                      double.parse(productDatalist[i]["food_amount"]))
+                  .toString());
+      print("itemPrice...Qty..." + itemPrice.toString());
+      taxPrice = taxPrice + double.parse(productDatalist[i]["tax"]);
+      cartArr.add(productDatalist[i]["cart_id"]);
+      //});
+    }
+    print("itemPrice..." + itemPrice.toString());
     var distanceCal = distance.split(" ");
     print("deliveryCharge..." + taxPrice.toString());
     deliveryCharge = widget.configData["per_km_shipping_charge"] *
@@ -727,5 +807,6 @@ class _AddCuisinState extends State<AddCuisin> {
     print("ItemPrice...qty..." + itemPrice.toString());
     print("ItemPrice...qty...payprice..." + payPrice.toString());
     print("cartArr..." + cartArr.toString());
+    //}
   }
 }

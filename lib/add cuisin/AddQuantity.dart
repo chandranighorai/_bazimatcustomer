@@ -15,7 +15,7 @@ class AddQuantity extends StatefulWidget {
   //resturentOffer,
   //product;
   //Products product;
-  Function(dynamic productList) refresh;
+  Function(dynamic productList,String type) refresh;
   AddQuantity(
       {
       //this.imageUrl,
@@ -34,7 +34,7 @@ class AddQuantity extends StatefulWidget {
 
 class _AddQuantityState extends State<AddQuantity> {
   int price;
-  
+
   bool getCartLoad;
   var dio = Dio();
   var allCartData;
@@ -131,7 +131,9 @@ class _AddQuantityState extends State<AddQuantity> {
                       //     allCartData[index]["food_amount"]
                       //         .runtimeType
                       //         .toString());
-                      return QuantityList(dataList: allCartData[index],refresh:widget.refresh);
+                      return QuantityList(
+                          dataList: allCartData[index],
+                          refresh: widget.refresh);
                     },
                   ),
           )
