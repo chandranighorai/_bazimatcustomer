@@ -3,6 +3,7 @@ import 'package:bazimat/add%20cuisin/Cart.dart';
 import 'package:bazimat/address%20book/AddAddress.dart';
 import 'package:bazimat/coupon/Coupon.dart';
 import 'package:bazimat/home/ConfigModel.dart';
+import 'package:bazimat/popular%20cuisin/Recomended.dart';
 import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,7 @@ class _AddCuisinState extends State<AddCuisin> {
   bool couponApplied;
   double couponPrice;
   int itemCount;
+  bool _cartLoad;
   var addressList;
   bool addressLoad, _distanceLoad;
   var duration, distance, addressLat, addressLng, token, productDatalist;
@@ -69,6 +71,7 @@ class _AddCuisinState extends State<AddCuisin> {
     couponApplied = false;
     addressLoad = false;
     _pageLoad = false;
+    _cartLoad = false;
     couponPrice = 0.0;
     itemPrice = 0.0;
     taxPrice = 0.0;
@@ -81,6 +84,10 @@ class _AddCuisinState extends State<AddCuisin> {
     _getAddress();
     //_itemUpdate(widget.product.price.toString(), itemCount);
     _itemUpdate1(widget.productList, type);
+  }
+
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -100,7 +107,11 @@ class _AddCuisinState extends State<AddCuisin> {
             Icons.arrow_back_ios_rounded,
             color: Colors.black,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            print("productList..." + productDatalist.toString());
+            //Navigator.pop(context);
+            Navigator.of(context).pop(productDatalist);
+          },
         ),
       ),
       body: _pageLoad == false
@@ -115,15 +126,23 @@ class _AddCuisinState extends State<AddCuisin> {
                 // padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.03),
                 child: Column(
                   children: [
-                    AddQuantity(
-                        //imageUrl: image,
-                        resturentName: widget.resturentName,
-                        resturentAddr: widget.resturenrAddr,
-                        resturentId: widget.resturentId,
-                        // resturentOffer: widget.resturentPrice,
-                        //product: widget.product,
-                        //product: widget.productList,
-                        refresh: _itemUpdate1),
+                    _cartLoad == false
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : cartArr.length == 0
+                            ? Center(
+                                child: Text("No Items"),
+                              )
+                            : AddQuantity(
+                                //imageUrl: image,
+                                resturentName: widget.resturentName,
+                                resturentAddr: widget.resturenrAddr,
+                                resturentId: widget.resturentId,
+                                // resturentOffer: widget.resturentPrice,
+                                //product: widget.product,
+                                //product: widget.productList,
+                                refresh: _itemUpdate1),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
@@ -753,60 +772,83 @@ class _AddCuisinState extends State<AddCuisin> {
       print("response DAta..." + productList.toString());
       cartArr.clear();
       itemPrice = 0.0;
+      setState(() {
+        _cartLoad = false;
+        print("cartArr..." + _cartLoad.toString());
+      });
       //print("productDataList...003..." + productDatalist.toString());
       // for (int i = 0; i < productDatalist.length; i++) {
       //   if (productList[0]["cart_id"].toString() ==
       //       productDatalist[i]["cart_id"].toString()) {
-      setState(() {
-        productDatalist = productDatalist
-            .removeWhere((e) =>
-                    e["cart_id"].toString() ==
-                    productList[0]["cart_id"].toString()
-                // {
-                //   print("iii..." + e["cart_id"].toString());
-                //   print("iii...0.." + productList[0]["cart_id"].toString());
-                // }
-                //print("cart_idd..." + e["cart_id"].toString());
-                )
-            .toList();
-      });
+      // setState(() {
+      //   productDatalist = productDatalist.removeWhere((e) =>
+      //           e["cart_id"].toString() == productList[0]["cart_id"].toString()
+      //       // {
+      //       //   print("iii..." + e["cart_id"].toString());
+      //       //   print("iii...0.." + productList[0]["cart_id"].toString());
+      //       // }
+      //       //print("cart_idd..." + e["cart_id"].toString());
+      //       );
+      // });
+      productDatalist = productDatalist
+          .where((e) =>
+              e["cart_id"].toString() != productList[0]["cart_id"].toString())
+          .toList();
       print("productDataList...002..." + productDatalist.toString());
-
-      // }
-      // }
+      //print("CArtArr.." + cartArr.length.toString());
     }
     print("productDataList...001..." + productDatalist.toString());
-    for (int i = 0; i < productDatalist.length; i++) {
-      print("productList1...000..." + productDatalist.length.toString());
-      print("productList1...000..." + productDatalist.toString());
-      var qty = int.parse(productDatalist[i]["quantity"].toString());
-      //print("Qty..." + productList[i]["tax"].toString());
-      print("Qty..." + qty.toString());
-      print("Qty..." +
-          double.parse(productDatalist[i]["quantity"].toString()).toString());
-      print("Qty..." +
-          double.parse(productDatalist[i]["food_amount"]).toString());
-
-      //setState(() {
-      itemPrice = itemPrice +
-          double.parse(
-              (double.parse(productDatalist[i]["quantity"].toString()) *
-                      double.parse(productDatalist[i]["food_amount"]))
-                  .toString());
-      print("itemPrice...Qty..." + itemPrice.toString());
-      taxPrice = taxPrice + double.parse(productDatalist[i]["tax"]);
-      cartArr.add(productDatalist[i]["cart_id"]);
-      //});
+    if (productDatalist.length == 0) {
+      setState(() {
+        itemPrice = 0.0;
+        taxPrice = 0.0;
+        cartArr = [];
+        _cartLoad = true;
+        print("cartArr..." + _cartLoad.toString());
+        print("cartArr..." + cartArr.toString());
+        print("cartArr..." + cartArr.length.toString());
+      });
+    } else {
+      for (int i = 0; i < productDatalist.length; i++) {
+        print("productList1...000..." + productDatalist.length.toString());
+        print("productList1...000..." + productDatalist.toString());
+        var qty = int.parse(productDatalist[i]["quantity"].toString());
+        //print("Qty..." + productList[i]["tax"].toString());
+        print("Qty..." + qty.toString());
+        print("Qty..." +
+            double.parse(productDatalist[i]["quantity"].toString()).toString());
+        print("Qty..." +
+            double.parse(productDatalist[i]["food_amount"]).toString());
+        //setState(() {
+        itemPrice = itemPrice +
+            double.parse(
+                (double.parse(productDatalist[i]["quantity"].toString()) *
+                        double.parse(productDatalist[i]["food_amount"]))
+                    .toString());
+        print("itemPrice...Qty..." + itemPrice.toString());
+        taxPrice = taxPrice + double.parse(productDatalist[i]["tax"]);
+        cartArr.add(productDatalist[i]["cart_id"]);
+        _cartLoad = true;
+        //});
+      }
     }
     print("itemPrice..." + itemPrice.toString());
-    var distanceCal = distance.split(" ");
-    print("deliveryCharge..." + taxPrice.toString());
-    deliveryCharge = widget.configData["per_km_shipping_charge"] *
-        double.parse(distanceCal[0]);
-    payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
-    print("ItemPrice...qty..." + itemPrice.toString());
-    print("ItemPrice...qty...payprice..." + payPrice.toString());
-    print("cartArr..." + cartArr.toString());
+    setState(() {
+      var distanceCal = distance.split(" ");
+      print("deliveryCharge..." + taxPrice.toString());
+      deliveryCharge = widget.configData["per_km_shipping_charge"] *
+          double.parse(distanceCal[0]);
+      payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
+      print("ItemPrice...qty..." + itemPrice.toString());
+      print("ItemPrice...qty...payprice..." + payPrice.toString());
+      print("cartArr..." + cartArr.toString());
+      print("cartArr..." + cartArr.length.toString());
+      // if (cartArr.length == 0) {
+      //   Navigator.pushReplacement(
+      //       context, MaterialPageRoute(builder: (context) => Recommended()));
+      // }
+    });
+
     //}
   }
 }

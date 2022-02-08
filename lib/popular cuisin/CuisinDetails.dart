@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bazimat/add%20cuisin/AddCuisin.dart';
 import 'package:bazimat/favourites/FavouriteModel.dart';
 import 'package:bazimat/home/CampaignDetailsModel.dart';
@@ -199,7 +201,15 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                             resturenrAddr: resturentAddr,
                             //resturentPrice: resturentOfferPrice,
                             configData: configData,
-                            couponList: widget.couponList)));
+                            couponList: widget.couponList))).then((value) {
+                  print("Val in cuisin..." + value[0]["cart_id"].toString());
+                  setState(() {
+                    allCartData = value;
+                    print("all..." + allCartData.toString());
+                    print("all..." + allCartData[0]["cart_id"].toString());
+                    _recommendedProduct = _getAllRecommendedProduct();
+                  });
+                });
               },
               child: Container(
                 height: MediaQuery.of(context).size.width * 0.06,
@@ -714,6 +724,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
           options: Options(headers: {"Authorization": "Bearer $token"}));
       allCartData = response.data["respData"];
       print("respons body...in getCart..." + response.data.toString());
+      print("respons body...in getCart..." + allCartData.toString());
       if (response.data['state'] == 1) {
         setState(() {
           _dataAdded = false;

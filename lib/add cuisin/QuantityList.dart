@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 class QuantityList extends StatefulWidget {
   var dataList;
   Function(dynamic data, String type) refresh;
-  QuantityList({this.dataList, this.refresh, Key key}) : super(key: key);
+  Function(String type,dynamic data) data;
+  QuantityList({this.dataList, this.refresh, this.data, Key key})
+      : super(key: key);
 
   @override
   _QuantityListState createState() => _QuantityListState();
@@ -25,6 +27,11 @@ class _QuantityListState extends State<QuantityList> {
     print("ItemCount..." + itemCount.toString());
     print("ItemCount..." + finalPrice.toString());
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -112,6 +119,7 @@ class _QuantityListState extends State<QuantityList> {
                             dataList.add(widget.dataList);
                             print("Datalist...delete..." + dataList.toString());
                             widget.refresh(dataList, "delete");
+                            widget.data("delete",dataList);
                           });
                           //itemCount = 1;
                         }

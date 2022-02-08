@@ -1,6 +1,10 @@
+import 'package:bazimat/add%20cuisin/AddCuisin.dart';
 import 'package:bazimat/add%20cuisin/QuantityList.dart';
+import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
+import 'package:bazimat/popular%20cuisin/Recomended.dart';
 import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/util/AppColors.dart';
+import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +19,7 @@ class AddQuantity extends StatefulWidget {
   //resturentOffer,
   //product;
   //Products product;
-  Function(dynamic productList,String type) refresh;
+  Function(dynamic productList, String type) refresh;
   AddQuantity(
       {
       //this.imageUrl,
@@ -43,9 +47,18 @@ class _AddQuantityState extends State<AddQuantity> {
     super.initState();
     _getProduct();
     getCartLoad = false;
+    String type = "";
+    //int dataLength;
+    dynamic data;
+    listLoad(type, data);
     //price = widget.product.price;
     //itemCount = 1;
     //finalPrice = price * itemCount;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -120,11 +133,19 @@ class _AddQuantityState extends State<AddQuantity> {
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
-                : ListView.builder(
+                :
+                // allCartData.length == 0
+                //     ? Center(
+                //         child: Text("No Item"),
+                //       )
+                //     :
+                ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: allCartData.length,
                     itemBuilder: (BuildContext context, int index) {
+                      print("All CArt DAta length..." +
+                          allCartData.length.toString());
                       // print("ItemCount..." +
                       //     allCartData[index]["quantity"].toString());
                       // print("ItemCount..." +
@@ -133,7 +154,8 @@ class _AddQuantityState extends State<AddQuantity> {
                       //         .toString());
                       return QuantityList(
                           dataList: allCartData[index],
-                          refresh: widget.refresh);
+                          refresh: widget.refresh,
+                          data: listLoad);
                     },
                   ),
           )
@@ -154,12 +176,17 @@ class _AddQuantityState extends State<AddQuantity> {
       print("params..." + params.toString());
       var response = await dio.post(Const.getCart + params,
           options: Options(headers: {"Authorization": "Bearer $token"}));
-      allCartData = response.data["respData"];
+      setState(() {
+        allCartData = response.data["respData"];
+      });
       print("respons body...in getCart..." + response.data.toString());
       if (response.data['state'] == 1) {
         setState(() {
           //_dataAdded = false;
-          getCartLoad = true;
+          //getCartLoad = true;
+          showCustomToast(response.data['message']);
+          // Navigator.pushReplacement(
+          //     context, MaterialPageRoute(builder: (context) => Recommended()));
         });
       } else {
         setState(() {
@@ -169,6 +196,38 @@ class _AddQuantityState extends State<AddQuantity> {
       }
     } on DioError catch (e) {
       print(e.toString());
+    }
+  }
+
+  listLoad(String type, dynamic data) {
+    print("Type in addQuantity..." + type.toString());
+    print("Type in addQuantity..." + data.toString());
+    print("Type in addQuantity..." + allCartData.toString());
+    if (type == "delete") {
+      setState(() {
+        getCartLoad = false;
+        //_getProduct();
+        allCartData = allCartData
+            .where(
+                (e) => e["cart_id"].toString() != data[0]["cart_id"].toString())
+            .toList();
+        print("Type in addQuantity..." + allCartData.length.toString());
+        //getCartLoad = true;
+        print("getCartLoad..." + getCartLoad.toString());
+        print("getCartLoad..." + allCartData.length.toString());
+        if (allCartData.length == 0) {
+          getCartLoad = false;
+          //   print("hii...");
+          //   // Navigator.pushNamedAndRemoveUntil(
+          //   //     context, MaterialPageRoute(builder: (context) => Recommended()));
+          //   // Navigator.pushAndRemoveUntil(
+          //   //     context,
+          //   //     MaterialPageRoute(builder: (context) => CuisinDetails()),
+          //   //     (route) => false);
+        } else {
+          getCartLoad = true;
+        }
+      });
     }
   }
 }
