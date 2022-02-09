@@ -16,7 +16,7 @@ class More extends StatefulWidget {
 class _MoreState extends State<More> {
   @override
   Widget build(BuildContext context) {
-    print("about..." + widget.aboutUs.toString());
+    print("about..." + widget.terms.toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -73,8 +73,11 @@ class _MoreState extends State<More> {
                     "Privacy Policy",
                     style: TextStyle(color: Colors.black),
                   ),
-                  onPressed: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => PrivacyPolicy(privacy:widget.privacy))),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              PrivacyPolicy(privacy: widget.privacy))),
                 )),
             // Container(
             //     padding: const EdgeInsets.all(0.0),
@@ -100,7 +103,8 @@ class _MoreState extends State<More> {
                   onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TermsCondition(terms:widget.terms))),
+                          builder: (context) =>
+                              TermsCondition(terms: widget.terms))),
                 )),
           ],
         ),

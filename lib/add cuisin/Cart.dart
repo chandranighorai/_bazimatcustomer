@@ -219,6 +219,10 @@ class _CartState extends State<Cart> {
     });
     try {
       print("distance..." + transactionId.toString());
+      print("distance..." + widget.cartIdList.length.toString());
+      var cartData;
+      cartData = widget.cartIdList.join(",");
+      print("address..." + cartData.toString());
       print("address..." + _character.toString());
       //print("latitude..." + data.toString());
       //print("longitude..." + paymentMethod.toString());
@@ -254,8 +258,8 @@ class _CartState extends State<Cart> {
           // widget.quantity.toString() +
           "&user_id=" +
           userId.toString() +
-          "&cart[]=" +
-          widget.cartIdList.toString();
+          "&cart=" +
+          cartData.toString();
       var url = Const.orderPlace + params;
       print("Url..." + url.toString());
       var response = await dio.post(
@@ -274,7 +278,7 @@ class _CartState extends State<Cart> {
         //   "longitude": widget.addressLng,
         // }
       );
-      print("response data pay..." + response.data.toString());
+      // print("response data pay..." + response.data.toString());
       if (response.data["state"] == 0) {
         showCustomToast(response.data["message"]);
         pref.setString("OrderId", response.data["order_id"].toString());

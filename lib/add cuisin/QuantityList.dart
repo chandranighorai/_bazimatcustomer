@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class QuantityList extends StatefulWidget {
   var dataList;
   Function(dynamic data, String type) refresh;
-  Function(String type,dynamic data) data;
+  Function(String type, dynamic data) data;
   QuantityList({this.dataList, this.refresh, this.data, Key key})
       : super(key: key);
 
@@ -119,7 +119,7 @@ class _QuantityListState extends State<QuantityList> {
                             dataList.add(widget.dataList);
                             print("Datalist...delete..." + dataList.toString());
                             widget.refresh(dataList, "delete");
-                            widget.data("delete",dataList);
+                            widget.data("delete", dataList);
                           });
                           //itemCount = 1;
                         }

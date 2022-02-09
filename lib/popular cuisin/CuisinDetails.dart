@@ -133,6 +133,11 @@ class _CuisinDetailsState extends State<CuisinDetails> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // print("ResturentName..." + widget.resturentData.name.toString());
     // print("ResturentName..." + widget.resturentData.id.toString());
@@ -202,12 +207,21 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                             //resturentPrice: resturentOfferPrice,
                             configData: configData,
                             couponList: widget.couponList))).then((value) {
-                  print("Val in cuisin..." + value[0]["cart_id"].toString());
+                  // print("Val in cuisin..." + value[0]["cart_id"].toString());
                   setState(() {
                     allCartData = value;
-                    print("all..." + allCartData.toString());
-                    print("all..." + allCartData[0]["cart_id"].toString());
-                    _recommendedProduct = _getAllRecommendedProduct();
+                    print("all..." + allCartData.length.toString());
+                    // print("all..." + allCartData[0]["cart_id"].toString());
+                    if (allCartData.length == 0) {
+                      _dataAdded = false;
+                      print("Val in cuisin..." + _dataAdded.toString());
+                    } else {
+                      _dataAdded = true;
+                      _getCartShow();
+                      print("Val in cuisin..." + _dataAdded.toString());
+                    }
+                    // _getCartShow();
+                    //_recommendedProduct = _getAllRecommendedProduct();
                   });
                 });
               },
@@ -278,18 +292,21 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                     IntrinsicHeight(
                       child: Row(
                         children: [
-                          Text(
-                            resturentAddr.toString(),
-                            // widget.section == "cuisin"
-                            //     ? "${widget.cuisinList.address}"
-                            //     : widget.section == "list"
-                            //         ? "${widget.listData.address}"
-                            //         : widget.section == "topPicks"
-                            //             ? "${widget.topPickList.address}"
-                            //             : widget.section == "campaign"
-                            //                 ? "${widget.campaignData.address}"
-                            //                 : "${widget.resturentData.address}",
-                            style: TextStyle(color: Colors.grey),
+                          Container(
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            child: Text(
+                              resturentAddr.toString(),
+                              // widget.section == "cuisin"
+                              //     ? "${widget.cuisinList.address}"
+                              //     : widget.section == "list"
+                              //         ? "${widget.listData.address}"
+                              //         : widget.section == "topPicks"
+                              //             ? "${widget.topPickList.address}"
+                              //             : widget.section == "campaign"
+                              //                 ? "${widget.campaignData.address}"
+                              //                 : "${widget.resturentData.address}",
+                              style: TextStyle(color: Colors.grey),
+                            ),
                           ),
                           VerticalDivider(
                             thickness: 1,

@@ -28,10 +28,12 @@ class _NavigationState extends State<Navigation> {
   String fullName, phone, firstLetter, email, ageStatus;
   var dio = Dio();
   var response;
+  bool _moreLoad;
   GoogleSignIn googleSignIn = GoogleSignIn();
   @override
   void initState() {
     super.initState();
+    _moreLoad = false;
     _getDetails();
   }
 
@@ -316,7 +318,7 @@ class _NavigationState extends State<Navigation> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.04,
                         ),
-                        Text("More"),
+                        Text(_moreLoad == false ? "..." : "More"),
                       ],
                     ),
                     onTap: () {
@@ -393,11 +395,21 @@ class _NavigationState extends State<Navigation> {
   _getConfigData() async {
     try {
       response = await dio.get(Const.config);
+      print("response of config..." + response.data.length.toString());
       print("response of config..." +
           response.data["terms_and_conditions"].toString());
+      if (response.data.length == null) {
+        setState(() {
+          _moreLoad = false;
+        });
+      } else {
+        setState(() {
+          _moreLoad = true;
+        });
+      }
+      print("termas...." + response.data["terms_and_conditions"].toString());
       // if(response.data["state"]==0)
       // {
-
       // }
     } on DioError catch (e) {
       print(e.toString());

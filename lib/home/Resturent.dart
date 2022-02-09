@@ -119,13 +119,17 @@ class _ResturentState extends State<Resturent> {
                         IntrinsicHeight(
                           child: Row(
                             children: [
-                              Text(
-                                "${widget.resturentData.address}",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.03),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 3,
+                                child: Text(
+                                  "${widget.resturentData.address}",
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.03),
+                                ),
                               ),
                               VerticalDivider(
                                 // thickness:

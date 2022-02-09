@@ -133,15 +133,18 @@ class _AllResturentListState extends State<AllResturentList> {
                         IntrinsicHeight(
                           child: Row(
                             children: [
-                              Text(
-                                widget.section == "campaign"
-                                    ? "${widget.resturent1.address}"
-                                    : "${widget.resturent.address}",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.03),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 2.8,
+                                child: Text(
+                                  widget.section == "campaign"
+                                      ? "${widget.resturent1.address}"
+                                      : "${widget.resturent.address}",
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.03),
+                                ),
                               ),
                               VerticalDivider(
                                 // thickness:

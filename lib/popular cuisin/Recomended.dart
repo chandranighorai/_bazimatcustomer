@@ -21,7 +21,8 @@ class Recommended extends StatefulWidget {
       resturentOfferPrice;
   Function() couponList;
   var allCartData;
-  Function(bool cartShow,String tax, String foodId, String foodAmt, String qty) viewCart;
+  Function(bool cartShow, String tax, String foodId, String foodAmt, String qty)
+      viewCart;
   Recommended(
       {this.productList,
       this.imageUrl,
@@ -49,11 +50,13 @@ class _RecommendedState extends State<Recommended> {
   bool configLoad;
   bool _dataAdded;
   int itemCount;
+  bool _updateload = false;
   @override
   void initState() {
     super.initState();
     configData = false;
     _dataAdded = false;
+    print("getW....");
     _getQuantity();
     //widget.viewCart.
     //_getData(widget.viewCart);
@@ -62,14 +65,23 @@ class _RecommendedState extends State<Recommended> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     print("productDetails..." + widget.productList.taxType.toString());
     print("productDetails..." + widget.productList.name.toString());
-    print("allCartData..." + widget.allCartData.toString());
+    print("allCartData...in recommended..." + widget.allCartData.toString());
+    print("getQuantity called...");
     var image = widget.imageUrl + widget.productList.image;
     print("Image..." + image.toString());
     print("hjhj..." + image.toString());
-
+    print("upload..." + _updateload.toString());
+    if (_updateload == false) {
+      _getQuantity();
+    } else {}
     return configData == false
         ? Center(
             child: CircularProgressIndicator(),
@@ -160,6 +172,9 @@ class _RecommendedState extends State<Recommended> {
                                             onTap: () {
                                               setState(() {
                                                 itemCount = itemCount + 1;
+                                                _updateload = true;
+                                                print("Item..." +
+                                                    itemCount.toString());
                                                 _updateCart();
                                               });
                                             },
@@ -175,7 +190,7 @@ class _RecommendedState extends State<Recommended> {
                                                 0.05,
                                             alignment: Alignment.center,
                                             child: Text(
-                                              "$itemCount",
+                                              itemCount.toString(),
                                               style: TextStyle(
                                                   color:
                                                       AppColors.addTextColor),
@@ -185,6 +200,7 @@ class _RecommendedState extends State<Recommended> {
                                             onTap: () {
                                               setState(() {
                                                 itemCount = itemCount - 1;
+                                                _updateload = true;
                                                 if (itemCount < 1) {
                                                   _deleteFromCart();
                                                   print("ItemCount..." +
@@ -193,7 +209,8 @@ class _RecommendedState extends State<Recommended> {
                                                   itemCount = 1;
                                                   widget.viewCart(
                                                       _dataAdded,
-                                                      widget.productList.tax.toString(),
+                                                      widget.productList.tax
+                                                          .toString(),
                                                       widget.productList.id
                                                           .toString(),
                                                       widget.productList.price
@@ -279,6 +296,7 @@ class _RecommendedState extends State<Recommended> {
       var data;
       print("id..." + widget.productList.id.toString());
       print("id..." + itemCount.toString());
+      //itemCount = itemCount;
       for (int i = 0; i < widget.allCartData.length; i++) {
         data = widget.allCartData
             .where((e) => e["food_id"] == widget.productList.id)
@@ -298,6 +316,13 @@ class _RecommendedState extends State<Recommended> {
       print("response data..." + response.data.toString());
       if (response.data["state"] == 0) {
         showCustomToast(response.data["message"].toString());
+        //setState(() {
+          _updateload = false;
+        //});
+        // setState(() {
+        //   itemCount = int.parse(response.data["respData"]["quantity"]);
+        //   print("response data..." + itemCount.toString());
+        // });
       }
       // setState(() {
       //   itemCount = itemCount + 1;
@@ -328,13 +353,22 @@ class _RecommendedState extends State<Recommended> {
   // }
 
   _getQuantity() {
+    print("getQuantity called... in recommended");
+    print("cart quantity...in recommended..." + widget.allCartData.toString());
+    _dataAdded = false;
     for (int i = 0; i < widget.allCartData.length; i++) {
       if (widget.productList.id == widget.allCartData[i]["food_id"]) {
         print("Quantity..." + widget.allCartData[i]["quantity"].toString());
         setState(() {
           itemCount = widget.allCartData[i]["quantity"];
+          print("itemcount in recommended..." + itemCount.toString());
           _dataAdded = true;
         });
+      } else {
+        // setState(() {
+        //   itemCount = 0;
+        //   //_dataAdded = false;
+        // });
       }
       // else {
       //   setState(() {
@@ -362,7 +396,7 @@ class _RecommendedState extends State<Recommended> {
           options:
               Options(headers: {"Authorization": "Bearer ${widget.token}"}));
       if (response.data["state"] == 0) {
-        showCustomToast(response.data["message"]);       
+        showCustomToast(response.data["message"]);
       }
     } on DioError catch (e) {
       print(e.toString());

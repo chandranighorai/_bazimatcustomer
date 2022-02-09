@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bazimat/add%20cuisin/AddCuisin.dart';
 import 'package:bazimat/add%20cuisin/QuantityList.dart';
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
@@ -42,6 +44,7 @@ class _AddQuantityState extends State<AddQuantity> {
   bool getCartLoad;
   var dio = Dio();
   var allCartData;
+  var timer;
   @override
   void initState() {
     super.initState();
@@ -113,11 +116,14 @@ class _AddQuantityState extends State<AddQuantity> {
                   SizedBox(
                     height: MediaQuery.of(context).size.width * 0.02,
                   ),
-                  Text(
-                    "${widget.resturentAddr}",
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: MediaQuery.of(context).size.width * 0.03),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.8,
+                    child: Text(
+                      "${widget.resturentAddr}",
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: MediaQuery.of(context).size.width * 0.03),
+                    ),
                   )
                 ],
               )
@@ -193,6 +199,7 @@ class _AddQuantityState extends State<AddQuantity> {
           //_dataAdded = true;
           getCartLoad = true;
         });
+        timer.cancel();
       }
     } on DioError catch (e) {
       print(e.toString());
@@ -212,9 +219,10 @@ class _AddQuantityState extends State<AddQuantity> {
                 (e) => e["cart_id"].toString() != data[0]["cart_id"].toString())
             .toList();
         print("Type in addQuantity..." + allCartData.length.toString());
+        //print("Type in addQuantity..." + allCartData.toString());
         //getCartLoad = true;
         print("getCartLoad..." + getCartLoad.toString());
-        print("getCartLoad..." + allCartData.length.toString());
+        print("getCartLoad..." + allCartData.toString());
         if (allCartData.length == 0) {
           getCartLoad = false;
           //   print("hii...");
@@ -225,7 +233,12 @@ class _AddQuantityState extends State<AddQuantity> {
           //   //     MaterialPageRoute(builder: (context) => CuisinDetails()),
           //   //     (route) => false);
         } else {
-          getCartLoad = true;
+          //getCartLoad = true;
+          getCartLoad = false;
+          timer = Duration(seconds: 3);
+          Timer.periodic(timer, (Timer t) {
+            _getProduct();
+          });
         }
       });
     }

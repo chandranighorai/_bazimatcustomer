@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TermsCondition extends StatefulWidget {
   var terms;
@@ -12,6 +13,7 @@ class TermsCondition extends StatefulWidget {
 class _TermsConditionState extends State<TermsCondition> {
   @override
   Widget build(BuildContext context) {
+    print("ret...." + widget.terms.toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -32,9 +34,24 @@ class _TermsConditionState extends State<TermsCondition> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: ListView(
-          children: [Html(data: widget.terms)],
+          shrinkWrap: true,
+          children: [
+            Html(data: widget.terms),
+            TextButton(
+                onPressed: () => _readMore(),
+                child: Text("Read More",
+                    style: TextStyle(
+                      color: Colors.blue,
+                    )))
+          ],
         ),
       ),
     );
+  }
+
+  _readMore() async {
+    const launchUrl = "http://bazimat.in/terms-and-conditions";
+    print(launchUrl.toString());
+    await launch(launchUrl);
   }
 }
