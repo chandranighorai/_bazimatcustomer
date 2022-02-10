@@ -36,6 +36,7 @@ class _OrderStatusState extends State<OrderStatus> {
 
   @override
   Widget build(BuildContext context) {
+    print("widgetData..." + widget.orderData.accepted.toString());
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: Container(
@@ -82,26 +83,36 @@ class _OrderStatusState extends State<OrderStatus> {
         }
       case "Accepted":
         {
+          print("accepted..." + widget.orderData.accepted.length.toString());
           if (widget.orderData.accepted.length == 0) {
-            color = Colors.white;
+            setState(() {
+              color = Colors.white;
+            });
           } else {
-            color = Colors.amber;
-            dt = DateTime.parse(widget.orderData.accepted);
-            data = DateFormat('kk:mm a').format(dt);
-            print("data...length" + data.length.toString());
+            setState(() {
+              color = Colors.amber;
+              dt = DateTime.parse(widget.orderData.accepted);
+              data = DateFormat('kk:mm a').format(dt);
+              print("data...length" + data.length.toString());
+            });
           }
 
           break;
         }
       case "Confirmed":
         {
+          print("Confirmed..." + widget.orderData.confirmed.length.toString());
           if (widget.orderData.confirmed.length == 0) {
-            color = Colors.white;
+            setState(() {
+              color = Colors.white;
+            });
           } else {
-            color = Colors.amber;
-            dt = DateTime.parse(widget.orderData.confirmed);
-            data = DateFormat('kk:mm a').format(dt);
-            print("data...length" + data.toString());
+            setState(() {
+              color = Colors.amber;
+              dt = DateTime.parse(widget.orderData.confirmed);
+              data = DateFormat('kk:mm a').format(dt);
+              print("data...length" + data.toString());
+            });
           }
 
           break;
@@ -109,11 +120,15 @@ class _OrderStatusState extends State<OrderStatus> {
       case "Processing":
         {
           if (widget.orderData.processing.length == 0) {
-            color = Colors.white;
+            setState(() {
+              color = Colors.white;
+            });
           } else {
-            color = Colors.amber;
-            dt = DateTime.parse(widget.orderData.processing);
-            data = DateFormat('kk:mm a').format(dt);
+            setState(() {
+              color = Colors.amber;
+              dt = DateTime.parse(widget.orderData.processing);
+              data = DateFormat('kk:mm a').format(dt);
+            });
           }
 
           break;
@@ -121,11 +136,15 @@ class _OrderStatusState extends State<OrderStatus> {
       case "Handover":
         {
           if (widget.orderData.handover.length == 0) {
-            color = Colors.white;
+            setState(() {
+              color = Colors.white;
+            });
           } else {
-            color = Colors.amber;
-            dt = DateTime.parse(widget.orderData.handover);
-            data = DateFormat('kk:mm a').format(dt);
+            setState(() {
+              color = Colors.amber;
+              dt = DateTime.parse(widget.orderData.handover);
+              data = DateFormat('kk:mm a').format(dt);
+            });
           }
 
           break;
@@ -133,11 +152,15 @@ class _OrderStatusState extends State<OrderStatus> {
       case "Picked Up":
         {
           if (widget.orderData.pickedUp.length == 0) {
-            color = Colors.white;
+            setState(() {
+              color = Colors.white;
+            });
           } else {
-            color = Colors.amber;
-            dt = DateTime.parse(widget.orderData.pickedUp);
-            data = DateFormat('kk:mm a').format(dt);
+            setState(() {
+              color = Colors.amber;
+              dt = DateTime.parse(widget.orderData.pickedUp);
+              data = DateFormat('kk:mm a').format(dt);
+            });
           }
 
           break;
@@ -145,11 +168,15 @@ class _OrderStatusState extends State<OrderStatus> {
       case "Deliver":
         {
           if (widget.orderData.delivered.length == 0) {
-            color = Colors.white;
+            setState(() {
+              color = Colors.white;
+            });
           } else {
-            color = Colors.amber;
-            dt = DateTime.parse(widget.orderData.delivered);
-            data = DateFormat('kk:mm a').format(dt);
+            setState(() {
+              color = Colors.amber;
+              dt = DateTime.parse(widget.orderData.delivered);
+              data = DateFormat('kk:mm a').format(dt);
+            });
           }
 
           break;
@@ -157,11 +184,15 @@ class _OrderStatusState extends State<OrderStatus> {
       case "Cancel":
         {
           if (widget.orderData.canceled.length == 0) {
-            color = Colors.white;
+            setState(() {
+              color = Colors.white;
+            });
           } else {
-            color = Colors.amber;
-            dt = DateTime.parse(widget.orderData.canceled);
-            data = DateFormat('kk:mm a').format(dt);
+            setState(() {
+              color = Colors.amber;
+              dt = DateTime.parse(widget.orderData.canceled);
+              data = DateFormat('kk:mm a').format(dt);
+            });
           }
 
           break;
@@ -169,11 +200,15 @@ class _OrderStatusState extends State<OrderStatus> {
       case "Refund Request":
         {
           if (widget.orderData.refundRequested.length == 0) {
-            color = Colors.white;
+            setState(() {
+              color = Colors.white;
+            });
           } else {
-            color = Colors.amber;
-            dt = DateTime.parse(widget.orderData.refundRequested);
-            data = DateFormat('kk:mm a').format(dt);
+            setState(() {
+              color = Colors.amber;
+              dt = DateTime.parse(widget.orderData.refundRequested);
+              data = DateFormat('kk:mm a').format(dt);
+            });
           }
 
           break;
@@ -181,11 +216,15 @@ class _OrderStatusState extends State<OrderStatus> {
       case "Refund":
         {
           if (widget.orderData.refunded.length == 0) {
-            color = Colors.white;
+            setState(() {
+              color = Colors.white;
+            });
           } else {
-            color = Colors.amber;
-            dt = DateTime.parse(widget.orderData.refunded);
-            data = DateFormat('kk:mm a').format(dt);
+            setState(() {
+              color = Colors.amber;
+              dt = DateTime.parse(widget.orderData.refunded);
+              data = DateFormat('kk:mm a').format(dt);
+            });
           }
 
           break;

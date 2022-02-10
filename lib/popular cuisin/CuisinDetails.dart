@@ -9,6 +9,7 @@ import 'package:bazimat/popular%20cuisin/GetCartModel.dart';
 import 'package:bazimat/popular%20cuisin/Recomended.dart';
 import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/popular%20cuisin/PopularCuisinResturentModel.dart';
+import 'package:bazimat/search/Search.dart';
 import 'package:bazimat/sub%20list/SubListModel.dart';
 import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
@@ -177,15 +178,68 @@ class _CuisinDetailsState extends State<CuisinDetails> {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.03,
           ),
-          // Icon(
-          //   Icons.search,
-          //   color: Colors.grey,
-          // ),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Search(resturentId: resturentId)));
+            },
+            child: Icon(
+              Icons.search,
+              color: Colors.grey,
+            ),
+          ),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.03,
           )
         ],
       ),
+      // floatingActionButton:_dataAdded == false
+      //     ? SizedBox()
+      //     : FloatingActionButton(
+      //   onPressed: (){
+      //     Navigator.push(
+      //               context,
+      //               MaterialPageRoute(
+      //                   builder: (context) => AddCuisin(
+      //                       duration: widget.duration,
+      //                       distance: widget.distance,
+      //                       resturentLat: widget.resturentLat,
+      //                       resturentLng: widget.resturentLng,
+      //                       productList: allCartData,
+      //                       // product: widget.productList,
+      //                       // imageUrl: widget.imageUrl,
+      //                       resturentName: resturentName,
+      //                       resturentId: resturentId,
+      //                       resturenrAddr: resturentAddr,
+      //                       //resturentPrice: resturentOfferPrice,
+      //                       configData: configData,
+      //                       couponList: widget.couponList))).then((value) {
+      //             // print("Val in cuisin..." + value[0]["cart_id"].toString());
+      //             setState(() {
+      //               allCartData = value;
+      //               print("all..." + allCartData.length.toString());
+      //               // print("all..." + allCartData[0]["cart_id"].toString());
+      //               if (allCartData.length == 0) {
+      //                 _dataAdded = false;
+      //                 print("Val in cuisin..." + _dataAdded.toString());
+      //               } else {
+      //                 _dataAdded = true;
+      //                 _getCartShow();
+      //                 print("Val in cuisin..." + _dataAdded.toString());
+      //               }
+      //               // _getCartShow();
+      //               //_recommendedProduct = _getAllRecommendedProduct();
+      //             });
+      //           });
+      //   },
+      //     backgroundColor: Colors.white,
+      //     child: Icon(
+      //       Icons.shopping_cart_rounded,
+      //       color: Colors.blue,
+      //     )),
       bottomSheet: _dataAdded == false
           ? SizedBox()
           : InkWell(

@@ -155,6 +155,7 @@ class _CurrentOrderListState extends State<CurrentOrderList> {
                         ),
                         itemCount: list.length,
                         itemBuilder: (BuildContext context, int index) {
+                          print("List length..." + list.length.toString());
                           return OrderStatus(
                               orderStatus: list[index],
                               orderData: widget.orderData);
@@ -229,11 +230,11 @@ class _CurrentOrderListState extends State<CurrentOrderList> {
   _getToken() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     token = pref.getString("token");
-    if (widget.orderData.orderStatus == "Accepted") {
-      setState(() {
-        btnCancel = true;
-      });
-    }
+    // if (widget.orderData.orderStatus == "accepted") {
+    //   setState(() {
+    //     btnCancel = true;
+    //   });
+    // }
     // timer = Timer(Duration(minutes: 1), () {
     //   setState(() {
     //     btnCancel = true;
