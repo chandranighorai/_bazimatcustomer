@@ -1,3 +1,5 @@
+import 'package:bazimat/notification/NotificationModel.dart';
+import 'package:bazimat/search/SearchDataList.dart';
 import 'package:bazimat/search/SerachModel.dart';
 import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
@@ -17,13 +19,17 @@ class _SearchState extends State<Search> {
   var dio = Dio();
   var token, zoneId, id, cartData;
   Future<SearchModel> serchData;
-  bool _pageLoad;
+  bool _pageLoad, _itemLoad, _addEnable;
+  int itemCount;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     //cartData = '';
-    _pageLoad = false;
+    _pageLoad = true;
+    _itemLoad = false;
+    _addEnable = false;
+    itemCount = 0;
     _getToken();
   }
 
@@ -47,10 +53,12 @@ class _SearchState extends State<Search> {
         //   style: TextStyle(color: Colors.black),
         // ),
       ),
-      // floatingActionButton: cartData.length == 0
+      // floatingActionButton: _itemLoad == false
       //     ? SizedBox()
-      //     : FloatingActionButton(
-      //         onPressed: null, child: Icon(Icons.shopping_cart_rounded)),
+      //     : cartData.toString() == "null"
+      //         ? SizedBox()
+      //         : FloatingActionButton(
+      //             onPressed: null, child: Icon(Icons.shopping_cart_rounded)),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -84,173 +92,84 @@ class _SearchState extends State<Search> {
                 ? Center(
                     child: Text("Have not search yet"),
                   )
-                : Expanded(
-                    //height: MediaQuery.of(context).size.height * 0.8,
-                    //color: Colors.amber,
-                    child: FutureBuilder(
-                      initialData: null,
-                      future: serchData,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        print("SnapShot..." + snapshot.data.toString());
-                        if (snapshot.hasData) {
-                          var dataList = snapshot.data.errors.products;
-                          var imageUrl = snapshot.data.errors.imageUrl;
-                          print("DataList..." + dataList.length.toString());
-                          return dataList.length == 0
-                              ? Center(child: Text("No Items available"))
-                              : ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: dataList.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    print("DataList..." +
-                                        dataList[index].name.toString());
-                                    print("DataList..." + cartData.toString());
-                                    var imageData =
-                                        imageUrl + dataList[index].image;
-                                    var data = cartData
-                                        .where((e) =>
-                                            e["food_name"] ==
-                                            dataList[index].name)
-                                        .toList();
-                                    print("Data..." + data.toString());
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                          child: Row(
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3.5,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.15,
-                                            decoration: BoxDecoration(
-                                                color: Colors.grey,
-                                                image: DecorationImage(
-                                                    image:
-                                                        NetworkImage(imageData),
-                                                    fit: BoxFit.fill)),
-                                          ),
-                                          SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.02,
-                                          ),
-                                          Container(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              // mainAxisAlignment:
-                                              //     MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(dataList[index].name),
-                                                SizedBox(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.02),
-                                                Text("\u20B9" +
-                                                    dataList[index]
-                                                        .price
-                                                        .toString()),
-                                                SizedBox(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.02),
-                                                data.length == 0
-                                                    ? Container(
-                                                        padding: EdgeInsets.only(
-                                                            left: MediaQuery.of(context)
-                                                                    .size
-                                                                    .width *
-                                                                0.02,
-                                                            right:
-                                                                MediaQuery.of(context)
-                                                                        .size
-                                                                        .width *
-                                                                    0.02,
-                                                            top: MediaQuery.of(context)
-                                                                    .size
-                                                                    .width *
-                                                                0.02,
-                                                            bottom:
-                                                                MediaQuery.of(context)
-                                                                        .size
-                                                                        .width *
-                                                                    0.02),
-                                                        decoration: BoxDecoration(
-                                                            color: Colors.grey
-                                                                .withOpacity(0.2),
-                                                            borderRadius: BorderRadius.all(Radius.circular(MediaQuery.of(context).size.width * 0.02))),
-                                                        child: Text("ADD"))
-                                                    : Container(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            12,
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Colors
-                                                                    .grey),
-                                                            borderRadius: BorderRadius.all(
-                                                                Radius.circular(
-                                                                    MediaQuery.of(context)
-                                                                            .size
-                                                                            .width *
-                                                                        0.02))),
-                                                        child: Row(
-                                                          children: [
-                                                            Container(
-                                                                //color: Colors.blue,
-                                                                width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width /
-                                                                    13,
-                                                                child: TextButton(
-                                                                    child: Text(
-                                                                        "+"))),
-                                                            Text(data[0]
-                                                                    ["quantity"]
-                                                                .toString()),
-                                                            Container(
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width /
-                                                                  13,
-                                                              child: TextButton(
-                                                                  child: Text(
-                                                                "-",
-                                                              )),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      )),
-                                    );
-                                  });
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                    ),
-                  )
+                : _itemLoad == false
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Expanded(
+                        //height: MediaQuery.of(context).size.height * 0.8,
+                        //color: Colors.amber,
+                        child: FutureBuilder(
+                          initialData: null,
+                          future: serchData,
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            print("SnapShot..." + snapshot.data.toString());
+                            if (snapshot.hasData) {
+                              var dataList = snapshot.data.errors.products;
+                              var imageUrl = snapshot.data.errors.imageUrl;
+                              print("DataList length..." +
+                                  dataList.length.toString());
+                              return dataList.length == 0
+                                  ? Center(child: Text("No Items available"))
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: dataList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        print("cartData...datas" +
+                                            cartData.toString());
+                                        print("cartData...datas..." +
+                                            dataList[index].toString());
+                                        return SearchDataList(
+                                            imageUrl: imageUrl,
+                                            cartdata: cartData,
+                                            dataList: dataList[index],
+                                            resturentId:
+                                                widget.resturentId.toString(),
+                                            userId: id.toString());
+                                        // print("DataList..." +
+                                        //     dataList[index].name.toString());
+                                        // print("DataList..." + cartData.toString());
+                                        // var data = [];
+                                        // itemCount = 0;
+                                        // var imageData =
+                                        //     imageUrl + dataList[index].image;
+                                        // if (cartData.toString() == "null") {
+                                        // } else {
+                                        //   data = cartData
+                                        //       .where((e) =>
+                                        //           e["food_name"] ==
+                                        //           dataList[index].name)
+                                        //       .toList();
+                                        //   print("Data..." + data.toString());
+                                        //   if (data.length == 0) {
+                                        //     // setState(() {
+                                        //     itemCount = 0;
+                                        //     _addEnable = false;
+                                        //     // });
+                                        //   } else {
+                                        //     // setState(() {
+                                        //     _addEnable = true;
+                                        //     itemCount = int.parse(
+                                        //         data[0]["quantity"].toString());
+                                        //     // });
+                                        //   }
+                                        // setState(() {
+                                        //   itemCount = int.parse(
+                                        //       data[0]["quantity"].toString());
+                                        // });
+                                        // print("Data..." + itemCount.toString());
+                                        // }
+                                      });
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        ),
+                      )
           ],
         ),
       ),
@@ -272,6 +191,7 @@ class _SearchState extends State<Search> {
       print("response data..." + response.data.toString());
       if (response.data["state"] == 0) {
         setState(() {
+          _itemLoad = true;
           _pageLoad = false;
         });
         return SearchModel.fromJson(response.data);
@@ -292,7 +212,9 @@ class _SearchState extends State<Search> {
   }
 
   _getItem(String val) {
-    serchData = _getSearchData(val.toString());
+    setState(() {
+      serchData = _getSearchData(val.toString());
+    });
   }
 
   _getCart() async {
@@ -312,12 +234,38 @@ class _SearchState extends State<Search> {
       } else {
         cartData = response.data["respData"];
         print("response data in cart..." + cartData.toString());
-        // setState(() {
-        //   _pageLoad = true;
-        // });
+        setState(() {
+          _pageLoad = true;
+        });
       }
     } on DioError catch (e) {
       print(e.toString());
     }
   }
+
+  // _addToCArt(Products dataList, String resturentId, String id) async {
+  //   print("data in CArt..." + dataList.name.toString());
+  //   print("data in CArt..." + resturentId.toString());
+  //   print("data in CArt..." + id.toString());
+  //   var params = "?user_id=" +
+  //       id +
+  //       "&food_id=" +
+  //       dataList.id.toString() +
+  //       "&food_amount=" +
+  //       dataList.price.toString() +
+  //       "&quantity=1&restaurant_id=" +
+  //       resturentId +
+  //       "&tax=" +
+  //       dataList.tax.toString();
+  //   var url = Const.addToCart + params;
+  //   var responseCart = await dio.post(url,
+  //       options: Options(headers: {"Authorization": "Bearer $token"}));
+  //   print("data in CArt..." + responseCart.data.toString());
+  //   if (responseCart.data["state"] == 0) {
+  //     setState(() {
+  //       _addEnable = true;
+  //     });
+  //     print("adEnb..." + _addEnable.toString());
+  //   }
+  // }
 }
