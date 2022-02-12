@@ -183,8 +183,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          Search(resturentId: resturentId)));
+                      builder: (context) => Search(resturentId: resturentId)));
             },
             child: Icon(
               Icons.search,
