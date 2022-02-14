@@ -1,11 +1,13 @@
 class PostOrderModel {
   int state;
+  String message;
   List<PostOrderData> errors;
 
   PostOrderModel({this.state, this.errors});
 
   PostOrderModel.fromJson(Map<String, dynamic> json) {
     state = json['state'];
+    message = json['message'];
     if (json['errors'] != null) {
       print("errors..." + json['errors'].toString());
       errors = <PostOrderData>[];
@@ -19,6 +21,7 @@ class PostOrderModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['state'] = this.state;
+    data['message'] = this.message;
     if (this.errors != null) {
       data['errors'] = this.errors.map((v) {
         v.toJson();
@@ -77,6 +80,7 @@ class PostOrderData {
   String deliveryMan;
   String orderAmountRound;
   String totalTaxAmountRound;
+  List<Cart> cart;
   String foodName;
 
   PostOrderData(
@@ -128,6 +132,7 @@ class PostOrderData {
       this.deliveryMan,
       this.orderAmountRound,
       this.totalTaxAmountRound,
+      this.cart,
       this.foodName});
 
   PostOrderData.fromJson(Map<String, dynamic> json) {
@@ -183,6 +188,12 @@ class PostOrderData {
     deliveryMan = json['delivery_man'];
     orderAmountRound = json['order_amount_round'];
     totalTaxAmountRound = json['total_tax_amount_round'];
+    if (json['cart'] != null) {
+      cart = <Cart>[];
+      json['cart'].forEach((v) {
+        cart.add(new Cart.fromJson(v));
+      });
+    }
     foodName = json["food_name"];
   }
 
@@ -239,6 +250,9 @@ class PostOrderData {
     data['delivery_man'] = this.deliveryMan;
     data['order_amount_round'] = this.orderAmountRound;
     data['total_tax_amount_round'] = this.totalTaxAmountRound;
+    if (this.cart != null) {
+      data['cart'] = this.cart.map((v) => v.toJson()).toList();
+    }
     data['food_name'] = this.foodName;
     return data;
   }
@@ -448,4 +462,70 @@ class Restaurant {
     data['gst_code'] = this.gstCode;
     return data;
   }
+}
+
+class Cart {
+  int cartId;
+  int userId;
+  int restaurantId;
+  int foodId;
+  int quantity;
+  int tax;
+  int foodAmount;
+  String orderId;
+  int isOdered;
+  String addedDtime;
+  int status;
+  String foodName;
+  String foodImage;
+
+  Cart(
+      {this.cartId,
+      this.userId,
+      this.restaurantId,
+      this.foodId,
+      this.quantity,
+      this.tax,
+      this.foodAmount,
+      this.orderId,
+      this.isOdered,
+      this.addedDtime,
+      this.status,
+      this.foodName,
+      this.foodImage});
+
+  Cart.fromJson(Map<String, dynamic> json) {
+    cartId = json['cart_id'];
+    userId = json['user_id'];
+    restaurantId = json['restaurant_id'];
+    foodId = json['food_id'];
+    quantity = json['quantity'];
+    tax = json['tax'];
+    foodAmount = json['food_amount'];
+    orderId = json['order_id'];
+    isOdered = json['is_odered'];
+    addedDtime = json['added_dtime'];
+    status = json['status'];
+    foodName = json['food_name'];
+    foodImage = json['food_image'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['cart_id'] = this.cartId;
+    data['user_id'] = this.userId;
+    data['restaurant_id'] = this.restaurantId;
+    data['food_id'] = this.foodId;
+    data['quantity'] = this.quantity;
+    data['tax'] = this.tax;
+    data['food_amount'] = this.foodAmount;
+    data['order_id'] = this.orderId;
+    data['is_odered'] = this.isOdered;
+    data['added_dtime'] = this.addedDtime;
+    data['status'] = this.status;
+    data['food_name'] = this.foodName;
+    data['food_image'] = this.foodImage;
+    return data;
+  }
+  // }
 }

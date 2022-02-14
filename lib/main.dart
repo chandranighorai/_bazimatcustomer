@@ -1,6 +1,7 @@
 import 'dart:async';
 // import 'dart:html';
 //import 'package:bazimat/sign%20up/SignUp.dart';
+import 'package:bazimat/home/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -147,7 +148,8 @@ class _MyHomePageState extends State<MyHomePage> {
         // appBar: AppBar(
         //   title: Text(widget.title),
         // ),
-        body: SignUp());
+        //body: SignUp());
+        body: Home());
   }
 
   void checkPermission() {

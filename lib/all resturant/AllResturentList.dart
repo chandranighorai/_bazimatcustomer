@@ -1,4 +1,5 @@
 import 'package:bazimat/home/CampaignDetailsModel.dart';
+import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/AppConst.dart';
@@ -6,6 +7,7 @@ import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:bazimat/home/ResturentModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AllResturentList extends StatefulWidget {
   Restaurants resturent;
@@ -30,7 +32,7 @@ class AllResturentList extends StatefulWidget {
 class _AllResturentListState extends State<AllResturentList> {
   var dio = Dio();
   bool _distanceLoad;
-  var getDistanceResponse;
+  var getDistanceResponse, token;
   var destinationLat, destinationLng;
   @override
   void initState() {
@@ -49,26 +51,31 @@ class _AllResturentListState extends State<AllResturentList> {
     print("Image..." + image.toString());
     return InkWell(
       onTap: () {
-        _distanceLoad == false
-            ? showCustomToast("wait a few seconds")
-            : Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CuisinDetails(
-                        resturentData: widget.section == "campaign"
-                            ? null
-                            : widget.resturent,
-                        campaignData: widget.section == "campaign"
-                            ? widget.resturent1
-                            : null,
-                        distance: getDistanceResponse.data["rows"][0]
-                            ["elements"][0]["distance"]["text"],
-                        duration: getDistanceResponse.data["rows"][0]
-                            ["elements"][0]["duration"]["text"],
-                        resturentLat: destinationLat,
-                        resturentLng: destinationLng,
-                        section: widget.section,
-                        couponList: widget.couponList)));
+        if (token == null) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LogIn()));
+        } else {
+          _distanceLoad == false
+              ? showCustomToast("wait a few seconds")
+              : Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CuisinDetails(
+                          resturentData: widget.section == "campaign"
+                              ? null
+                              : widget.resturent,
+                          campaignData: widget.section == "campaign"
+                              ? widget.resturent1
+                              : null,
+                          distance: getDistanceResponse.data["rows"][0]
+                              ["elements"][0]["distance"]["text"],
+                          duration: getDistanceResponse.data["rows"][0]
+                              ["elements"][0]["duration"]["text"],
+                          resturentLat: destinationLat,
+                          resturentLng: destinationLng,
+                          section: widget.section,
+                          couponList: widget.couponList)));
+        }
       },
       child: Stack(
         children: [
@@ -276,6 +283,9 @@ class _AllResturentListState extends State<AllResturentList> {
     print("distanceload..." + widget.section.toString());
 
     try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      token = pref.getString("token");
+      print("Token... in top.." + token.toString());
       destinationLat = widget.section == "campaign"
           ? widget.resturent1.latitude
           : widget.resturent.latitude;

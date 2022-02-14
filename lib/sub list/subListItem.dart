@@ -62,7 +62,12 @@ class _SubListItemState extends State<SubListItem> {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           width: MediaQuery.of(context).size.width,
-          color: Colors.white,
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                  Radius.circular(MediaQuery.of(context).size.width * 0.02)),
+              color: Colors.white,
+              border: Border.all(color: Colors.grey)),
           child: Row(
             children: [
               Container(
@@ -90,7 +95,10 @@ class _SubListItemState extends State<SubListItem> {
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
-                    Text("${widget.listData.address}"),
+                    Container(
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        //color: Colors.red,
+                        child: Text("${widget.listData.address}")),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.01,
                     ),

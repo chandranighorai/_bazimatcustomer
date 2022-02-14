@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:bazimat/order/PastOrderItem.dart';
 import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
@@ -8,8 +9,9 @@ import 'package:flutter/material.dart';
 
 class PastOrderList extends StatefulWidget {
   PostOrderData listData;
-  var token;
-  PastOrderList({this.listData, this.token, Key key}) : super(key: key);
+  var token, userId;
+  PastOrderList({this.listData, this.token, this.userId, Key key})
+      : super(key: key);
 
   @override
   _PastOrderListState createState() => _PastOrderListState();
@@ -24,7 +26,7 @@ class _PastOrderListState extends State<PastOrderList> {
     // TODO: implement initState
     super.initState();
     _reviewSubmit = true;
-    _productRating();
+    //_productRating();
   }
 
   @override
@@ -49,9 +51,18 @@ class _PastOrderListState extends State<PastOrderList> {
                 Container(
                   //color: Colors.amber,
                   width: MediaQuery.of(context).size.width / 1.5,
-                  child: Text(
-                    "${widget.listData.foodName}",
-                    // style: TextStyle(color: Colors.red),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: widget.listData.cart.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      print(
+                          "foodNAme..." + widget.listData.cart[index].foodName);
+                      return PastOrderItem(
+                          cartDataList: widget.listData.cart[index],
+                          userId: widget.listData.restaurant.id.toString(),
+                          token: widget.token.toString());
+                    },
                   ),
                 ),
                 Spacer(),
@@ -88,63 +99,51 @@ class _PastOrderListState extends State<PastOrderList> {
               style: TextStyle(color: Colors.grey),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.width * 0.01,
+              height: MediaQuery.of(context).size.width * 0.02,
             ),
-            _reviewSubmit == true
-                ? SizedBox()
-                : Container(
-                    height: MediaQuery.of(context).size.width * 0.08,
-                    width: MediaQuery.of(context).size.width,
-                    alignment: Alignment.center,
-                    child: RatingBar(
-                      initialRating: _selectIcon,
-                      direction: Axis.horizontal,
-                      allowHalfRating: false,
-                      itemCount: 5,
-                      itemSize: 30.0,
-                      ratingWidget: RatingWidget(
-                          empty: Icon(
-                            Icons.star,
-                            color: Colors.grey,
-                          ),
-                          full: Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          )),
-                      onRatingUpdate: (rating) {
-                        print("Rating..." + rating.toString());
-                        setState(() {
-                          _selectIcon = rating;
-                          print("Rating..." + _selectIcon.toString());
-                          _giveRating(_selectIcon);
-                        });
-                      },
-                    ),
-                  ),
-            _reviewSubmit == true
-                ? SizedBox()
-                : SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.02,
-                  ),
-            _reviewSubmit == true
-                ? SizedBox()
-                : Container(
-                    // width: MediaQuery.of(context).size.width / 2.5,
-                    padding: const EdgeInsets.all(8.0),
-                    //color: Colors.white,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey)),
-                    child: Text("Rate food".toUpperCase()),
-                  )
+            Container(
+              // width: MediaQuery.of(context).size.width / 2.5,
+              //padding: const EdgeInsets.all(8.0),
+              //color: Colors.white,
+              padding: EdgeInsets.all(0),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Colors.white, border: Border.all(color: Colors.grey)),
+              child: TextButton(
+                  onPressed: () {
+                    _repeatOrderData();
+                  },
+                  child: Text("Repeat Order".toUpperCase())),
+            )
+            // SizedBox(
+            //   height: MediaQuery.of(context).size.width * 0.01,
+            // ),
+            // _reviewSubmit == true
+            //     ? SizedBox()
+            //     : SizedBox(
+            //         height: MediaQuery.of(context).size.width * 0.02,
+            //       ),
+            // _reviewSubmit == true
+            //     ? SizedBox()
+            //     : Container(
+            //         // width: MediaQuery.of(context).size.width / 2.5,
+            //         padding: const EdgeInsets.all(8.0),
+            //         //color: Colors.white,
+            //         alignment: Alignment.center,
+            //         decoration: BoxDecoration(
+            //             color: Colors.white,
+            //             border: Border.all(color: Colors.grey)),
+            //         child: Text("Rate food".toUpperCase()),
+            //       )
           ],
         ),
       ),
     );
   }
 
-  _giveRating(double selectIcon) async {
+  _giveRating(double selectIcon, String foodId, String orderId) async {
+    print("OrederId..." + orderId.toString());
+    print("foodId..." + foodId.toString());
     try {
       var params = "?";
       params += "food_id=" +
@@ -173,30 +172,51 @@ class _PastOrderListState extends State<PastOrderList> {
     }
   }
 
-  _productRating() async {
+  _repeatOrderData() async {
     try {
-      print("userId..." + widget.listData.userId.toString());
-      print("userId..." + widget.listData.foodId.toString());
-      var params = "?food_id=" +
-          widget.listData.foodId.toString() +
-          "&user_id=" +
-          widget.listData.userId.toString();
-      var url = Const.productRate + params;
-      print("userId..." + url.toString());
-      var response = await dio.get(url);
-      print("userId...product review..." + response.data.toString());
-      if (response.data["state"] == 0) {
-        setState(() {
-          _reviewSubmit = true;
-        });
-      } else {
-        setState(() {
-          _reviewSubmit = false;
-        });
+      var params = "?user_id=" +
+          widget.userId.toString() +
+          "&order_id=" +
+          widget.listData.id.toString();
+      var url = Const.repeatOrder + params;
+      print("url in pastOrderList..." + url.toString());
+      var response = await dio.get(url,
+          options: Options(
+              headers: {"Authorization": "Bearer ${widget.token.toString()}"}));
+      print("url in pastOrderList..." + response.data.toString());
+      if(response.data["state"]==0)
+      {
+        
       }
-      print("reviewSubmit..." + _reviewSubmit.toString());
     } on DioError catch (e) {
       print(e.toString());
     }
   }
+
+  // _productRating() async {
+  //   try {
+  //     print("userId..." + widget.listData.userId.toString());
+  //     print("userId..." + widget.listData.foodId.toString());
+  //     var params = "?food_id=" +
+  //         widget.listData.foodId.toString() +
+  //         "&user_id=" +
+  //         widget.listData.userId.toString();
+  //     var url = Const.productRate + params;
+  //     print("userId..." + url.toString());
+  //     var response = await dio.get(url);
+  //     print("userId...product review..." + response.data.toString());
+  //     if (response.data["state"] == 0) {
+  //       setState(() {
+  //         _reviewSubmit = true;
+  //       });
+  //     } else {
+  //       setState(() {
+  //         _reviewSubmit = false;
+  //       });
+  //     }
+  //     print("reviewSubmit..." + _reviewSubmit.toString());
+  //   } on DioError catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 }

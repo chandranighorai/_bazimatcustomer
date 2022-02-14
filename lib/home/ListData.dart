@@ -1,4 +1,5 @@
 import 'package:bazimat/age%20document/AgeDocument.dart';
+import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/sub%20list/SubList.dart';
 import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
@@ -24,6 +25,7 @@ class ListData extends StatefulWidget {
 class _ListDataState extends State<ListData> {
   var dio = Dio();
   bool _distanceLoad;
+  var token;
   @override
   void initState() {
     // TODO: implement initState
@@ -87,7 +89,7 @@ class _ListDataState extends State<ListData> {
   _getCustomerInfo() async {
     try {
       var pref = await SharedPreferences.getInstance();
-      var token = pref.getString("token");
+      token = pref.getString("token");
       var ageStatus = pref.getString("ageStatus");
       print("Token..." + token.toString());
       print("Token..." + ageStatus.toString());
@@ -126,15 +128,22 @@ class _ListDataState extends State<ListData> {
     }
   }
 
-  _goToSubList() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SubList(
-                listId: widget.listArr.id,
-                listName: widget.listArr.name,
-                zoneId: widget.zoneIdVal,
-                latitude: widget.latitude,
-                longitude: widget.longitude)));
+  _goToSubList() async {
+    print("Token in category..." + token.toString());
+    var pref = await SharedPreferences.getInstance();
+    token = pref.getString("token");
+    if (token == null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => LogIn()));
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SubList(
+                  listId: widget.listArr.id,
+                  listName: widget.listArr.name,
+                  zoneId: widget.zoneIdVal,
+                  latitude: widget.latitude,
+                  longitude: widget.longitude)));
+    }
   }
 }

@@ -13,6 +13,7 @@ import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:geolocator/geolocator.dart';
 //import 'package:intl/intl_browser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
@@ -47,6 +48,7 @@ class _LogInState extends State<LogIn> {
   GoogleSignInAccount _currentUser;
   String deviceToken;
   Map _userObj = {};
+  Position _position;
   FirebaseMessaging _firebaseMessaging;
   //static final FacebookLogin facebookSignIn = new FacebookLogin();
 
@@ -56,6 +58,7 @@ class _LogInState extends State<LogIn> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    updateLocation();
     _firebaseMessaging = FirebaseMessaging.instance;
     _firebaseMessaging.getToken().then((value) {
       print("firsebase Val..." + value.toString());
@@ -515,4 +518,23 @@ class _LogInState extends State<LogIn> {
       });
     });
   }
+
+  updateLocation() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    try {
+      Position newPosition = await Geolocator()
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+          .timeout(new Duration(seconds: 5));
+      setState(() {
+        _position = newPosition;
+        print("Error...$_position");
+        sharedPreferences.setString("latitude", _position.latitude.toString());
+        sharedPreferences.setString(
+            "longitude", _position.longitude.toString());
+      });
+    } catch (e) {
+      print("Error...." + e.toString());
+    }
+  }
+//}
 }

@@ -1,3 +1,4 @@
+import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
 import 'package:bazimat/popular%20cuisin/PopularCuisinResturentModel.dart';
 import 'package:bazimat/util/AppColors.dart';
@@ -5,6 +6,7 @@ import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PopularCuisinList extends StatefulWidget {
   RestaurantsCuisin cuisinList;
@@ -20,7 +22,7 @@ class PopularCuisinList extends StatefulWidget {
 class _PopularCuisinListState extends State<PopularCuisinList> {
   var dio = Dio();
   bool _distanceLoad;
-  var distanceResponse;
+  var distanceResponse, token;
   @override
   void initState() {
     super.initState();
@@ -34,20 +36,25 @@ class _PopularCuisinListState extends State<PopularCuisinList> {
     print("imagePath..." + imagePath.toString());
     return InkWell(
       onTap: () {
-        _distanceLoad == false
-            ? showCustomToast("wait a few seconds")
-            : Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CuisinDetails(
-                        cuisinList: widget.cuisinList,
-                        resturentLat: widget.cuisinList.latitude,
-                        resturentLng: widget.cuisinList.longitude,
-                        distance: distanceResponse.data["rows"][0]["elements"]
-                            [0]["distance"]["text"],
-                        duration: distanceResponse.data["rows"][0]["elements"]
-                            [0]["duration"]["text"],
-                        section: "cuisin")));
+        if (token == null) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LogIn()));
+        } else {
+          _distanceLoad == false
+              ? showCustomToast("wait a few seconds")
+              : Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CuisinDetails(
+                          cuisinList: widget.cuisinList,
+                          resturentLat: widget.cuisinList.latitude,
+                          resturentLng: widget.cuisinList.longitude,
+                          distance: distanceResponse.data["rows"][0]["elements"]
+                              [0]["distance"]["text"],
+                          duration: distanceResponse.data["rows"][0]["elements"]
+                              [0]["duration"]["text"],
+                          section: "cuisin")));
+        }
       },
       child: Stack(
         children: [
@@ -203,6 +210,9 @@ class _PopularCuisinListState extends State<PopularCuisinList> {
 
   void _getDistance() async {
     try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      token = pref.getString("token");
+      print("Token... in top.." + token.toString());
       var params = "?";
       params += "origin_lat=" +
           widget.cuisinList.latitude +

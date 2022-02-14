@@ -11,6 +11,7 @@ import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/popular%20cuisin/PopularCuisinResturentModel.dart';
 import 'package:bazimat/search/Search.dart';
 import 'package:bazimat/sub%20list/SubListModel.dart';
+import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
@@ -279,10 +280,15 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                 });
               },
               child: Container(
-                height: MediaQuery.of(context).size.width * 0.06,
+                height: MediaQuery.of(context).size.width * 0.095,
+                color: AppColors.buttonColor,
                 alignment: Alignment.center,
                 width: MediaQuery.of(context).size.width,
-                child: Text("View Cart"),
+                child: Text(
+                  "View Cart",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
       body: SingleChildScrollView(
@@ -556,6 +562,8 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                     )
                   : Container(
                       //height: 420,
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.width * 0.03),
                       color: Colors.white,
                       width: MediaQuery.of(context).size.width,
                       child: Flex(

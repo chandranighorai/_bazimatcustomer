@@ -11,6 +11,7 @@ import 'package:bazimat/home/ListData.dart';
 import 'package:bazimat/home/OfferModel.dart';
 import 'package:bazimat/home/PopularResturentModel.dart';
 import 'package:bazimat/home/ResturentModel.dart';
+import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/navigation/Navigation.dart';
 import 'package:bazimat/home/Resturent.dart';
 import 'package:bazimat/home/TopPick.dart';
@@ -58,7 +59,7 @@ class _HomeState extends State<Home> {
   List<Banners> bannerList;
   List<CampaignBannerErrors> campaignList;
   Future<CouponModel> _getCouponList;
-  var _coverImage;
+  var _coverImage, token;
   final offerList = [
     "images/banner1.png",
     "images/banner2.jpg",
@@ -107,6 +108,11 @@ class _HomeState extends State<Home> {
     _topPicksLoad = false;
     _getZoneId();
     _allCategory = _getCategoryList();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -283,10 +289,11 @@ class _HomeState extends State<Home> {
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return TopPicks(
-                                                topArr: dataList[index],
-                                                imgPath: imagePath,
-                                                latitude: latitude,
-                                                longitude: longitude);
+                                              topArr: dataList[index],
+                                              imgPath: imagePath,
+                                              latitude: latitude,
+                                              longitude: longitude,
+                                            );
                                           });
                                     } else {
                                       return Center(
@@ -313,45 +320,53 @@ class _HomeState extends State<Home> {
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.04,
                     ),
-                    Text(
-                      "Coupons For You",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: MediaQuery.of(context).size.width * 0.05),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.03,
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.width * 0.27,
-                      width: MediaQuery.of(context).size.width,
-                      //color: Colors.amber,
-                      child: FutureBuilder(
-                        initialData: null,
-                        future: _getCouponList,
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
-                            var couponListData = snapshot.data.errors;
-                            var couponImage = snapshot.data.coverimg;
-                            print("Coupon in Future..." +
-                                couponListData.toString());
-                            return ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: couponListData.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return CouponList(
-                                      couponL: couponListData[index],
-                                      couponImage: couponImage);
-                                });
-                          } else {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
-                      ),
-                    ),
+                    token == null
+                        ? SizedBox()
+                        : Text(
+                            "Coupons For You",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.05),
+                          ),
+                    token == null
+                        ? SizedBox()
+                        : SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.03,
+                          ),
+                    token == null
+                        ? SizedBox()
+                        : Container(
+                            height: MediaQuery.of(context).size.width * 0.27,
+                            width: MediaQuery.of(context).size.width,
+                            //color: Colors.amber,
+                            child: FutureBuilder(
+                              initialData: null,
+                              future: _getCouponList,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  var couponListData = snapshot.data.errors;
+                                  var couponImage = snapshot.data.coverimg;
+                                  print("Coupon in Future..." +
+                                      couponListData.toString());
+                                  return ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: couponListData.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return CouponList(
+                                            couponL: couponListData[index],
+                                            couponImage: couponImage);
+                                      });
+                                } else {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.04,
                     ),
@@ -568,9 +583,9 @@ class _HomeState extends State<Home> {
     try {
       print("serviceable..." + _serviceAvailable.toString());
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      var response = preferences.getString("token");
+      token = preferences.getString("token");
       var userId = preferences.getString("id");
-      print("token..." + response.toString());
+      print("token..." + token.toString());
       latitude = preferences.getString("latitude");
       longitude = preferences.getString("longitude");
       print("Latitude...in home..." + latitude.toString());
@@ -595,7 +610,7 @@ class _HomeState extends State<Home> {
         _getBanner();
         _getCampaignBanner();
         _getCustomerInfo();
-        _getCustomerUpdateFcm(response, userId);
+        _getCustomerUpdateFcm(token, userId);
 
         //_getConfigDetails();
         _getCouponList = _getAllCoupon();

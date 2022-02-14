@@ -1,9 +1,11 @@
 import 'package:bazimat/home/PopularResturentModel.dart';
+import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
 import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TopPicks extends StatefulWidget {
   PopularResturentErrors topArr;
@@ -17,7 +19,7 @@ class TopPicks extends StatefulWidget {
 
 class _TopPicksState extends State<TopPicks> {
   var dio = Dio();
-  var distanceData;
+  var distanceData, token;
   bool _distanceLoad = false;
   @override
   void initState() {
@@ -32,20 +34,25 @@ class _TopPicksState extends State<TopPicks> {
     return InkWell(
       onTap: () {
         print("top cuisin..." + widget.topArr.latitude.toString());
-        _distanceLoad == false
-            ? showCustomToast("wait a few seconds")
-            : Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CuisinDetails(
-                        topPickList: widget.topArr,
-                        resturentLat: widget.topArr.latitude.toString(),
-                        resturentLng: widget.topArr.longitude.toString(),
-                        distance: distanceData.data["rows"][0]["elements"][0]
-                            ["distance"]["text"],
-                        duration: distanceData.data["rows"][0]["elements"][0]
-                            ["duration"]["text"],
-                        section: "topPicks")));
+        if (token == null) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LogIn()));
+        } else {
+          _distanceLoad == false
+              ? showCustomToast("wait a few seconds")
+              : Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CuisinDetails(
+                          topPickList: widget.topArr,
+                          resturentLat: widget.topArr.latitude.toString(),
+                          resturentLng: widget.topArr.longitude.toString(),
+                          distance: distanceData.data["rows"][0]["elements"][0]
+                              ["distance"]["text"],
+                          duration: distanceData.data["rows"][0]["elements"][0]
+                              ["duration"]["text"],
+                          section: "topPicks")));
+        }
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -102,6 +109,9 @@ class _TopPicksState extends State<TopPicks> {
 
   _getDistance() async {
     try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      token = pref.getString("token");
+      print("Token... in top.." + token.toString());
       var params = "?";
       // params +=
       //     "origin_lat=" + widget.latitude + "&origin_lng=" + widget.longitude;

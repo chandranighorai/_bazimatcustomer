@@ -3,12 +3,14 @@ import 'dart:ui';
 import 'package:bazimat/home/GetDistance.dart';
 import 'package:bazimat/home/ResturentList.dart';
 import 'package:bazimat/home/ResturentModel.dart';
+import 'package:bazimat/login/Login.dart';
 import 'package:bazimat/popular%20cuisin/CuisinDetails.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Resturent extends StatefulWidget {
   Restaurants resturentData;
@@ -27,7 +29,7 @@ class Resturent extends StatefulWidget {
 class _ResturentState extends State<Resturent> {
   var dio = Dio();
   bool _distanceLoad;
-  var getDistanceResponse;
+  var getDistanceResponse, token;
   //Future<GetDistance> _distance;
   @override
   void initState() {
@@ -46,19 +48,24 @@ class _ResturentState extends State<Resturent> {
     print("resturentData..." + widget.resturentData.name.toString());
     return InkWell(
       onTap: () {
-        _distanceLoad == false
-            ? showCustomToast("wait a few seconds")
-            : Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CuisinDetails(
-                        resturentData: widget.resturentData,
-                        resturentLat: widget.resturentData.latitude,
-                        resturentLng: widget.resturentData.longitude,
-                        distance: getDistanceResponse.data["rows"][0]
-                            ["elements"][0]["distance"]["text"],
-                        duration: getDistanceResponse.data["rows"][0]
-                            ["elements"][0]["duration"]["text"])));
+        if (token == null) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LogIn()));
+        } else {
+          _distanceLoad == false
+              ? showCustomToast("wait a few seconds")
+              : Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CuisinDetails(
+                          resturentData: widget.resturentData,
+                          resturentLat: widget.resturentData.latitude,
+                          resturentLng: widget.resturentData.longitude,
+                          distance: getDistanceResponse.data["rows"][0]
+                              ["elements"][0]["distance"]["text"],
+                          duration: getDistanceResponse.data["rows"][0]
+                              ["elements"][0]["duration"]["text"])));
+        }
       },
       child: Stack(
         children: [
@@ -268,6 +275,9 @@ class _ResturentState extends State<Resturent> {
   _getDistance(String lat, String lng) async {
     print("distanceload..." + _distanceLoad.toString());
     try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      token = pref.getString("token");
+      print("Token... in top.." + token.toString());
       var params = "?";
       params += "origin_lat=" + lat + "&origin_lng=" + lng;
       params += "&destination_lat=" +

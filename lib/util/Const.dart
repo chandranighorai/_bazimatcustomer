@@ -54,4 +54,5 @@ class Const {
   static String deleteCart = appUrl + "customer/cart/delete-cart";
   static String cancelOrder = appUrl + "customer/order/cancel";
   static String productsearch = appUrl + "products/search";
+  static String repeatOrder = appUrl + "customer/order/repeat";
 }

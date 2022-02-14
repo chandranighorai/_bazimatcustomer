@@ -27,7 +27,7 @@ class _NavigationState extends State<Navigation> {
   //CustomerInfoError data;
   String fullName, phone, firstLetter, email, ageStatus;
   var dio = Dio();
-  var response;
+  var response, token;
   bool _moreLoad;
   GoogleSignIn googleSignIn = GoogleSignIn();
   @override
@@ -56,21 +56,24 @@ class _NavigationState extends State<Navigation> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width / 3.5,
-                    height: MediaQuery.of(context).size.height,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[50], shape: BoxShape.circle),
-                    child: Text(
-                      "$firstLetter".toUpperCase(),
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: MediaQuery.of(context).size.width * 0.08),
-                      // size: MediaQuery.of(context).size.width * 0.2,
-                      // color: Colors.grey,
-                    ),
-                  ),
+                  token == null
+                      ? SizedBox()
+                      : Container(
+                          alignment: Alignment.center,
+                          width: MediaQuery.of(context).size.width / 3.5,
+                          height: MediaQuery.of(context).size.height,
+                          decoration: BoxDecoration(
+                              color: Colors.grey[50], shape: BoxShape.circle),
+                          child: Text(
+                            "$firstLetter".toUpperCase(),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.08),
+                            // size: MediaQuery.of(context).size.width * 0.2,
+                            // color: Colors.grey,
+                          ),
+                        ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.02,
                   ),
@@ -82,38 +85,46 @@ class _NavigationState extends State<Navigation> {
                         width: MediaQuery.of(context).size.width / 3.2,
                         //color: Colors.amber,
                         child: Text(
-                          "$fullName",
+                          token == null ? "Login" : "$fullName",
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.width * 0.02,
                       ),
-                      Text(
-                        "$phone",
-                        style: TextStyle(color: Colors.white),
-                      )
+                      token == null
+                          ? SizedBox()
+                          : Text(
+                              "$phone",
+                              style: TextStyle(color: Colors.white),
+                            )
                     ],
                   ),
                   Spacer(),
                   IconButton(
-                    icon: Icon(Icons.arrow_forward_ios_rounded),
-                    color: Colors.white,
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Profile(
-                                fullName: fullName,
-                                email: email,
-                                phone: phone,
-                                firstLetter: firstLetter,
-                                ageStatus: ageStatus))).then((value) {
-                      print("Value of name..." + value.toString());
-                      setState(() {
-                        fullName = value["fullName"];
-                      });
-                    }),
-                  )
+                      icon: Icon(Icons.arrow_forward_ios_rounded),
+                      color: Colors.white,
+                      onPressed: () {
+                        if (token == null) {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => LogIn()));
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Profile(
+                                      fullName: fullName,
+                                      email: email,
+                                      phone: phone,
+                                      firstLetter: firstLetter,
+                                      ageStatus: ageStatus))).then((value) {
+                            print("Value of name..." + value.toString());
+                            setState(() {
+                              fullName = value["fullName"];
+                            });
+                          });
+                        }
+                      })
                 ],
               )),
             ),
@@ -138,9 +149,14 @@ class _NavigationState extends State<Navigation> {
                         Text("Orders"),
                       ],
                     ),
-                    onTap: () => {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Order()))
+                    onTap: () {
+                      if (token == null) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => LogIn()));
+                      } else {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Order()));
+                      }
                     },
                   ),
                   // ListTile(
@@ -184,11 +200,16 @@ class _NavigationState extends State<Navigation> {
                         Text("Notifications"),
                       ],
                     ),
-                    onTap: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => NotificationList()))
+                    onTap: () {
+                      if (token == null) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => LogIn()));
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NotificationList()));
+                      }
                     },
                   ),
                   ListTile(
@@ -210,9 +231,16 @@ class _NavigationState extends State<Navigation> {
                         Text("Favourites"),
                       ],
                     ),
-                    onTap: () => {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Favourites()))
+                    onTap: () {
+                      if (token == null) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => LogIn()));
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Favourites()));
+                      }
                     },
                   ),
                   ListTile(
@@ -234,10 +262,15 @@ class _NavigationState extends State<Navigation> {
                       ],
                     ),
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddressBook()));
+                      if (token == null) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => LogIn()));
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddressBook()));
+                      }
                     },
                   ),
                   ListTile(
@@ -318,7 +351,9 @@ class _NavigationState extends State<Navigation> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.04,
                         ),
-                        Text(_moreLoad == false ? "..." : "More"),
+                        token == null
+                            ? SizedBox()
+                            : Text(_moreLoad == false ? "..." : "More"),
                       ],
                     ),
                     onTap: () {
@@ -380,6 +415,7 @@ class _NavigationState extends State<Navigation> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var firstName = pref.getString("fName");
     var lastName = pref.getString("lName");
+    token = pref.getString("token");
 
     setState(() {
       firstLetter = firstName.substring(0, 1);
