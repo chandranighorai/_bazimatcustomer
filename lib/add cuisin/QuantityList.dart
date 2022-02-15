@@ -42,7 +42,7 @@ class _QuantityListState extends State<QuantityList> {
         child: Row(
           children: [
             Container(
-                width: MediaQuery.of(context).size.width / 1.8,
+                width: MediaQuery.of(context).size.width / 1.9,
                 //color: Colors.amber,
                 child: Text(widget.dataList["food_name"])),
             Spacer(),

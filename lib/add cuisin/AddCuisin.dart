@@ -23,7 +23,8 @@ class AddCuisin extends StatefulWidget {
       resturentId,
       resturenrAddr,
       // resturentPrice,
-      configData;
+      configData,
+      orderPage;
   //Products product;
   Function() couponList;
   AddCuisin(
@@ -38,6 +39,7 @@ class AddCuisin extends StatefulWidget {
       this.resturenrAddr,
       // this.resturentPrice,
       this.configData,
+      this.orderPage,
       //this.product,
       Key key,
       this.couponList})
@@ -81,6 +83,7 @@ class _AddCuisinState extends State<AddCuisin> {
     restLat = widget.resturentLat;
     restLng = widget.resturentLng;
     productDatalist = widget.productList;
+    print("pro..." + widget.productList.length.toString());
     _getAddress();
     //_itemUpdate(widget.product.price.toString(), itemCount);
     _itemUpdate1(widget.productList, type);
@@ -95,7 +98,9 @@ class _AddCuisinState extends State<AddCuisin> {
     // print("Shipping Charge...." +
     //     widget.configData["per_km_shipping_charge"].toString());
     print("ResturentLat...." + widget.resturentLat.toString());
-    print("ProductList..." + widget.productList.toString());
+    print("ResturentLat..." + widget.productList.toString());
+    print("ResturentLat..." + widget.orderPage.toString());
+
     //var image = widget.imageUrl + widget.product.image;
 
     return Scaffold(
@@ -109,6 +114,17 @@ class _AddCuisinState extends State<AddCuisin> {
           ),
           onPressed: () {
             print("productList..." + productDatalist.toString());
+            print("productList..." + cartArr.toString());
+            for (int i = 0; i < productDatalist.length; i++) {
+              for (int j = 0; j < cartArr.length; j++) {
+                if (cartArr[j].toString() == productDatalist[i]["cart_id"]) {
+                  productDatalist
+                      .where((e) => e["cart_id"] == cartArr[j]["cart_id"])
+                      .toList();
+                }
+              }
+            }
+            print("productList...00..." + productDatalist.toString());
             //Navigator.pop(context);
             Navigator.of(context).pop(productDatalist);
           },
@@ -139,6 +155,8 @@ class _AddCuisinState extends State<AddCuisin> {
                                 resturentName: widget.resturentName,
                                 resturentAddr: widget.resturenrAddr,
                                 resturentId: widget.resturentId,
+                                orderPage: widget.orderPage,
+                                product: widget.productList,
                                 // resturentOffer: widget.resturentPrice,
                                 //product: widget.product,
                                 //product: widget.productList,

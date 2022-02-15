@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:bazimat/add%20cuisin/AddCuisin.dart';
 import 'package:bazimat/order/PastOrderItem.dart';
 import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
@@ -6,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:bazimat/order/pastOrderModel.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PastOrderList extends StatefulWidget {
   PostOrderData listData;
@@ -174,19 +176,84 @@ class _PastOrderListState extends State<PastOrderList> {
 
   _repeatOrderData() async {
     try {
+      print("resturentlat..." + widget.listData.restaurant.id.toString());
+      print("resturentlat..." + widget.listData.restaurant.name.toString());
+      print("resturentlat..." + widget.listData.restaurant.address.toString());
+      print("resturentlat..." + widget.listData.restaurant.latitude.toString());
+      print(
+          "resturentlat..." + widget.listData.restaurant.longitude.toString());
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      var latitude = pref.getString("latitude");
+      var longitude = pref.getString("longitude");
+      var zoneId = pref.getString("zoneId");
+      print("resturentlat...not..." + latitude.toString());
+      print("resturentlat...not..." + longitude.toString());
       var params = "?user_id=" +
           widget.userId.toString() +
           "&order_id=" +
           widget.listData.id.toString();
+      var distanceParam = "?origin_lat=" +
+          widget.listData.restaurant.latitude.toString() +
+          "&origin_lng=" +
+          widget.listData.restaurant.longitude.toString() +
+          "&destination_lat=" +
+          latitude.toString() +
+          "&destination_lng=" +
+          longitude.toString();
       var url = Const.repeatOrder + params;
+      var distanceUrl = Const.distanceApi + distanceParam;
       print("url in pastOrderList..." + url.toString());
-      var response = await dio.get(url,
-          options: Options(
-              headers: {"Authorization": "Bearer ${widget.token.toString()}"}));
-      print("url in pastOrderList..." + response.data.toString());
-      if(response.data["state"]==0)
-      {
-        
+      var response = await Future.wait([
+        dio.get(url,
+            options: Options(headers: {
+              "Authorization": "Bearer ${widget.token.toString()}"
+            })),
+        dio.get(distanceUrl,
+            options: Options(headers: {
+              "Authorization": "Bearer ${widget.token.toString()}"
+            })),
+        dio.get(Const.config),
+        dio.get(Const.couponList,
+            options: Options(headers: {
+              "Authorization": "Bearer ${widget.token.toString()}",
+              "zoneId": zoneId
+            }))
+      ]);
+      print("url in pastOrderList..." + response[0].data.toString());
+      print("url in pastOrderList..." + response[1].data.toString());
+      print("url in pastOrderList..." + response[2].data.toString());
+      print("url in pastOrderList..." + response[3].data.toString());
+      var distance = response[1]
+          .data['rows'][0]['elements'][0]['distance']['text']
+          .toString();
+      var duration = response[1]
+          .data['rows'][0]['elements'][0]['duration']['text']
+          .toString();
+      print("url in pastOrderList..." + distance.toString());
+      print("url in pastOrderList..." + duration.toString());
+      if (response[0].data["state"] == 0) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddCuisin(
+                      duration: duration,
+                      distance: distance,
+                      resturentLat:
+                          widget.listData.restaurant.latitude.toString(),
+                      resturentLng:
+                          widget.listData.restaurant.longitude.toString(),
+                      productList: response[0].data["respData"],
+                      // product: widget.productList,
+                      // imageUrl: widget.imageUrl,
+                      resturentName: widget.listData.restaurant.name.toString(),
+                      resturentId: widget.listData.restaurant.id.toString(),
+                      resturenrAddr:
+                          widget.listData.restaurant.address.toString(),
+                      //resturentPrice: resturentOfferPrice,
+                      configData: response[2].data,
+                      orderPage:"Pastorder"
+                      //couponList: response[3].data["errors"]
+                    )));
       }
     } on DioError catch (e) {
       print(e.toString());

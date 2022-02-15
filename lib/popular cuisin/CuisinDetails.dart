@@ -184,13 +184,40 @@ class _CuisinDetailsState extends State<CuisinDetails> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Search(resturentId: resturentId)));
+                      builder: (context) => Search(
+                            duration: widget.duration,
+                            distance: widget.distance,
+                            resturentId: resturentId,
+                            resturentName: resturentName,
+                            resturenrtAddr: resturentAddr,
+                            resturentLat: widget.resturentLat,
+                            resturentLng: widget.resturentLng,
+                            couponList: widget.couponList,
+                            configData: configData,
+                          ))).then((value) {
+                print("val..." + value.toString());
+                setState(() {
+                  _getCartShow();
+                });
+              });
             },
             child: Icon(
               Icons.search,
               color: Colors.grey,
             ),
           ),
+          // InkWell(
+          //   onTap: () {
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) => Search(resturentId: resturentId)));
+          //   },
+          //   child: Icon(
+          //     Icons.search,
+          //     color: Colors.grey,
+          //   ),
+          // ),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.03,
           )
@@ -260,6 +287,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                             resturenrAddr: resturentAddr,
                             //resturentPrice: resturentOfferPrice,
                             configData: configData,
+                            orderPage: "viewCart",
                             couponList: widget.couponList))).then((value) {
                   // print("Val in cuisin..." + value[0]["cart_id"].toString());
                   setState(() {

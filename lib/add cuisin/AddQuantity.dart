@@ -17,7 +17,9 @@ class AddQuantity extends StatefulWidget {
       //imageUrl,
       resturentName,
       resturentAddr,
-      resturentId;
+      resturentId,
+      orderPage,
+      product;
   //resturentOffer,
   //product;
   //Products product;
@@ -28,6 +30,8 @@ class AddQuantity extends StatefulWidget {
       this.resturentName,
       this.resturentAddr,
       this.resturentId,
+      this.orderPage,
+      this.product,
       //this.resturentOffer,
       //this.product,
       this.refresh,
@@ -48,7 +52,11 @@ class _AddQuantityState extends State<AddQuantity> {
   @override
   void initState() {
     super.initState();
-    _getProduct();
+    if (widget.orderPage == "Pastorder") {
+      _pastProduct();
+    } else {
+      _getProduct();
+    }
     getCartLoad = false;
     String type = "";
     //int dataLength;
@@ -66,6 +74,7 @@ class _AddQuantityState extends State<AddQuantity> {
 
   @override
   Widget build(BuildContext context) {
+    print("nmnm..." + widget.product.toString());
     // print("Product in add Quantity..." + widget.product.toString());
     // print("Product in add Quantity..." + widget.product.length.toString());
     //print("Price..." + price.runtimeType.toString());
@@ -96,7 +105,7 @@ class _AddQuantityState extends State<AddQuantity> {
                       width: MediaQuery.of(context).size.width / 3.5,
                       height: MediaQuery.of(context).size.height * 0.12,
                       decoration: BoxDecoration(
-                          color: Colors.red,
+                          color: Colors.grey.shade100,
                           image: DecorationImage(
                               image: NetworkImage(allCartData[0]["food_image"]),
                               fit: BoxFit.fill)),
@@ -209,7 +218,7 @@ class _AddQuantityState extends State<AddQuantity> {
   listLoad(String type, dynamic data) {
     print("Type in addQuantity..." + type.toString());
     print("Type in addQuantity..." + data.toString());
-    print("Type in addQuantity..." + allCartData.toString());
+    //print("Type in addQuantity..." + allCartData.toString());
     if (type == "delete") {
       setState(() {
         getCartLoad = false;
@@ -241,6 +250,26 @@ class _AddQuantityState extends State<AddQuantity> {
           });
         }
       });
+    } else {
+      if (widget.orderPage == "Pastorder") {
+        getCartLoad = true;
+      }
+    }
+  }
+
+  _pastProduct() {
+    try {
+      //setState(() {
+      getCartLoad = false;
+      allCartData = widget.product;
+      print("pastProduct.." + allCartData.toString());
+      print("pastProduct.." + allCartData.length.toString());
+      //_dataAdded = true;
+      getCartLoad = true;
+      print("pastProduct.." + getCartLoad.toString());
+      //});
+    } on DioError catch (e) {
+      print(e.toString());
     }
   }
 }
