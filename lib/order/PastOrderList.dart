@@ -113,6 +113,7 @@ class _PastOrderListState extends State<PastOrderList> {
                   color: Colors.white, border: Border.all(color: Colors.grey)),
               child: TextButton(
                   onPressed: () {
+                    //_addToCart();
                     _repeatOrderData();
                   },
                   child: Text("Repeat Order".toUpperCase())),
@@ -236,26 +237,32 @@ class _PastOrderListState extends State<PastOrderList> {
             context,
             MaterialPageRoute(
                 builder: (context) => AddCuisin(
-                      duration: duration,
-                      distance: distance,
-                      resturentLat:
-                          widget.listData.restaurant.latitude.toString(),
-                      resturentLng:
-                          widget.listData.restaurant.longitude.toString(),
-                      productList: response[0].data["respData"],
-                      // product: widget.productList,
-                      // imageUrl: widget.imageUrl,
-                      resturentName: widget.listData.restaurant.name.toString(),
-                      resturentId: widget.listData.restaurant.id.toString(),
-                      resturenrAddr:
-                          widget.listData.restaurant.address.toString(),
-                      //resturentPrice: resturentOfferPrice,
-                      configData: response[2].data,
-                      orderPage:"Pastorder"
-                      //couponList: response[3].data["errors"]
+                    duration: duration,
+                    distance: distance,
+                    resturentLat:
+                        widget.listData.restaurant.latitude.toString(),
+                    resturentLng:
+                        widget.listData.restaurant.longitude.toString(),
+                    productList: response[0].data["respData"],
+                    // product: widget.productList,
+                    // imageUrl: widget.imageUrl,
+                    resturentName: widget.listData.restaurant.name.toString(),
+                    resturentId: widget.listData.restaurant.id.toString(),
+                    resturenrAddr:
+                        widget.listData.restaurant.address.toString(),
+                    //resturentPrice: resturentOfferPrice,
+                    configData: response[2].data,
+                    orderPage: "Pastorder"
+                    //couponList: response[3].data["errors"]
                     )));
       }
     } on DioError catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _addToCart() async {
+    try {} on DioError catch (e) {
       print(e.toString());
     }
   }

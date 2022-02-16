@@ -22,8 +22,13 @@ class _PastOrderItemState extends State<PastOrderItem> {
   @override
   void initState() {
     super.initState();
+    print("orderId...in pastOrederitem..." + widget.cartDataList.toString());
+    //print("orderId..." + widget.cartDataList..toString());
     _productRating(
-        widget.userId.toString(), widget.cartDataList.foodId.toString());
+        widget.userId.toString(),
+        widget.cartDataList.foodId.toString(),
+        widget.cartDataList.orderId.toString(),
+        widget.cartDataList.cartId.toString());
   }
 
   @override
@@ -69,7 +74,8 @@ class _PastOrderItemState extends State<PastOrderItem> {
                           _giveRating(
                               _selectIcon,
                               widget.cartDataList.foodId.toString(),
-                              widget.cartDataList.orderId.toString());
+                              widget.cartDataList.orderId.toString(),
+                              widget.cartDataList.cartId.toString());
                         });
                       },
                     ),
@@ -81,7 +87,8 @@ class _PastOrderItemState extends State<PastOrderItem> {
     );
   }
 
-  _giveRating(double selectIcon, String foodId, String orderId) async {
+  _giveRating(
+      double selectIcon, String foodId, String orderId, String cartId) async {
     print("OrederId..." + orderId.toString());
     print("foodId..." + foodId.toString());
     try {
@@ -92,6 +99,8 @@ class _PastOrderItemState extends State<PastOrderItem> {
           orderId.toString() +
           "&user_id=" +
           widget.userId.toString() +
+          "&cart_id=" +
+          cartId.toString() +
           "&comment=" +
           "test" +
           "&rating=" +
@@ -115,12 +124,19 @@ class _PastOrderItemState extends State<PastOrderItem> {
     }
   }
 
-  _productRating(String userId, String foodId) async {
+  _productRating(
+      String userId, String foodId, String orderId, String cardId) async {
     try {
       print("userId..." + userId.toString());
       print("userId..." + foodId.toString());
-      var params =
-          "?food_id=" + foodId.toString() + "&user_id=" + userId.toString();
+      var params = "?food_id=" +
+          foodId.toString() +
+          "&user_id=" +
+          userId.toString() +
+          "&order_id=" +
+          orderId.toString() +
+          "&cart_id=" +
+          cardId.toString();
       var url = Const.productRate + params;
       print("userId..." + url.toString());
       var response = await dio.get(url);

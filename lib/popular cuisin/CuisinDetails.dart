@@ -223,54 +223,10 @@ class _CuisinDetailsState extends State<CuisinDetails> {
           )
         ],
       ),
-      // floatingActionButton:_dataAdded == false
-      //     ? SizedBox()
-      //     : FloatingActionButton(
-      //   onPressed: (){
-      //     Navigator.push(
-      //               context,
-      //               MaterialPageRoute(
-      //                   builder: (context) => AddCuisin(
-      //                       duration: widget.duration,
-      //                       distance: widget.distance,
-      //                       resturentLat: widget.resturentLat,
-      //                       resturentLng: widget.resturentLng,
-      //                       productList: allCartData,
-      //                       // product: widget.productList,
-      //                       // imageUrl: widget.imageUrl,
-      //                       resturentName: resturentName,
-      //                       resturentId: resturentId,
-      //                       resturenrAddr: resturentAddr,
-      //                       //resturentPrice: resturentOfferPrice,
-      //                       configData: configData,
-      //                       couponList: widget.couponList))).then((value) {
-      //             // print("Val in cuisin..." + value[0]["cart_id"].toString());
-      //             setState(() {
-      //               allCartData = value;
-      //               print("all..." + allCartData.length.toString());
-      //               // print("all..." + allCartData[0]["cart_id"].toString());
-      //               if (allCartData.length == 0) {
-      //                 _dataAdded = false;
-      //                 print("Val in cuisin..." + _dataAdded.toString());
-      //               } else {
-      //                 _dataAdded = true;
-      //                 _getCartShow();
-      //                 print("Val in cuisin..." + _dataAdded.toString());
-      //               }
-      //               // _getCartShow();
-      //               //_recommendedProduct = _getAllRecommendedProduct();
-      //             });
-      //           });
-      //   },
-      //     backgroundColor: Colors.white,
-      //     child: Icon(
-      //       Icons.shopping_cart_rounded,
-      //       color: Colors.blue,
-      //     )),
-      bottomSheet: _dataAdded == false
+      floatingActionButton: _dataAdded == false
           ? SizedBox()
-          : InkWell(
-              onTap: () {
+          : FloatingActionButton(
+              onPressed: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -287,7 +243,6 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                             resturenrAddr: resturentAddr,
                             //resturentPrice: resturentOfferPrice,
                             configData: configData,
-                            orderPage: "viewCart",
                             couponList: widget.couponList))).then((value) {
                   // print("Val in cuisin..." + value[0]["cart_id"].toString());
                   setState(() {
@@ -307,18 +262,64 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                   });
                 });
               },
-              child: Container(
-                height: MediaQuery.of(context).size.width * 0.095,
-                color: AppColors.buttonColor,
-                alignment: Alignment.center,
-                width: MediaQuery.of(context).size.width,
-                child: Text(
-                  "View Cart",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
+              backgroundColor: Colors.white,
+              child: Icon(
+                Icons.shopping_cart_rounded,
+                color: Colors.blue,
+              )),
+
+      // bottomSheet: _dataAdded == false
+      //     ? SizedBox()
+      //     : InkWell(
+      //         onTap: () {
+      //           Navigator.push(
+      //               context,
+      //               MaterialPageRoute(
+      //                   builder: (context) => AddCuisin(
+      //                       duration: widget.duration,
+      //                       distance: widget.distance,
+      //                       resturentLat: widget.resturentLat,
+      //                       resturentLng: widget.resturentLng,
+      //                       productList: allCartData,
+      //                       // product: widget.productList,
+      //                       // imageUrl: widget.imageUrl,
+      //                       resturentName: resturentName,
+      //                       resturentId: resturentId,
+      //                       resturenrAddr: resturentAddr,
+      //                       //resturentPrice: resturentOfferPrice,
+      //                       configData: configData,
+      //                       orderPage: "viewCart",
+      //                       couponList: widget.couponList))).then((value) {
+      //             // print("Val in cuisin..." + value[0]["cart_id"].toString());
+      //             setState(() {
+      //               allCartData = value;
+      //               print("all..." + allCartData.length.toString());
+      //               // print("all..." + allCartData[0]["cart_id"].toString());
+      //               if (allCartData.length == 0) {
+      //                 _dataAdded = false;
+      //                 print("Val in cuisin..." + _dataAdded.toString());
+      //               } else {
+      //                 _dataAdded = true;
+      //                 _getCartShow();
+      //                 print("Val in cuisin..." + _dataAdded.toString());
+      //               }
+      //               // _getCartShow();
+      //               //_recommendedProduct = _getAllRecommendedProduct();
+      //             });
+      //           });
+      //         },
+      //         child: Container(
+      //           height: MediaQuery.of(context).size.width * 0.095,
+      //           color: AppColors.buttonColor,
+      //           alignment: Alignment.center,
+      //           width: MediaQuery.of(context).size.width,
+      //           child: Text(
+      //             "View Cart",
+      //             style: TextStyle(
+      //                 color: Colors.white, fontWeight: FontWeight.bold),
+      //           ),
+      //         ),
+      //       ),
       body: SingleChildScrollView(
         child: Container(
           //height: MediaQuery.of(context).size.height,
@@ -591,7 +592,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                   : Container(
                       //height: 420,
                       padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.width * 0.03),
+                          bottom: MediaQuery.of(context).size.width * 0.14),
                       color: Colors.white,
                       width: MediaQuery.of(context).size.width,
                       child: Flex(

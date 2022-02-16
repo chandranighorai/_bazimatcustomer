@@ -260,6 +260,8 @@ class _AddAddressState extends State<AddAddress> {
 
   _locationAddress() async {
     try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      var userId = pref.getString("id");
       var dd = _type.toString().split(".");
       print("type..." + dd[1].toString());
       var params = "?";
@@ -274,7 +276,9 @@ class _AddAddressState extends State<AddAddress> {
           "longitude" +
           lng.toString() +
           "latitude" +
-          lat.toString();
+          lat.toString() +
+          "user_id" +
+          userId.toString();
       var url = Const.addressAdd + params;
       var response = await dio.post(Const.addressAdd,
           options: Options(headers: {"Authorization": "Bearer $token"}),
@@ -284,7 +288,8 @@ class _AddAddressState extends State<AddAddress> {
             "contact_person_number": phone,
             "address": address,
             "longitude": lng,
-            "latitude": lat
+            "latitude": lat,
+            "user_id": userId.toString()
           });
       print("response in location..." + response.data.toString());
       if (response.data["state"] == 0) {

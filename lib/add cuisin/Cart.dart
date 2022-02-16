@@ -281,6 +281,7 @@ class _CartState extends State<Cart> {
       // print("response data pay..." + response.data.toString());
       if (response.data["state"] == 0) {
         showCustomToast(response.data["message"]);
+        print("place...order..." + response.data.toString());
         pref.setString("OrderId", response.data["order_id"].toString());
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ThankYou()));
