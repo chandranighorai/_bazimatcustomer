@@ -37,6 +37,8 @@ dependencies:
   #flutter_svg: any
   geolocator: ^3.0.1
   google_maps_flutter: ^2.0.0
+  geocoder: ^0.2.1
+  flutter_google_places: any
   #firebase_messaging: ^10.0.3
   #cached_network_image: ^3.2.0
   package_info: ^2.0.2

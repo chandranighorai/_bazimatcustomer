@@ -1,5 +1,6 @@
 import 'package:bazimat/address%20book/AddAddress.dart';
 import 'package:bazimat/address%20book/HomeAddress.dart';
+import 'package:bazimat/address%20book/ManualAddress.dart';
 import 'package:bazimat/address%20book/OtherAddress.dart';
 import 'package:bazimat/address%20book/WorkAddress.dart';
 import 'package:bazimat/util/AppColors.dart';
@@ -9,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressBook extends StatefulWidget {
-  Function(String addre,String addrType, String lat, String lng) refresh;
+  Function(String addre, String addrType, String lat, String lng) refresh;
   AddressBook({this.refresh, Key key}) : super(key: key);
 
   @override
@@ -149,31 +150,68 @@ class _AddressBookState extends State<AddressBook> {
                       ],
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddAddress()));
-                    },
-                    child: Align(
-                      alignment: FractionalOffset.bottomCenter,
-                      child: Container(
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.width * 0.04,
-                              bottom: MediaQuery.of(context).size.width * 0.04,
-                              left: MediaQuery.of(context).size.width * 0.06,
-                              right: MediaQuery.of(context).size.width * 0.06),
-                          decoration: BoxDecoration(
-                              color: AppColors.buttonColor,
-                              borderRadius: BorderRadius.all(Radius.circular(
-                                  MediaQuery.of(context).size.width * 0.10))),
-                          child: Text(
-                            "Select From Map".toUpperCase(),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          )),
+                  Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ManualAddress()));
+                          },
+                          child: Container(
+                              padding: EdgeInsets.only(
+                                  top: MediaQuery.of(context).size.width * 0.04,
+                                  bottom:
+                                      MediaQuery.of(context).size.width * 0.04,
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.06,
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.06),
+                              decoration: BoxDecoration(
+                                  color: AppColors.buttonColor,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              0.10))),
+                              child: Text("Add Address".toUpperCase(),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold))),
+                        ),
+                        Spacer(),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddAddress()));
+                          },
+                          child: Container(
+                              padding: EdgeInsets.only(
+                                  top: MediaQuery.of(context).size.width * 0.04,
+                                  bottom:
+                                      MediaQuery.of(context).size.width * 0.04,
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.06,
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.06),
+                              decoration: BoxDecoration(
+                                  color: AppColors.buttonColor,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              0.10))),
+                              child: Text(
+                                "Select From Map".toUpperCase(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              )),
+                        ),
+                      ],
                     ),
                   )
                 ],

@@ -55,4 +55,5 @@ class Const {
   static String cancelOrder = appUrl + "customer/order/cancel";
   static String productsearch = appUrl + "products/search";
   static String repeatOrder = appUrl + "customer/order/repeat";
+  static String manualAddr = appUrl + "customer/address/add";
 }
