@@ -25,6 +25,7 @@ class _QuantityListState extends State<QuantityList> {
     finalPrice =
         itemCount * double.parse(widget.dataList["food_amount"].toString());
     print("ItemCount..." + itemCount.toString());
+    print("ItemCount..." + foodValue.toString());
     print("ItemCount..." + finalPrice.toString());
     super.initState();
   }

@@ -100,6 +100,7 @@ class _AddCuisinState extends State<AddCuisin> {
     print("ResturentLat...." + widget.resturentLat.toString());
     print("ResturentLat..." + widget.productList.toString());
     print("ResturentLat..." + widget.orderPage.toString());
+    print("ResturentLat..." + widget.configData.toString());
 
     //var image = widget.imageUrl + widget.product.image;
 
@@ -856,6 +857,7 @@ class _AddCuisinState extends State<AddCuisin> {
       print("deliveryCharge..." + taxPrice.toString());
       deliveryCharge = widget.configData["per_km_shipping_charge"] *
           double.parse(distanceCal[0]);
+      print("deliveryCharge..." + deliveryCharge.toString());
       payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
       print("ItemPrice...qty..." + itemPrice.toString());
       print("ItemPrice...qty...payprice..." + payPrice.toString());

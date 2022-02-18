@@ -72,6 +72,7 @@ class _ManualAddressState extends State<ManualAddress> {
             children: [
               TextFormField(
                 controller: _nameText,
+                enabled: false,
                 decoration: InputDecoration(hintText: "Enter Name"),
               ),
               SizedBox(
@@ -79,6 +80,7 @@ class _ManualAddressState extends State<ManualAddress> {
               ),
               TextFormField(
                 controller: _phoneText,
+                enabled: false,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(hintText: "Enter Phone Number"),
               ),
@@ -86,9 +88,13 @@ class _ManualAddressState extends State<ManualAddress> {
                 height: MediaQuery.of(context).size.width * 0.03,
               ),
               TextFormField(
+                enabled: false,
                 controller: _addrText,
                 maxLines: 2,
-                decoration: InputDecoration(hintText: "Enter Address"),
+                decoration: InputDecoration(
+                  hintText: "Enter Address",
+                  isCollapsed: true,
+                ),
                 // onChanged: (value) {
                 //   print("Vall..." + value.toString());
                 //   _getLatLng(value.toString());
@@ -226,7 +232,7 @@ class _ManualAddressState extends State<ManualAddress> {
       lat = detail.result.geometry.location.lat;
       lng = detail.result.geometry.location.lng;
       var address = await Geocoder.local.findAddressesFromQuery(p.description);
-      print("Lat..." + lat.toString());
+      print("Lng..." + lat.toString());
       print("Lng..." + lng.toString());
       print("Lng..." + p.description.toString());
       _addrText.text = p.description.toString();
@@ -291,7 +297,8 @@ class _ManualAddressState extends State<ManualAddress> {
             options: Options(headers: {"Authorization": "Bearer $token"}));
         print("addressData..." + response.data.toString());
         if (response.data["state"] == 0) {
-          showCustomToast(response.data[""]);
+          print("response..." + response.data["message"]);
+          showCustomToast(response.data["message"]);
         } else {
           showCustomToast(response.data["errors"][0]["message"]);
         }

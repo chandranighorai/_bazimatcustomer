@@ -157,9 +157,12 @@ class _AddressBookState extends State<AddressBook> {
                         InkWell(
                           onTap: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ManualAddress()));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ManualAddress()))
+                                .then((value) {
+                              _getAddress();
+                            });
                           },
                           child: Container(
                               padding: EdgeInsets.only(

@@ -1,8 +1,12 @@
+import 'package:bazimat/util/AppConst.dart';
+import 'package:bazimat/util/Const.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WorkAddress extends StatefulWidget {
   var workAddr;
-  Function(String addr,String addrType, String lat, String lng) refresh;
+  Function(String addr, String addrType, String lat, String lng) refresh;
   WorkAddress({this.workAddr, this.refresh, Key key}) : super(key: key);
 
   @override
@@ -15,8 +19,16 @@ class _WorkAddressState extends State<WorkAddress> {
     print("workAddr..." + widget.workAddr.toString());
     return InkWell(
       onTap: () {
+        print("workAddr..." + widget.workAddr["address"].toString());
+        print("workAddr..." + widget.workAddr["latitude"].toString());
+        print("workAddr..." + widget.workAddr["longitude"].toString());
+        _serviceAvailability(
+            widget.workAddr["latitude"], widget.workAddr["longitude"]);
         Navigator.pop(context);
-        widget.refresh(widget.workAddr["address"],widget.workAddr["address_type"], widget.workAddr["latitude"],
+        widget.refresh(
+            widget.workAddr["address"],
+            widget.workAddr["address_type"],
+            widget.workAddr["latitude"],
             widget.workAddr["longitude"]);
       },
       child: Padding(
@@ -51,5 +63,31 @@ class _WorkAddressState extends State<WorkAddress> {
         ),
       ),
     );
+  }
+
+  _serviceAvailability(lat, lng) async {
+    var dio = Dio();
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    print("Lat..." + lat.toString());
+    print("Lat..." + lng.toString());
+    try {
+      var params =
+          "?latitude=" + lat.toString() + "&longitude=" + lng.toString();
+      var url = Const.addrServiceable + params;
+      var response = await dio.get(url,
+          options: Options(headers: {"Authorization": "Bearer $token"}));
+      print("response in home..." + response.data.toString());
+      if (response.data["state"] == 0) {
+        Navigator.pop(context);
+        widget.refresh(
+            widget.workAddr["address"],
+            widget.workAddr["address_type"],
+            widget.workAddr["latitude"],
+            widget.workAddr["longitude"]);
+      } else {
+        showCustomToast(response.data["message"]);
+      }
+    } on DioError catch (e) {}
   }
 }

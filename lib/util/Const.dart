@@ -56,4 +56,5 @@ class Const {
   static String productsearch = appUrl + "products/search";
   static String repeatOrder = appUrl + "customer/order/repeat";
   static String manualAddr = appUrl + "customer/address/add";
+  static String addrServiceable = appUrl + "customer/address/serviceable";
 }
