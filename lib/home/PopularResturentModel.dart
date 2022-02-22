@@ -255,7 +255,7 @@ class PopularResturentErrors {
   String latitude;
   String longitude;
   String address;
-  Null footerText;
+  String footerText;
   int minimumOrder;
   int comission;
   bool scheduleOrder;

@@ -17,6 +17,7 @@ import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CuisinDetails extends StatefulWidget {
@@ -63,7 +64,8 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentAddr,
       resturentAvgRating,
       resturentRatingCount,
-      resturentOfferPrice;
+      resturentOfferPrice,
+      resturentOfferText;
   @override
   void initState() {
     super.initState();
@@ -75,6 +77,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentAvgRating = widget.cuisinList.avgRating;
       resturentRatingCount = widget.cuisinList.ratingCount;
       resturentOfferPrice = widget.cuisinList.offerprice;
+      resturentOfferText = widget.cuisinList.offertext;
     } else if (widget.section == "list") {
       resturentId = widget.listData.id;
       resturentName = widget.listData.name;
@@ -83,6 +86,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentAvgRating = widget.listData.avgRating;
       resturentRatingCount = widget.listData.ratingCount;
       resturentOfferPrice = widget.listData.offerprice;
+      resturentOfferText = widget.listData.offertext;
     } else if (widget.section == "topPicks") {
       resturentId = widget.topPickList.id;
       resturentName = widget.topPickList.name;
@@ -91,6 +95,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentAvgRating = widget.topPickList.avgRating;
       resturentRatingCount = widget.topPickList.ratingCount;
       resturentOfferPrice = widget.topPickList.offerprice;
+      resturentOfferText = widget.topPickList.offertext;
     } else if (widget.section == "campaign") {
       resturentId = widget.campaignData.id;
       resturentName = widget.campaignData.name;
@@ -99,6 +104,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentAvgRating = widget.campaignData.avgRating;
       resturentRatingCount = widget.campaignData.ratingCount;
       resturentOfferPrice = widget.campaignData.offerprice;
+      resturentOfferText = widget.campaignData.offertext;
     } else if (widget.section == "favourite") {
       resturentId = widget.favResturentData.id;
       resturentName = widget.favResturentData.name;
@@ -107,6 +113,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentAvgRating = widget.favResturentData.avgRating;
       resturentRatingCount = widget.favResturentData.ratingCount;
       resturentOfferPrice = widget.favResturentData.offerprice;
+      resturentOfferText = widget.favResturentData.offertext;
     } else {
       resturentId = widget.resturentData.id;
       resturentName = widget.resturentData.name;
@@ -115,6 +122,8 @@ class _CuisinDetailsState extends State<CuisinDetails> {
       resturentAvgRating = widget.resturentData.avgRating;
       resturentRatingCount = widget.resturentData.ratingCount;
       resturentOfferPrice = widget.resturentData.offerprice;
+      resturentOfferText = widget.resturentData.offertext;
+      print("cuisinOfferText..." + resturentOfferText.length.toString());
     }
     // ? "${widget.cuisinList.name}"
     // : widget.section == "list"
@@ -509,57 +518,64 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.02,
                     ),
-                    Row(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.04,
-                          width: MediaQuery.of(context).size.width * 0.04,
-                          decoration: BoxDecoration(
-                              //color: Colors.red,
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                      "images/discount.png".toString()),
-                                  fit: BoxFit.cover)),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.02,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          child: Text(
-                            "60% off upto \u20B9125 + Flat \u20B930 cashback with Paytm | Use code WELCOMEBACK",
-                            style: TextStyle(color: Colors.grey),
+                    resturentOfferText.length == 0
+                        ? SizedBox()
+                        : Row(
+                            children: [
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.width * 0.04,
+                                width: MediaQuery.of(context).size.width * 0.04,
+                                decoration: BoxDecoration(
+                                    //color: Colors.red,
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "images/discount.png".toString()),
+                                        fit: BoxFit.cover)),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.02,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 1.2,
+                                child: Html(data: resturentOfferText
+                                    // child: Text(
+                                    //   resturentOfferText,
+                                    //   //"60% off upto \u20B9125 + Flat \u20B930 cashback with Paytm | Use code WELCOMEBACK"
+                                    //   //,
+                                    //   style: TextStyle(color: Colors.grey),
+                                    // ),
+                                    ),
+                              )
+                            ],
                           ),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.02,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.04,
-                          width: MediaQuery.of(context).size.width * 0.04,
-                          decoration: BoxDecoration(
-                              //color: Colors.red,
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                      "images/discount.png".toString()),
-                                  fit: BoxFit.cover)),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.02,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          child: Text(
-                            "20% off upto \u20B9150 | Use code TRYNEW",
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      ],
-                    ),
+                    // SizedBox(
+                    //   height: MediaQuery.of(context).size.width * 0.02,
+                    // ),
+                    // Row(
+                    //   children: [
+                    //     Container(
+                    //       height: MediaQuery.of(context).size.width * 0.04,
+                    //       width: MediaQuery.of(context).size.width * 0.04,
+                    //       decoration: BoxDecoration(
+                    //           //color: Colors.red,
+                    //           image: DecorationImage(
+                    //               image: AssetImage(
+                    //                   "images/discount.png".toString()),
+                    //               fit: BoxFit.cover)),
+                    //     ),
+                    //     SizedBox(
+                    //       width: MediaQuery.of(context).size.width * 0.02,
+                    //     ),
+                    //     Container(
+                    //       width: MediaQuery.of(context).size.width / 1.2,
+                    //       child: Text(
+                    //         "20% off upto \u20B9150 | Use code TRYNEW",
+                    //         style: TextStyle(color: Colors.grey),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.04,
                     )

@@ -732,6 +732,7 @@ class _HomeState extends State<Home> {
       print("Responsebody... in popular" + response.data.toString());
       if (response.data["state"] == 0) {
         popularList = response.data["errors"]["products"];
+        print("Popular cuisin..." + popularList.toString());
         cuisinImagePath = response.data["proimgpath"];
         setState(() {
           _popularLoad = true;

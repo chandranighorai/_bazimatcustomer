@@ -102,7 +102,8 @@ class _SubListState extends State<SubList> {
           options: Options(headers: {"zoneId": widget.zoneId}));
       print(
           "response statusCode...cat List..." + response.statusCode.toString());
-      print("response data...cat List..." + response.data['state'].toString());
+      //print("response data...cat List..." + response.data['state'].toString());
+      print("response data...cat List..." + response.data.toString());
       if (response.data["state"] == 0) {
         return SubListModel.fromJson(response.data);
       } else {

@@ -58,7 +58,7 @@ class RestaurantsSub {
   String latitude;
   String longitude;
   String address;
-  Null footerText;
+  String footerText;
   int minimumOrder;
   int comission;
   bool scheduleOrder;
@@ -81,6 +81,7 @@ class RestaurantsSub {
   int deliveryCharge;
   String description;
   String offerprice;
+  String offertext;
   String discount;
   String availableTimeStarts;
   String availableTimeEnds;
@@ -121,6 +122,7 @@ class RestaurantsSub {
       this.deliveryCharge,
       this.description,
       this.offerprice,
+      this.offertext,
       this.discount,
       this.availableTimeStarts,
       this.availableTimeEnds,
@@ -161,6 +163,7 @@ class RestaurantsSub {
     deliveryCharge = json['delivery_charge'];
     description = json['description'];
     offerprice = json['offerprice'];
+    offertext = json['offertext'];
     discount = json['discount'];
     availableTimeStarts = json['available_time_starts'];
     availableTimeEnds = json['available_time_ends'];
@@ -203,6 +206,7 @@ class RestaurantsSub {
     data['delivery_charge'] = this.deliveryCharge;
     data['description'] = this.description;
     data['offerprice'] = this.offerprice;
+    data['offertext'] = this.offertext;
     data['discount'] = this.discount;
     data['available_time_starts'] = this.availableTimeStarts;
     data['available_time_ends'] = this.availableTimeEnds;

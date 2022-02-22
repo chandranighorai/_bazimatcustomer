@@ -97,9 +97,9 @@ class _AddCuisinState extends State<AddCuisin> {
   Widget build(BuildContext context) {
     // print("Shipping Charge...." +
     //     widget.configData["per_km_shipping_charge"].toString());
-    print("ResturentLat...." + widget.resturentLat.toString());
-    print("ResturentLat..." + widget.productList.toString());
-    print("ResturentLat..." + widget.orderPage.toString());
+    // print("ResturentLat...." + widget.resturentLat.toString());
+    // print("ResturentLat..." + widget.productList.toString());
+    // print("ResturentLat..." + widget.orderPage.toString());
     print("ResturentLat..." + widget.configData.toString());
 
     //var image = widget.imageUrl + widget.product.image;
@@ -846,7 +846,14 @@ class _AddCuisinState extends State<AddCuisin> {
                     .toString());
         print("itemPrice...Qty..." + itemPrice.toString());
         taxPrice = taxPrice + double.parse(productDatalist[i]["tax"]);
+        var distanceCal = distance.split(" ");
+        print("deliveryCharge..." + taxPrice.toString());
+        deliveryCharge = widget.configData["per_km_shipping_charge"] *
+            double.parse(distanceCal[0]);
+        print("deliveryCharge..." + deliveryCharge.toString());
+        payPrice = (itemPrice + deliveryCharge + taxPrice) - couponPrice;
         cartArr.add(productDatalist[i]["cart_id"]);
+        print("itemPrice...Qty..." + cartArr.toString());
         _cartLoad = true;
         //});
       }

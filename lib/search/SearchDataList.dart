@@ -75,7 +75,10 @@ class _SearchDAtaListState extends State<SearchDataList> {
                     // mainAxisAlignment:
                     //     MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(widget.dataList.name),
+                      Container(
+                          //color: Colors.amber,
+                          width: MediaQuery.of(context).size.width / 1.8,
+                          child: Text(widget.dataList.name)),
                       SizedBox(
                           height: MediaQuery.of(context).size.width * 0.02),
                       Text("\u20B9" + widget.dataList.price.toString()),

@@ -87,19 +87,21 @@ class _ManualAddressState extends State<ManualAddress> {
               SizedBox(
                 height: MediaQuery.of(context).size.width * 0.03,
               ),
-              TextFormField(
-                enabled: false,
-                controller: _addrText,
-                maxLines: 2,
-                decoration: InputDecoration(
-                  hintText: "Enter Address",
-                  isCollapsed: true,
-                ),
-                // onChanged: (value) {
-                //   print("Vall..." + value.toString());
-                //   _getLatLng(value.toString());
-                // },
-              ),
+              _addrText.text.length == 0
+                  ? SizedBox()
+                  : TextFormField(
+                      enabled: false,
+                      controller: _addrText,
+                      maxLines: 2,
+                      decoration: InputDecoration(
+                        hintText: "Enter Address",
+                        isCollapsed: true,
+                      ),
+                      // onChanged: (value) {
+                      //   print("Vall..." + value.toString());
+                      //   _getLatLng(value.toString());
+                      // },
+                    ),
               SizedBox(
                 height: MediaQuery.of(context).size.width * 0.06,
               ),
@@ -203,7 +205,14 @@ class _ManualAddressState extends State<ManualAddress> {
               SizedBox(
                 height: MediaQuery.of(context).size.width * 0.03,
               ),
-              TextButton(onPressed: _addressSubmit, child: Text("Submit"))
+              TextButton(
+                onPressed: _addressSubmit,
+                child: Text(
+                  "Submit",
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: TextButton.styleFrom(backgroundColor: Colors.blue),
+              )
             ],
           ),
         ),
@@ -235,7 +244,9 @@ class _ManualAddressState extends State<ManualAddress> {
       print("Lng..." + lat.toString());
       print("Lng..." + lng.toString());
       print("Lng..." + p.description.toString());
-      _addrText.text = p.description.toString();
+      setState(() {
+        _addrText.text = p.description.toString();
+      });
       print("Address..." + address.toString());
     } else {
       print("Vall...0..." + p.toString());
