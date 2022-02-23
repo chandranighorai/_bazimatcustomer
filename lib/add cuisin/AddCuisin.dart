@@ -118,9 +118,13 @@ class _AddCuisinState extends State<AddCuisin> {
             print("productList..." + cartArr.toString());
             for (int i = 0; i < productDatalist.length; i++) {
               for (int j = 0; j < cartArr.length; j++) {
-                if (cartArr[j].toString() == productDatalist[i]["cart_id"]) {
+                if (cartArr[j].toString() ==
+                    (productDatalist[i]["cart_id"]).toString()) {
+                  print(",,,," + productDatalist.toString());
+                  print(",,,," + cartArr[j].toString());
                   productDatalist
-                      .where((e) => e["cart_id"] == cartArr[j]["cart_id"])
+                      .where((e) =>
+                          (e["cart_id"]).toString() == cartArr[j].toString())
                       .toList();
                 }
               }
@@ -458,6 +462,8 @@ class _AddCuisinState extends State<AddCuisin> {
                                                                     _getChangeAddress)))
                                                 .then((value) {
                                               print("Value..." +
+                                                  value.toString());
+                                              print("Value..." +
                                                   value["addressType"]
                                                       .toString());
                                               // print("resturentLat...Value..." +
@@ -662,6 +668,7 @@ class _AddCuisinState extends State<AddCuisin> {
       if (response.data["state"] == 0) {
         addressList = response.data["error"];
         print("addresslength..." + addressList.length.toString());
+        print("addresslength..." + addressList.toString());
         if (response.data['error'].length == 0) {
           setState(() {
             addressLoad = true;
@@ -686,7 +693,8 @@ class _AddCuisinState extends State<AddCuisin> {
   }
 
   _getChangeAddress(String adr, String addrType, String lat, String lng) {
-    print("address..." + addr.toString());
+    print("address...0.." + addr.toString());
+    print("address...0.." + adr.toString());
     print("address..." + lat.toString());
     print("address..." + lng.toString());
     print("address..." + addrType.toString());
@@ -694,7 +702,9 @@ class _AddCuisinState extends State<AddCuisin> {
     print("res_longitude..." + widget.resturentLng.toString());
 
     setState(() {
+      _getAddress();
       addr = adr;
+      print("address...0.." + addr.toString());
       addressType = addrType;
       _getDistance(lat, lng, widget.resturentLat.toString(),
           widget.resturentLng.toString());
@@ -845,9 +855,10 @@ class _AddCuisinState extends State<AddCuisin> {
                         double.parse(productDatalist[i]["food_amount"]))
                     .toString());
         print("itemPrice...Qty..." + itemPrice.toString());
+        print("itemPrice...Qty..." + productDatalist[i]["tax"].toString());
         taxPrice = taxPrice + double.parse(productDatalist[i]["tax"]);
-        var distanceCal = distance.split(" ");
         print("deliveryCharge..." + taxPrice.toString());
+        var distanceCal = distance.split(" ");
         deliveryCharge = widget.configData["per_km_shipping_charge"] *
             double.parse(distanceCal[0]);
         print("deliveryCharge..." + deliveryCharge.toString());

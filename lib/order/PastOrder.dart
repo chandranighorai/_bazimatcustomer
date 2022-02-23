@@ -16,7 +16,7 @@ class PastOrder extends StatefulWidget {
 class _PastOrderState extends State<PastOrder> {
   Future<PostOrderModel> _pastOrder;
   var dio = Dio();
-  var token,id;
+  var token, id;
   var state = 0;
   var response;
 
@@ -48,12 +48,16 @@ class _PastOrderState extends State<PastOrder> {
                 if (snapshot.hasData) {
                   var errorData = snapshot.data.errors;
                   return ListView.builder(
-                      reverse: true,
+                      padding: EdgeInsets.all(0),
+                      //reverse: true,
+                      //shrinkWrap: true,
                       itemCount: errorData.length,
                       itemBuilder: (BuildContext context, int index) {
                         print("listDAta..." + errorData[index].toString());
                         return PastOrderList(
-                            listData: errorData[index], token: token,userId:id);
+                            listData: errorData[(errorData.length - 1) - index],
+                            token: token,
+                            userId: id);
                       });
                 } else {
                   return Center(

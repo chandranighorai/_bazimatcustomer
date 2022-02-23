@@ -18,9 +18,10 @@ class _HomeAddressState extends State<HomeAddress> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print("address..." + widget.homeAddr["address"]);
-        print("address..." + widget.homeAddr["latitude"]);
-        print("address..." + widget.homeAddr["longitude"]);
+        print("address...in homeAddr..." + widget.homeAddr["address"]);
+        print("address...in homeAddr..." + widget.homeAddr["latitude"]);
+        print("address...in homeAddr..." + widget.homeAddr["longitude"]);
+        print("address...in homeAddr..." + widget.homeAddr["address_type"]);
         _serviceAvailability(
             widget.homeAddr["latitude"], widget.homeAddr["longitude"]);
       },
@@ -76,6 +77,8 @@ class _HomeAddressState extends State<HomeAddress> {
       } else {
         showCustomToast(response.data["message"]);
       }
-    } on DioError catch (e) {}
+    } on DioError catch (e) {
+      print(e.toString());
+    }
   }
 }

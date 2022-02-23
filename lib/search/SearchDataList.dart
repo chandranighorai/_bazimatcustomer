@@ -219,6 +219,7 @@ class _SearchDAtaListState extends State<SearchDataList> {
           options: Options(headers: {"Authorization": "Bearer $token"}));
       print("response body..." + cartData.statusCode.toString());
       print("response body..." + cartData.data.toString());
+      print("response body..." + cartData.data["respData"].toString());
       if (cartData.data["state"] == 0) {
         showCustomToast(cartData.data["message"]);
         setState(() {
@@ -231,7 +232,9 @@ class _SearchDAtaListState extends State<SearchDataList> {
             "food_name": widget.dataList.name.toString(),
             "food_image": imageData,
             "quantity": "1",
-            "food_amount": cartData.data["respData"]["food_amount"].toString(),
+            "tax": double.parse(cartData.data["respData"]["tax"].toString())
+                .toString(),
+            "food_amount": double.parse(cartData.data["respData"]["food_amount"].toString()).toString() ,
             "is_odered": "0",
             "added_dtime": cartData.data["respData"]["added_dtime"].toString()
           });
