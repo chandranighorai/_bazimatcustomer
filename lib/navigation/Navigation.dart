@@ -292,10 +292,15 @@ class _NavigationState extends State<Navigation> {
                       ],
                     ),
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ChatSupport()));
+                      if (token == null) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => LogIn()));
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatSupport()));
+                      }
                     },
                   ),
                   // ListTile(
@@ -336,38 +341,43 @@ class _NavigationState extends State<Navigation> {
                   //     ],
                   //   ),
                   // ),
-                  ListTile(
-                    visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                    title: Row(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.05,
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          decoration: BoxDecoration(
-                              //color: Colors.red,
-                              image: DecorationImage(
-                                  image: AssetImage("images/notes.png"))),
+                  token == null
+                      ? SizedBox()
+                      : ListTile(
+                          visualDensity:
+                              VisualDensity(horizontal: 0, vertical: -4),
+                          title: Row(
+                            children: [
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.width * 0.05,
+                                width: MediaQuery.of(context).size.width * 0.05,
+                                decoration: BoxDecoration(
+                                    //color: Colors.red,
+                                    image: DecorationImage(
+                                        image: AssetImage("images/notes.png"))),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.04,
+                              ),
+                              token == null
+                                  ? SizedBox()
+                                  : Text(_moreLoad == false ? "..." : "More"),
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => More(
+                                          aboutUs: response.data["about_us"],
+                                          privacy:
+                                              response.data["privacy_policy"],
+                                          terms: response
+                                              .data["terms_and_conditions"],
+                                        )));
+                          },
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.04,
-                        ),
-                        token == null
-                            ? SizedBox()
-                            : Text(_moreLoad == false ? "..." : "More"),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => More(
-                                    aboutUs: response.data["about_us"],
-                                    privacy: response.data["privacy_policy"],
-                                    terms:
-                                        response.data["terms_and_conditions"],
-                                  )));
-                    },
-                  ),
                   ListTile(
                     visualDensity: VisualDensity(horizontal: 0, vertical: -4),
                     title: Row(

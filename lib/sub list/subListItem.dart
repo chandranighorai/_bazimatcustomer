@@ -176,24 +176,24 @@ class _SubListItemState extends State<SubListItem> {
                     SizedBox(
                       height: MediaQuery.of(context).size.width * 0.01,
                     ),
-                    Row(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.width * 0.04,
-                          width: MediaQuery.of(context).size.width / 20,
-                          decoration: BoxDecoration(
-                              //color: Colors.red,
-                              image: DecorationImage(
-                                  image: AssetImage("images/discount.png"))),
-                        ),
-                        Text(
-                          "200 items available",
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.width * 0.03),
-                        )
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Container(
+                    //       height: MediaQuery.of(context).size.width * 0.04,
+                    //       width: MediaQuery.of(context).size.width / 20,
+                    //       decoration: BoxDecoration(
+                    //           //color: Colors.red,
+                    //           image: DecorationImage(
+                    //               image: AssetImage("images/discount.png"))),
+                    //     ),
+                    //     Text(
+                    //       "200 items available",
+                    //       style: TextStyle(
+                    //           fontSize:
+                    //               MediaQuery.of(context).size.width * 0.03),
+                    //     )
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
