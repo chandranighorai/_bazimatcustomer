@@ -589,8 +589,12 @@ class _AddCuisinState extends State<AddCuisin> {
                           Spacer(),
                           InkWell(
                             onTap: () {
+                              print("cart length in proceed to pay....." +
+                                  cartArr.length.toString());
                               if (addressList.length == 0) {
                                 showCustomToast("Please select an address");
+                              } else if (cartArr.length == 0) {
+                                showCustomToast("Cart is empty");
                               } else {
                                 Navigator.push(
                                     context,

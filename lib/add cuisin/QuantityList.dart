@@ -24,9 +24,9 @@ class _QuantityListState extends State<QuantityList> {
     foodValue = double.parse(widget.dataList["food_amount"].toString());
     finalPrice =
         itemCount * double.parse(widget.dataList["food_amount"].toString());
-    print("ItemCount..." + itemCount.toString());
-    print("ItemCount..." + foodValue.toString());
-    print("ItemCount..." + finalPrice.toString());
+    // print("ItemCount..." + itemCount.toString());
+    // print("ItemCount..." + foodValue.toString());
+    // print("ItemCount..." + finalPrice.toString());
     super.initState();
   }
 
@@ -43,19 +43,80 @@ class _QuantityListState extends State<QuantityList> {
         child: Row(
           children: [
             Container(
-                width: MediaQuery.of(context).size.width / 1.9,
+                width: MediaQuery.of(context).size.width / 2.2,
                 //color: Colors.amber,
                 child: Text(widget.dataList["food_name"])),
             Spacer(),
             Container(
-              width: MediaQuery.of(context).size.width / 4.5,
+              width: MediaQuery.of(context).size.width / 4.8,
+              alignment: Alignment.centerLeft,
               //color: Colors.red,
               //decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  InkWell(
-                    onTap: () {
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: Size.zero,
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.width * 0.02),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () {
+                      if (itemCount > 1) {
+                        setState(() {
+                          itemCount = itemCount - 1;
+                          finalPrice = itemCount * foodValue;
+                          print("Datalist...increment..." +
+                              finalPrice.toString());
+                          widget.dataList["quantity"] = itemCount;
+                          widget.dataList["food_amount"] =
+                              finalPrice.toString();
+                          dataList.add(widget.dataList);
+                          print(
+                              "Datalist...decrement..." + dataList.toString());
+                          widget.refresh(dataList, "update");
+                          //finalPrice = price * itemCount;
+                          //widget.refresh(finalPrice.toString(), itemCount);
+                        });
+                      } else {
+                        setState(() {
+                          dataList.clear();
+                          widget.dataList["quantity"] = 0;
+                          widget.dataList["food_amount"] =
+                              finalPrice.toString();
+                          dataList.add(widget.dataList);
+                          print("Datalist...delete..." + dataList.toString());
+                          widget.refresh(dataList, "delete");
+                          widget.data("delete", dataList);
+                        });
+                        //itemCount = 1;
+                      }
+                    },
+                    child: Text(
+                      " -",
+                      style: TextStyle(
+                        color: AppColors.addTextColor,
+                        fontSize: MediaQuery.of(context).size.width * 0.08,
+                      ),
+                    ),
+                  ),
+                  Text(itemCount.toString()
+                      //   "Qty: " + itemCount.toString(),
+                      //   // " x " +
+                      //   // widget.dataList["food_amount"].toString() +
+                      //   // " =",
+                      //   style: TextStyle(color: Colors.grey),
+                      //   //style: TextStyle(color: AppColors.addTextColor),
+                      ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: Size.zero,
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.width * 0.02),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () {
                       print("Item Clicked..." +
                           widget.dataList['food_name'].toString());
                       print("Datalist...increment..." +
@@ -85,53 +146,6 @@ class _QuantityListState extends State<QuantityList> {
                       style: TextStyle(color: AppColors.addTextColor),
                     ),
                   ),
-                  Text(itemCount.toString()
-                      //   "Qty: " + itemCount.toString(),
-                      //   // " x " +
-                      //   // widget.dataList["food_amount"].toString() +
-                      //   // " =",
-                      //   style: TextStyle(color: Colors.grey),
-                      //   //style: TextStyle(color: AppColors.addTextColor),
-                      ),
-                  InkWell(
-                      onTap: () {
-                        if (itemCount > 1) {
-                          setState(() {
-                            itemCount = itemCount - 1;
-                            finalPrice = itemCount * foodValue;
-                            print("Datalist...increment..." +
-                                finalPrice.toString());
-                            widget.dataList["quantity"] = itemCount;
-                            widget.dataList["food_amount"] =
-                                finalPrice.toString();
-                            dataList.add(widget.dataList);
-                            print("Datalist...decrement..." +
-                                dataList.toString());
-                            widget.refresh(dataList, "update");
-                            //finalPrice = price * itemCount;
-                            //widget.refresh(finalPrice.toString(), itemCount);
-                          });
-                        } else {
-                          setState(() {
-                            dataList.clear();
-                            widget.dataList["quantity"] = 0;
-                            widget.dataList["food_amount"] =
-                                finalPrice.toString();
-                            dataList.add(widget.dataList);
-                            print("Datalist...delete..." + dataList.toString());
-                            widget.refresh(dataList, "delete");
-                            widget.data("delete", dataList);
-                          });
-                          //itemCount = 1;
-                        }
-                      },
-                      child: Text(
-                        " -",
-                        style: TextStyle(
-                          color: AppColors.addTextColor,
-                          fontSize: MediaQuery.of(context).size.width * 0.08,
-                        ),
-                      ))
                 ],
               ),
             ),

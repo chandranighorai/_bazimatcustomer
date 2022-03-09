@@ -37,6 +37,8 @@ class _OrderStatusState extends State<OrderStatus> {
   @override
   Widget build(BuildContext context) {
     print("widgetData..." + widget.orderData.accepted.toString());
+    print("widgetData..." + widget.orderData.accepted.toString());
+
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: Container(
@@ -46,7 +48,9 @@ class _OrderStatusState extends State<OrderStatus> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "${widget.orderStatus}",
+              widget.orderData.orderStatus == "rejected"
+                  ? "Rejected"
+                  : "${widget.orderStatus}",
               //textAlign: TextAlign.center,
             ),
             SizedBox(
@@ -66,7 +70,7 @@ class _OrderStatusState extends State<OrderStatus> {
 
   _getdata() {
     data = '';
-    print("widget..." + widget.orderStatus.toString());
+    print("widget orderStatus..." + widget.orderStatus.toString());
     switch (widget.orderStatus) {
       case "Pending":
         {
@@ -188,11 +192,19 @@ class _OrderStatusState extends State<OrderStatus> {
               color = Colors.white;
             });
           } else {
-            setState(() {
-              color = Colors.amber;
-              dt = DateTime.parse(widget.orderData.canceled);
-              data = DateFormat('kk:mm a').format(dt);
-            });
+            if (widget.orderData.orderStatus == "rejected") {
+              setState(() {
+                color = Colors.red;
+                dt = DateTime.parse(widget.orderData.canceled);
+                data = DateFormat('kk:mm a').format(dt);
+              });
+            } else {
+              setState(() {
+                color = Colors.amber;
+                dt = DateTime.parse(widget.orderData.canceled);
+                data = DateFormat('kk:mm a').format(dt);
+              });
+            }
           }
 
           break;

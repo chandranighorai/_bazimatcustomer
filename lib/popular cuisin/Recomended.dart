@@ -171,34 +171,6 @@ class _RecommendedState extends State<Recommended> {
                                           InkWell(
                                             onTap: () {
                                               setState(() {
-                                                itemCount = itemCount + 1;
-                                                _updateload = true;
-                                                print("Item..." +
-                                                    itemCount.toString());
-                                                _updateCart();
-                                              });
-                                            },
-                                            child: Container(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text("+"),
-                                            ),
-                                          ),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.05,
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              itemCount.toString(),
-                                              style: TextStyle(
-                                                  color:
-                                                      AppColors.addTextColor),
-                                            ),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
                                                 itemCount = itemCount - 1;
                                                 _updateload = true;
                                                 if (itemCount < 1) {
@@ -234,6 +206,34 @@ class _RecommendedState extends State<Recommended> {
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.05,
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              itemCount.toString(),
+                                              style: TextStyle(
+                                                  color:
+                                                      AppColors.addTextColor),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                itemCount = itemCount + 1;
+                                                _updateload = true;
+                                                print("Item..." +
+                                                    itemCount.toString());
+                                                _updateCart();
+                                              });
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text("+"),
                                             ),
                                           ),
                                         ],
@@ -317,7 +317,7 @@ class _RecommendedState extends State<Recommended> {
       if (response.data["state"] == 0) {
         showCustomToast(response.data["message"].toString());
         //setState(() {
-          _updateload = false;
+        _updateload = false;
         //});
         // setState(() {
         //   itemCount = int.parse(response.data["respData"]["quantity"]);

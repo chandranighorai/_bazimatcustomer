@@ -60,7 +60,7 @@ class _NavigationState extends State<Navigation> {
                       ? SizedBox()
                       : Container(
                           alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width / 3.5,
+                          width: MediaQuery.of(context).size.width / 3.9,
                           height: MediaQuery.of(context).size.height,
                           decoration: BoxDecoration(
                               color: Colors.grey[50], shape: BoxShape.circle),
@@ -77,54 +77,67 @@ class _NavigationState extends State<Navigation> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.02,
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3.2,
-                        //color: Colors.amber,
-                        child: Text(
-                          token == null ? "Login" : "$fullName",
-                          style: TextStyle(color: Colors.white),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 3.4,
+                    //color: Colors.red,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width / 3.4,
+                          //color: Colors.amber,r
+                          child: Text(
+                            token == null ? "Login" : "$fullName",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.02,
-                      ),
-                      token == null
-                          ? SizedBox()
-                          : Text(
-                              "$phone",
-                              style: TextStyle(color: Colors.white),
-                            )
-                    ],
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.02,
+                        ),
+                        token == null
+                            ? SizedBox()
+                            : Container(
+                                width: MediaQuery.of(context).size.width / 3.4,
+                                //color: Colors.amber,
+                                child: Text(
+                                  "$phone",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )
+                      ],
+                    ),
                   ),
                   Spacer(),
-                  IconButton(
-                      icon: Icon(Icons.arrow_forward_ios_rounded),
-                      color: Colors.white,
-                      onPressed: () {
-                        if (token == null) {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => LogIn()));
-                        } else {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Profile(
-                                      fullName: fullName,
-                                      email: email,
-                                      phone: phone,
-                                      firstLetter: firstLetter,
-                                      ageStatus: ageStatus))).then((value) {
-                            print("Value of name..." + value.toString());
-                            setState(() {
-                              fullName = value["fullName"];
+                  Container(
+                    //color: Colors.amber,
+                    child: IconButton(
+                        icon: Icon(Icons.arrow_forward_ios_rounded),
+                        color: Colors.white,
+                        onPressed: () {
+                          if (token == null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LogIn()));
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Profile(
+                                        fullName: fullName,
+                                        email: email,
+                                        phone: phone,
+                                        firstLetter: firstLetter,
+                                        ageStatus: ageStatus))).then((value) {
+                              print("Value of name..." + value.toString());
+                              setState(() {
+                                fullName = value["fullName"];
+                              });
                             });
-                          });
-                        }
-                      })
+                          }
+                        }),
+                  )
                 ],
               )),
             ),
@@ -378,27 +391,32 @@ class _NavigationState extends State<Navigation> {
                                         )));
                           },
                         ),
-                  ListTile(
-                    visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                    title: Row(
-                      children: [
-                        Container(
-                            height: MediaQuery.of(context).size.width * 0.05,
-                            width: MediaQuery.of(context).size.width * 0.05,
-                            child: Icon(
-                              Icons.logout,
-                              color: AppColors.iconColor,
-                            )),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.04,
+                  token == null
+                      ? SizedBox()
+                      : ListTile(
+                          visualDensity:
+                              VisualDensity(horizontal: 0, vertical: -4),
+                          title: Row(
+                            children: [
+                              Container(
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  child: Icon(
+                                    Icons.logout,
+                                    color: AppColors.iconColor,
+                                  )),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.04,
+                              ),
+                              Text("Logout"),
+                            ],
+                          ),
+                          onTap: () {
+                            _logout(context);
+                          },
                         ),
-                        Text("Logout"),
-                      ],
-                    ),
-                    onTap: () {
-                      _logout(context);
-                    },
-                  ),
                 ],
               ),
             )

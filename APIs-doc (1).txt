@@ -1,0 +1,127 @@
+Store config :: https://dev.solutionsfinder.co.uk/newadminfood/api/v1/config (You will get  all Main Store info)
+Banner :: https://dev.solutionsfinder.co.uk/newadminfood/api/v1/banners    (Header :: zoneId=2)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/campaigns/item
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/campaigns/basic
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/campaigns/basic-campaign-details (Parameter :: basic_campaign_id)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/coupon/list( Method:: GET) (List of coupon)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/coupon/apply ( Method:: GET)(apply for coupon) (Parameter :: code,restaurant_id)
+ 
+
+Products & Categories  APIs 
+-----------------------------
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/categories (you will get all categories)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/categories/childes/1 (to get subcategories)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/categories/products/1/all (to get all products from a particuler category)(Method :: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/products/latest?restaurant_id=2 (Resturent wise latest Products) (Method :: GET)(Parameter :: restaurant_id)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/products/popular (To get populer products)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/products/search?name=Butter  Toast (to search products) (Parameter :: name)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/products/related-products/2 ( to get related products) (Parameter :: food_id)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/products/reviews/2 (to get product reviews)(Parameter :: food_id)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/products/reviews/submit( To submit product review)
+
+
+Resturent Details APIs
+----------------------
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/products/latest?restaurant_id=1 (to get all the products of that resturent)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/config/get-zone-id?lat=22.584990444621944&lng=88.4202935801241 (to get resturent zone ID) (Method :: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/config/geocode-api?lat=22.584990444621944&lng=88.4202935801241 (Method :: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/restaurants/search?name=chines( To search resturent name  ) ( Method:: GET) (Parameter :: name)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/restaurants/reviews?restaurant_id=1 (To get the resturent Review) ( Method:: GET) (Parameter :: restaurant_id)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/restaurants/details/1 ( Method:: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/restaurants/popular ( Method:: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/restaurants/latest  ( Method:: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/restaurants/get-restaurants/chines (to get resturent details by filter data)( Method:: GET)
+
+Vendor APIs
+---------------------
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/auth/vendor/login ( to login as a vendor) (Param : email :sujoy.lnsel@gmail.com , password : admin123) (Method POST)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/profile (To get profile of the vendor )(Method : GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/earning-info ( To get Vendor Earning info) (Method: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/notifications (Vendor notiofications)(Method: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/update-profile ( To update the vendor profile ) (Method : PUT ) (Param : f_name : , l_name: , phone)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/current-orders ( To get the current orders) (Method: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/completed-orders( To get all completed orders of that vendor) ( Method : GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/all-orders ( To get all the orders ) ( Method : GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/update-order-status ( To change the order status ) (Method: PUT)(Param : order_id : , status: )
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/order-details ( To Get particuler Order Detail) (Method: GET)(Param : order_id)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/get-products-list (To get all products ) (Method: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/attributes(To get all product's attributes) (Method: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/addon/ (To get all products's Addons ) (Method: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/addon/store ( To add  Add On products) (Method: POST)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/product/store( To add  products)(Method: POST)(Param : name,category_id,image,price,discount,unit_price )
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/product/update(Method: POST) (To update the products)(Param : name,category_id,image,price,discount,unit_price )
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/product/status/(Method: GET)(Param : id,status)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/get-withdraw-list ( To get with withdraw List)(Method: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/request-withdraw (To request to withdraw  Money) (Method: POST) (Param : amount)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/update-bank-info( To update the bank info) ( Method : PUT)(Param : bank_name: ,branch: ,holder_name : ,account_no :  )
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/update-business-setup ( To update the vendor business info) ( Method : PUT)(Param : name,address,contact_number,opening_time : ,
+closeing_time: , delivery: , take_away: , schedule_order : ,minimum_order: )
+
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/vendor/product/search(Method: POST)(Parame : name )
+
+
+
+
+
+
+
+Customer Details APIs
+--------------------------
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/auth/register (Method: POST)(Parame : f_name,l_name,email,phone,password)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/info (Method: GET) (to get customer details)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/notifications(Method: GET) (parame :: zoneId in header )
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/suggested-foods(Method: GET) (parame :: zoneId in header )
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/update-profile (Method: POST)(parame :: zoneId in header , f_name,l_name,email)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/auth/verify-phone (Method: POST)(Parame : phone,otp)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/address/list(Method: GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/address/add (Method: POST)(Parame : contact_person_name,address_type,contact_person_number,address,longitude,latitude)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/order/list (Method: GET) (to get the order list of that customer)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/order/running-orders (Method: GET) (to get the list of running orders of that customer)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/order/details (Method :GET) (Parame : order_id) ( To get the order details of a particuler order)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/order/place (Method :POST) (Parame : order_amount,payment_method,order_type,restaurant_id)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/order/track (Method :GET) (Parame : order_id)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/address/add ( Method : POST) (parameter : contact_person_name,contact_person_number,address_type,
+address,latitude,longitude)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/address/list (Method :GET)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/address/update/5 (Method :PUT)(parameter : contact_person_name,contact_person_number,address_type,
+address,latitude,longitude)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/customer/address/delete (Method : DELETE) (parameter :address_id)
+
+
+
+
+Delivery Man APIs
+--------------
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/last-location                     (Method: GET) (parame :: order_id)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/auth/delivery-man/login                        (Method: POST)(parame :: phone,password)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/notifications?token=              (Method: GET)(parame :: token)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/order-details?token=              (Method: GET)(parame :: token,order_id)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/profile?token=                    (Method: GET)(parame :: token)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/latest-orders?token=              (Method: GET)(parame :: token)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/all-orders?token=                 (Method: GET)(parame :: token)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/current-orders?token=             (Method: GET)(parame :: token)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/record-location-data?token=       (Method: GET)(parame :: token)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/current-orders?token=             (Method: GET)(parame :: token)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/update-profile                    (Method: PUT)(parame :: token,f_name,l_name,email)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/update-active-status?token=       (Method: POST)(parame :: token)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/accept-order?token=               (Method: PUT)(parame :: token)
+https://dev.solutionsfinder.co.uk/newadminfood/api/v1/delivery-man/update-payment-status?token=      (Method: PUT)(parame :: token,order_id,status)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

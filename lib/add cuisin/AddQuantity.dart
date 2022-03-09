@@ -70,6 +70,7 @@ class _AddQuantityState extends State<AddQuantity> {
   @override
   void dispose() {
     super.dispose();
+    timer.cancel();
   }
 
   @override
@@ -116,11 +117,15 @@ class _AddQuantityState extends State<AddQuantity> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "${widget.resturentName}",
-                    style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.05,
-                        fontWeight: FontWeight.bold),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.8,
+                    //color: Colors.amber,
+                    child: Text(
+                      "${widget.resturentName}",
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.05,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.width * 0.02,
@@ -191,9 +196,9 @@ class _AddQuantityState extends State<AddQuantity> {
       print("params..." + params.toString());
       var response = await dio.post(Const.getCart + params,
           options: Options(headers: {"Authorization": "Bearer $token"}));
-      setState(() {
-        allCartData = response.data["respData"];
-      });
+      // setState(() {
+      //   allCartData = response.data["respData"];
+      // });
       print("respons body...in getCart..." + response.data.toString());
       if (response.data['state'] == 1) {
         setState(() {
@@ -206,6 +211,7 @@ class _AddQuantityState extends State<AddQuantity> {
       } else {
         setState(() {
           //_dataAdded = true;
+          allCartData = response.data["respData"];
           getCartLoad = true;
         });
         timer.cancel();

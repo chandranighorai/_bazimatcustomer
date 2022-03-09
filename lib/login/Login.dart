@@ -394,6 +394,7 @@ class _LogInState extends State<LogIn> {
 
   Future<void> _handleSignIn() async {
     print("click...");
+    print("click Details..." + _currentUser.toString());
     try {
       await _googleSignIn.signIn();
     } catch (error) {
