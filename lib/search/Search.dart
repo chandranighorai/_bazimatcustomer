@@ -336,7 +336,7 @@ class _SearchState extends State<Search> {
     print("total cart item..." + totalCartItem.toString());
     print("total cart item..." + widget.resturentId.toString());
     print("total cart item..." + widget.resturentName.toString());
-    print("totalcartItem..." + totalCartItem.toString());
+    print("totalcartItem..." + totalCartItem.runtimeType.toString());
     if (totalCartItem >= 1) {
       Navigator.push(
           context,

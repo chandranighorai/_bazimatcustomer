@@ -1,4 +1,4 @@
-import 'dart:convert';
+// import 'dart:convert';
 
 import 'package:bazimat/add%20cuisin/AddCuisin.dart';
 import 'package:bazimat/favourites/FavouriteModel.dart';
@@ -9,6 +9,7 @@ import 'package:bazimat/popular%20cuisin/GetCartModel.dart';
 import 'package:bazimat/popular%20cuisin/Recomended.dart';
 import 'package:bazimat/popular%20cuisin/RecommendedModel.dart';
 import 'package:bazimat/popular%20cuisin/PopularCuisinResturentModel.dart';
+import 'package:bazimat/search/NewSearch.dart';
 import 'package:bazimat/search/Search.dart';
 import 'package:bazimat/sub%20list/SubListModel.dart';
 import 'package:bazimat/util/AppColors.dart';
@@ -193,7 +194,7 @@ class _CuisinDetailsState extends State<CuisinDetails> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Search(
+                      builder: (context) => NewSearch(
                             duration: widget.duration,
                             distance: widget.distance,
                             resturentId: resturentId,
@@ -203,7 +204,19 @@ class _CuisinDetailsState extends State<CuisinDetails> {
                             resturentLng: widget.resturentLng,
                             couponList: widget.couponList,
                             configData: configData,
-                          ))).then((value) {
+                          )
+                      // Search(
+                      //       duration: widget.duration,
+                      //       distance: widget.distance,
+                      //       resturentId: resturentId,
+                      //       resturentName: resturentName,
+                      //       resturenrtAddr: resturentAddr,
+                      //       resturentLat: widget.resturentLat,
+                      //       resturentLng: widget.resturentLng,
+                      //       couponList: widget.couponList,
+                      //       configData: configData,
+                      //     )
+                      )).then((value) {
                 print("val..." + value.toString());
                 setState(() {
                   _getCartShow();

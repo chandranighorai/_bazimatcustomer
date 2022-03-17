@@ -800,6 +800,7 @@ class _AddCuisinState extends State<AddCuisin> {
       // });
       var response1 = await dio.post(url,
           options: Options(headers: {"Authorization": "Bearer $token"}));
+      print("message..." + response1.data["message"]);
       showCustomToast(response1.data["message"]);
       print("response DAta..." + response1.data.toString());
       print("response DAta..." + productList.toString());

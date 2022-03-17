@@ -234,7 +234,9 @@ class _SearchDAtaListState extends State<SearchDataList> {
             "quantity": "1",
             "tax": double.parse(cartData.data["respData"]["tax"].toString())
                 .toString(),
-            "food_amount": double.parse(cartData.data["respData"]["food_amount"].toString()).toString() ,
+            "food_amount": double.parse(
+                    cartData.data["respData"]["food_amount"].toString())
+                .toString(),
             "is_odered": "0",
             "added_dtime": cartData.data["respData"]["added_dtime"].toString()
           });
