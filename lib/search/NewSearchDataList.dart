@@ -120,51 +120,61 @@ class _NewSearchDataListState extends State<NewSearchDataList> {
                                       child: TextButton(
                                           onPressed: () {
                                             //setState(() {
-                                            itemCount = itemCount + 1;
-                                            //});
-                                            widget.totalItem(
-                                                "update",
-                                                itemCount,
-                                                widget.dataList.id.toString(),
-                                                widget.dataList.price
-                                                    .toString(),
-                                                widget.dataList.tax.toString());
+                                            // itemCount = itemCount + 1;
+                                            // //});
+                                            // widget.totalItem(
+                                            //     "update",
+                                            //     itemCount,
+                                            //     widget.dataList.id.toString(),
+                                            //     widget.dataList.price
+                                            //         .toString(),
+                                            //     widget.dataList.tax.toString());
                                             //itemAdd(widget.dataList, itemCount);
+                                            itemCount = itemCount - 1;
+                                            //});
+                                            print("itemcount..." +
+                                                itemCount.toString());
+                                            if (itemCount < 1) {
+                                              widget.totalItem(
+                                                  "delete",
+                                                  itemCount,
+                                                  widget.dataList.id.toString(),
+                                                  widget.dataList.price
+                                                      .toString(),
+                                                  widget.dataList.tax
+                                                      .toString());
+                                              //itemDelete(widget.dataList);
+                                            } else {
+                                              widget.totalItem(
+                                                  "update",
+                                                  itemCount,
+                                                  widget.dataList.id.toString(),
+                                                  widget.dataList.price
+                                                      .toString(),
+                                                  widget.dataList.tax
+                                                      .toString());
+                                              //itemAdd(widget.dataList, itemCount);
+                                            }
                                           },
-                                          child: Text("+"))),
+                                          child: Text("-"))),
                                   Text(itemCount.toString()),
                                   Container(
                                     width:
                                         MediaQuery.of(context).size.width / 13,
                                     child: TextButton(
                                         onPressed: () {
-                                          //setState(() {
-                                          itemCount = itemCount - 1;
+                                          itemCount = itemCount + 1;
                                           //});
-                                          print("itemcount..." +
-                                              itemCount.toString());
-                                          if (itemCount < 1) {
-                                            widget.totalItem(
-                                                "delete",
-                                                itemCount,
-                                                widget.dataList.id.toString(),
-                                                widget.dataList.price
-                                                    .toString(),
-                                                widget.dataList.tax.toString());
-                                            //itemDelete(widget.dataList);
-                                          } else {
-                                            widget.totalItem(
-                                                "update",
-                                                itemCount,
-                                                widget.dataList.id.toString(),
-                                                widget.dataList.price
-                                                    .toString(),
-                                                widget.dataList.tax.toString());
-                                            //itemAdd(widget.dataList, itemCount);
-                                          }
+                                          widget.totalItem(
+                                              "update",
+                                              itemCount,
+                                              widget.dataList.id.toString(),
+                                              widget.dataList.price.toString(),
+                                              widget.dataList.tax.toString());
+                                          //setState(() {
                                         },
                                         child: Text(
-                                          "-",
+                                          "+",
                                         )),
                                   )
                                 ],

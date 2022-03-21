@@ -40,6 +40,13 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      //'https://www.googleapis.com/auth/contacts.readonly',
+      'https://www.googleapis.com/auth/userinfo.profile',
+    ],
+  );
   TextEditingController _phoneText, _passText;
   bool _isHidden;
   bool _buttonDisable;
@@ -58,6 +65,7 @@ class _LogInState extends State<LogIn> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     updateLocation();
     _firebaseMessaging = FirebaseMessaging.instance;
     _firebaseMessaging.getToken().then((value) {
@@ -84,7 +92,7 @@ class _LogInState extends State<LogIn> {
   @override
   void dispose() {
     // TODO: implement dispose
-    _googleSignIn.signIn();
+    //_googleSignIn.signIn();
     super.dispose();
   }
 
@@ -403,6 +411,7 @@ class _LogInState extends State<LogIn> {
   }
 
   Future<void> _handleGetContact(GoogleSignInAccount user) async {
+    print("User..." + user.toString());
     var arrName = user.displayName.split(" ");
     print("ArrNAme..." + arrName.toString());
     if (arrName.length > 0) {

@@ -30,7 +30,8 @@ class _PhoneState extends State<Phone> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Phone")),
+        appBar: AppBar(
+            title: Text("Phone"), backgroundColor: AppColors.loginButtonColor),
         body: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,

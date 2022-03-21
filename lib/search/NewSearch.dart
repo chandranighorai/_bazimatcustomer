@@ -284,9 +284,13 @@ class _NewSearchState extends State<NewSearch> {
           _pageLoad = true;
         });
       } else {
-        cartData = response.data["respData"];
-        print("response data in cart..." + cartData.toString());
+        // cartData = response.data["respData"];
+        // print("response data in cart..." + cartData.toString());
+        //cartData.clear();
         setState(() {
+          cartData = response.data["respData"];
+          print("response data in cart..." + cartData.toString());
+          //serchData = _getSearchData(_searchChar.text.toString());
           _pageLoad = true;
         });
       }
@@ -395,6 +399,7 @@ class _NewSearchState extends State<NewSearch> {
         showCustomToast(response.data["message"]);
         setState(() {
           _itemLoad = false;
+          cartData.clear();
           _getCart();
           serchData = _getSearchData(_searchChar.text.toString());
         });
