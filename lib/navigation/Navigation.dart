@@ -379,6 +379,7 @@ class _NavigationState extends State<Navigation> {
                             ],
                           ),
                           onTap: () {
+                            print("more...");
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

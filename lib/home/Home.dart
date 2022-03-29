@@ -584,6 +584,7 @@ class _HomeState extends State<Home> {
       print("serviceable..." + _serviceAvailable.toString());
       SharedPreferences preferences = await SharedPreferences.getInstance();
       token = preferences.getString("token");
+      var fcmToken = preferences.getString("FcmToken");
       var userId = preferences.getString("id");
       print("token..." + token.toString());
       latitude = preferences.getString("latitude");
@@ -610,8 +611,8 @@ class _HomeState extends State<Home> {
         _getBanner();
         _getCampaignBanner();
         _getCustomerInfo();
-        _getCustomerUpdateFcm(token, userId);
-
+        //_getCustomerUpdateFcm(token, userId);
+        _getCustomerUpdateFcm(fcmToken, token, userId);
         //_getConfigDetails();
         _getCouponList = _getAllCoupon();
         _popularCuisin();
@@ -908,16 +909,18 @@ class _HomeState extends State<Home> {
     }
   }
 
-  _getCustomerUpdateFcm(String token, String userId) async {
+  _getCustomerUpdateFcm(String fcmToken, String token, String userId) async {
     try {
       var param =
-          "?user_id=" + userId.toString() + "&fcm_token=" + token.toString();
+          "?user_id=" + userId.toString() + "&fcm_token=" + fcmToken.toString();
       var url = Const.updateCustomerFcm + param;
       print("Url in customer Fcm..." + url.toString());
       var response = await dio.put(url,
           options: Options(headers: {"Authorization": "Bearer $token"}));
+      print("response data..." + response.data.toString());
       if (response.data["state"] == 0) {
         //showCustomToast(response.data["message"].toString());
+        print("response data..." + response.data.toString());
       } else {
         showCustomToast(response.data["errors"][0]["message"].toString());
       }

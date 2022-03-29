@@ -413,30 +413,36 @@ class _NewSearchState extends State<NewSearch> {
 
   _cartNavigate() {
     print("cardDAta..." + cartData.toString());
-    if (cartData.length == 0) {
+    //print("cardDAta..." + cartData.length.toString());
+    if (cartData == null) {
       showCustomToast("cart is empty");
     } else {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => AddCuisin(
-                  duration: widget.duration,
-                  distance: widget.distance,
-                  resturentLat: widget.resturentLat,
-                  resturentLng: widget.resturentLng,
-                  productList: cartData,
-                  // product: widget.productList,
-                  // imageUrl: widget.imageUrl,
-                  resturentName: widget.resturentName,
-                  resturentId: widget.resturentId,
-                  resturenrAddr: widget.resturenrtAddr,
-                  //resturentPrice: resturentOfferPrice,
-                  configData: widget.configData,
-                  couponList: widget.couponList))).then((value) {
-        _itemLoad = false;
-        _getCart();
-        serchData = _getSearchData(_searchChar.text.toString());
-      });
+      if (cartData.length == 0) {
+        print("data...");
+        showCustomToast("cart is empty");
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddCuisin(
+                    duration: widget.duration,
+                    distance: widget.distance,
+                    resturentLat: widget.resturentLat,
+                    resturentLng: widget.resturentLng,
+                    productList: cartData,
+                    // product: widget.productList,
+                    // imageUrl: widget.imageUrl,
+                    resturentName: widget.resturentName,
+                    resturentId: widget.resturentId,
+                    resturenrAddr: widget.resturenrtAddr,
+                    //resturentPrice: resturentOfferPrice,
+                    configData: widget.configData,
+                    couponList: widget.couponList))).then((value) {
+          _itemLoad = false;
+          _getCart();
+          serchData = _getSearchData(_searchChar.text.toString());
+        });
+      }
     }
   }
 }

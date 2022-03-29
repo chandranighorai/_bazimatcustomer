@@ -112,6 +112,11 @@ class _TopPicksState extends State<TopPicks> {
       SharedPreferences pref = await SharedPreferences.getInstance();
       token = pref.getString("token");
       print("Token... in top.." + token.toString());
+      print("Token... in top.." + widget.topArr.latitude.toString());
+      print("Token... in top.." + widget.topArr.longitude.toString());
+      print("Token... in top.." + widget.latitude.toString());
+      print("Token... in top.." + widget.longitude.toString());
+
       var params = "?";
       // params +=
       //     "origin_lat=" + widget.latitude + "&origin_lng=" + widget.longitude;
