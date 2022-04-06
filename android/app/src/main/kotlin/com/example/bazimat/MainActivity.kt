@@ -1,4 +1,4 @@
-package com.drinks.bazimat
+package com.drinks.bazimat_customer
 
 import io.flutter.embedding.android.FlutterActivity
 

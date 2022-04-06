@@ -911,6 +911,8 @@ class _HomeState extends State<Home> {
 
   _getCustomerUpdateFcm(String fcmToken, String token, String userId) async {
     try {
+      print("Url in customer Fcm..." + fcmToken.toString());
+      print("Url in customer Fcm..." + token.toString());
       var param =
           "?user_id=" + userId.toString() + "&fcm_token=" + fcmToken.toString();
       var url = Const.updateCustomerFcm + param;

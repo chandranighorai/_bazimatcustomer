@@ -1,33 +1,49 @@
 {
   "project_info": {
-    "project_number": "885435961893",
-    "project_id": "bazimat-customer",
-    "storage_bucket": "bazimat-customer.appspot.com"
+    "project_number": "1028815503178",
+    "project_id": "bazimat-customerapp",
+    "storage_bucket": "bazimat-customerapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:885435961893:android:4100097f4d2c3ad2dce5cc",
+        "mobilesdk_app_id": "1:1028815503178:android:e745a2bffb6421e6f2cbb3",
         "android_client_info": {
-          "package_name": "com.drinks.bazimat"
+          "package_name": "com.drinks.bazimat_customer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "885435961893-ds2594vnaoqlap2dkbsarg08ikroa45j.apps.googleusercontent.com",
+          "client_id": "1028815503178-qp6t28okbeogjl5e7s0qd2fjhiif2hh0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.drinks.bazimat_customer",
+            "certificate_hash": "f11a1190cf60089201195cc45d066fc638b10d2c"
+          }
+        },
+        {
+          "client_id": "1028815503178-ub2jfh8s75ekbh53qlehbn6mch1iis49.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.drinks.bazimat_customer",
+            "certificate_hash": "0daca927d3fed8c6c2d125dd2b9e01289449f4b4"
+          }
+        },
+        {
+          "client_id": "1028815503178-jv2cl9n56c5d54mh5738d6o2ei10uiiu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDcdPJEbrDF5_hPJoLE8JHgLMaWI9RsLG0"
+          "current_key": "AIzaSyBlKai3c35kmZisKUOmiTL6yK3YyMPTmzg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "885435961893-ds2594vnaoqlap2dkbsarg08ikroa45j.apps.googleusercontent.com",
+              "client_id": "1028815503178-jv2cl9n56c5d54mh5738d6o2ei10uiiu.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

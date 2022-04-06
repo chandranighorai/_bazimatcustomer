@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bazimat/order/CurrentOrderModel.dart';
 import 'package:bazimat/order/OrderStatus.dart';
 import 'package:bazimat/util/AppConst.dart';

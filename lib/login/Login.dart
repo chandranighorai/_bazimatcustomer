@@ -405,6 +405,7 @@ class _LogInState extends State<LogIn> {
     print("click Details..." + _currentUser.toString());
     try {
       await _googleSignIn.signIn();
+      //_googleSignIn.signIn();
     } catch (error) {
       print(error);
     }
