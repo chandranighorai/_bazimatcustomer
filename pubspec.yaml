@@ -56,6 +56,8 @@ dependencies:
   flutter_local_notifications: ^5.0.0
   flutter_facebook_login: ^3.0.0
   url_launcher: ^6.0.0
+  location: ^4.3.0
+  flutter_polyline_points: ^1.0.0
   #firebase_core: ^1.11.0
   #flutter_html: ^2.0.0
 
@@ -114,6 +116,10 @@ flutter:
     - images/login.png
     - images/facebook.png
     - images/google.png
+    - images/driving_pin.jpg
+    - images/driving_pin.png
+    - images/destination_map_marker.png
+    - images/c_house.png
     #- images/screen-1.jpg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

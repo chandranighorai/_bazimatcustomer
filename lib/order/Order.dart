@@ -1,4 +1,5 @@
 import 'package:bazimat/order/CurrentOrder.dart';
+import 'package:bazimat/order/DeliveryBoyTrack.dart';
 import 'package:bazimat/order/OrderList.dart';
 import 'package:bazimat/order/PastOrder.dart';
 import 'package:flutter/material.dart';
@@ -35,9 +36,17 @@ class _OrderState extends State<Order> {
               ),
               onPressed: () => {Navigator.pop(context)},
             ),
-            title: Text(
-              "Order",
-              style: TextStyle(color: Colors.black),
+            title: InkWell(
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DeliveryBoyTrack()));
+              },
+              child: Text(
+                "Order",
+                style: TextStyle(color: Colors.black),
+              ),
             ),
             bottom: TabBar(
               tabs: [
