@@ -8,9 +8,9 @@ const double CAMERA_ZOOM = 16;
 const double CAMERA_TILT = 80;
 const double CAMERA_BEARING = 30;
 const LatLng SOURCE_LOCATION = LatLng(22.5692879, 88.4307626);
-// const LatLng DEST_LOCATION =
-//     LatLng(22.568957368567034, 88.43185323969915); // Indusnet Technology
-LatLng DEST_LOCATION = LatLng(22.569204060167028, 88.43307748465863); // RDB,
+const LatLng DEST_LOCATION =
+    LatLng(22.568957368567034, 88.43185323969915); // Indusnet Technology
+//LatLng DEST_LOCATION = LatLng(22.569204060167028, 88.43307748465863); // RDB,
 
 class DeliveryBoyTrack extends StatefulWidget {
   const DeliveryBoyTrack({Key key}) : super(key: key);
@@ -41,6 +41,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
   void initState() {
     super.initState();
     // create an instance of Location
+    print("initState...called...");
     location = new Location();
     polylinePoints = PolylinePoints();
     // subscribe to changes in the user's location
@@ -52,10 +53,18 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
       currentLocation = cLoc;
       updatePinOnMap();
     });
+    setInitialLocation();
+    //location.enableBackgroundMode(enable: true);
     // set custom marker pins
     setSourceAndDestinationIcon();
 
     // set the initial location
+    // setInitialLocation();
+  }
+
+  void dispose() {
+    super.dispose();
+    updatePinOnMap();
     setInitialLocation();
   }
 
@@ -69,7 +78,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
         'images/destination_map_marker.png');
   }
 
-  void setInitialLocation() async {
+  setInitialLocation() async {
     // set the initial location by pulling the user's
     // current location from the location's getLocation()
     currentLocation = await location.getLocation();
@@ -82,12 +91,14 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
     print("get Location..." + destinationLocation.toString());
   }
 
-  void showPinsOnMap() {
+  showPinsOnMap() {
     // get a LatLng for the source location
     // from the LocationData currentLocation object
     var pinPosition =
         LatLng(currentLocation.latitude, currentLocation.longitude);
     print("set polylines called..." + pinPosition.toString());
+    print("set polylines called...in destint..." +
+        destinationLocation.latitude.toString());
 
     // get a LatLng out of the LocationData object
     var destPosition =
@@ -111,7 +122,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
     setPolylines();
   }
 
-  void setPolylines() async {
+  setPolylines() async {
     print("set polylines called...");
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
         googleAPIKey,
@@ -134,7 +145,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
     }
   }
 
-  void updatePinOnMap() async {
+  updatePinOnMap() async {
     // create a new CameraPosition instance
     // every time the location changes, so the camera
     // follows the pin as it moves with an animation
@@ -145,7 +156,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
         bearing: CAMERA_BEARING,
         target: LatLng(currentLocation.latitude, currentLocation.longitude));
     print("CPosition..." + cPosition.toString());
-    final GoogleMapController controller = await _controller.future;
+    GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
     setState(() {
       // updated position
@@ -184,13 +195,14 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        color: Colors.grey,
+        color: Colors.white,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: MediaQuery.of(context).size.height / 2,
+              height: MediaQuery.of(context).size.height / 1.8,
               width: MediaQuery.of(context).size.width,
-              color: Colors.amber,
+              color: Colors.transparent,
               child: GoogleMap(
                 myLocationEnabled: true,
                 compassEnabled: true,
@@ -206,6 +218,108 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                   showPinsOnMap();
                 },
               ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.width * 0.02,
+            ),
+            Container(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
+              child: Text("Order #112209199"),
+            ),
+            Container(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
+              child: Text("4 items,\u20B9470"),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.width * 0.02,
+            ),
+            Stack(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  //color: Colors.red,
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.width * 0.1,
+                        width: MediaQuery.of(context).size.width / 10,
+                        decoration: BoxDecoration(
+                            color: Colors.amber,
+                            //shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: AssetImage("images/logo.png"))),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.01,
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        //color: Colors.teal,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Text("Order Picked Up",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.05)),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.width * 0.01,
+                            ),
+                            Text(
+                                "abc is on his way to deliver your delicious Food"),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.width * 0.01,
+                            ),
+                            Row(
+                              children: [
+                                Icon(Icons.domain_verification_rounded),
+                                Text(
+                                  "Fully Vaccinated",
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.03),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Spacer(),
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.07,
+                        width: MediaQuery.of(context).size.width * 0.17,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            //shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: AssetImage("images/logo.png"))),
+                      )
+                    ],
+                  ),
+                ),
+                Positioned(
+                    top: MediaQuery.of(context).size.width * 0.12,
+                    right: MediaQuery.of(context).size.width * 0.05,
+                    child: Container(
+                        decoration: BoxDecoration(boxShadow: [
+                          BoxShadow(color: Colors.grey, blurRadius: 0.2)
+                        ], color: Colors.white, shape: BoxShape.circle),
+                        padding: EdgeInsets.all(
+                            MediaQuery.of(context).size.width * 0.03),
+                        child: Icon(
+                          Icons.phone,
+                          size: MediaQuery.of(context).size.width * 0.04,
+                        )))
+              ],
             )
           ],
         ),
