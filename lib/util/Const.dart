@@ -57,4 +57,6 @@ class Const {
   static String repeatOrder = appUrl + "customer/order/repeat";
   static String manualAddr = appUrl + "customer/address/add";
   static String addrServiceable = appUrl + "customer/address/serviceable";
+  static String deliveryBoyTrack =
+      appUrl + "delivery-man/order-delivery-history";
 }

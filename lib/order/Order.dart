@@ -20,6 +20,14 @@ class _OrderState extends State<Order> {
   //   _tabController = TabController(length: 2, vsync: this);
   // }
 
+  void initState() {
+    super.initState();
+  }
+
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

@@ -176,188 +176,71 @@ class _HomeState extends State<Home> {
                       ),
                     ),
             ),
-            body: SingleChildScrollView(
-              child: Container(
-                //height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.03,
-                    right: MediaQuery.of(context).size.width * 0.03,
-                    bottom: MediaQuery.of(context).size.width * 0.02),
-                color: Colors.white,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _bannerLoad == false
-                        ? Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : Container(
-                            height: MediaQuery.of(context).size.width * 0.45,
-                            width: MediaQuery.of(context).size.width,
-                            child: carouselSliderBanner()),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.02,
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.width * 0.42,
+            body: (_bannerLoad == false &&
+                    _topPicksLoad == false &&
+                    _campaignLoad == false &&
+                    _popularLoad == false &&
+                    _resturentLoad == false)
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : SingleChildScrollView(
+                    child: Container(
+                      //height: MediaQuery.of(context).size.height,
                       width: MediaQuery.of(context).size.width,
-                      //color: Colors.amber,
-                      child: FutureBuilder(
-                        initialData: null,
-                        future: _allCategory,
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          print("Snapshot..." + snapshot.hasData.toString());
-                          if (snapshot.hasData) {
-                            var categories = snapshot.data.errors;
-                            var imagePath = snapshot.data.categoryimgpath;
-                            print("Categories...." + categories.toString());
-                            print(
-                                "imagepath..." + snapshot.data.categoryimgpath);
-                            return ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: categories.length,
-                                shrinkWrap: true,
-                                itemBuilder: (BuildContext context, int index) {
-                                  print("categories index..." +
-                                      categories[index].toString());
-                                  return ListData(
-                                      listArr: categories[index],
-                                      imageUrl: imagePath,
-                                      zoneIdVal: zoneId,
-                                      latitude: latitude,
-                                      longitude: longitude);
-                                });
-                          } else {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.02,
-                    ),
-                    _topPicksLoad == true
-                        ? _popularList.length == 0
-                            ? SizedBox()
-                            : Text(
-                                "Top Picks For You",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.05),
-                              )
-                        : Center(
-                            child: CircularProgressIndicator(),
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.03,
+                          right: MediaQuery.of(context).size.width * 0.03,
+                          bottom: MediaQuery.of(context).size.width * 0.02),
+                      color: Colors.white,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _bannerLoad == false
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : Container(
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.45,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: carouselSliderBanner()),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.02,
                           ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.04,
-                    ),
-                    _topPicksLoad == true
-                        ? _popularList.length == 0
-                            ? SizedBox()
-                            : Container(
-                                height:
-                                    MediaQuery.of(context).size.width * 0.45,
-                                width: MediaQuery.of(context).size.width,
-                                //color: Colors.amber,
-                                child: FutureBuilder(
-                                  initialData: null,
-                                  future: _popularResturent,
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot snapshot) {
-                                    print("snapshot...in popular..." +
-                                        snapshot.hasData.toString());
-                                    if (snapshot.hasData) {
-                                      var dataList = snapshot.data.errors;
-                                      print(
-                                          "DAtaList..." + dataList.toString());
-                                      var imagePath =
-                                          snapshot.data.coverimgpath;
-                                      print(
-                                          "Datalist..." + dataList.toString());
-                                      return ListView.builder(
-                                          //padding: EdgeInsets.only(left: 0, right: 0),
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: dataList.length,
-                                          shrinkWrap: true,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return TopPicks(
-                                              topArr: dataList[index],
-                                              imgPath: imagePath,
-                                              latitude: latitude,
-                                              longitude: longitude,
-                                            );
-                                          });
-                                    } else {
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    }
-                                  },
-                                ),
-                              )
-                        : Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.02,
-                    ),
-                    Container(
-                        height: MediaQuery.of(context).size.width * 0.35,
-                        width: MediaQuery.of(context).size.width,
-                        child: _campaignLoad == false
-                            ? Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : offerSlider1()),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.04,
-                    ),
-                    token == null
-                        ? SizedBox()
-                        : Text(
-                            "Coupons For You",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.05),
-                          ),
-                    token == null
-                        ? SizedBox()
-                        : SizedBox(
-                            height: MediaQuery.of(context).size.width * 0.03,
-                          ),
-                    token == null
-                        ? SizedBox()
-                        : Container(
-                            height: MediaQuery.of(context).size.width * 0.27,
+                          Container(
+                            height: MediaQuery.of(context).size.width * 0.42,
                             width: MediaQuery.of(context).size.width,
                             //color: Colors.amber,
                             child: FutureBuilder(
                               initialData: null,
-                              future: _getCouponList,
+                              future: _allCategory,
                               builder: (BuildContext context,
                                   AsyncSnapshot snapshot) {
+                                print("Snapshot..." +
+                                    snapshot.hasData.toString());
                                 if (snapshot.hasData) {
-                                  var couponListData = snapshot.data.errors;
-                                  var couponImage = snapshot.data.coverimg;
-                                  print("Coupon in Future..." +
-                                      couponListData.toString());
+                                  var categories = snapshot.data.errors;
+                                  var imagePath = snapshot.data.categoryimgpath;
+                                  print(
+                                      "Categories...." + categories.toString());
+                                  print("imagepath..." +
+                                      snapshot.data.categoryimgpath);
                                   return ListView.builder(
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: couponListData.length,
+                                      itemCount: categories.length,
+                                      shrinkWrap: true,
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        return CouponList(
-                                            couponL: couponListData[index],
-                                            couponImage: couponImage);
+                                        print("categories index..." +
+                                            categories[index].toString());
+                                        return ListData(
+                                            listArr: categories[index],
+                                            imageUrl: imagePath,
+                                            zoneIdVal: zoneId,
+                                            latitude: latitude,
+                                            longitude: longitude);
                                       });
                                 } else {
                                   return Center(
@@ -367,149 +250,300 @@ class _HomeState extends State<Home> {
                               },
                             ),
                           ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.04,
-                    ),
-                    Text(
-                      "Popular Cuisines Around You",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: MediaQuery.of(context).size.width * 0.05),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.03,
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.width * 0.38,
-                      width: MediaQuery.of(context).size.width,
-                      //color: Colors.amber,
-                      child: _popularLoad == false
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: true,
-                              itemCount: popularList.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return CuisinList(
-                                    cuisin: popularList[index],
-                                    cuisinPath: cuisinImagePath,
-                                    latitude: latitude,
-                                    longitude: longitude,
-                                    zoneId: zoneId);
-                              }),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.03,
-                    ),
-                    Text(
-                      "All Resturants Nearby",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: MediaQuery.of(context).size.width * 0.05),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.01,
-                    ),
-                    Text(
-                      "Discover unique tastes near you",
-                      style: TextStyle(
-                          //fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                          fontSize: MediaQuery.of(context).size.width * 0.03),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.05,
-                    ),
-                    Container(
-                      //height: MediaQuery.of(context).size.width * 0.75,
-                      width: MediaQuery.of(context).size.width,
-                      //color: Colors.amber,
-                      child: FutureBuilder(
-                        initialData: null,
-                        future: _resturentList,
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          print("snapshot... in resturent..." +
-                              snapshot.hasData.toString());
-                          if (snapshot.hasData) {
-                            _resturentData = snapshot.data.errors.restaurants;
-                            _coverImage = snapshot.data.coverimgpath;
-                            print("ResturentData...in future..." +
-                                _resturentData.toString());
-                            // print("ResturentData...in future...all..." +
-                            //     _allResturent.toString());
-                            return ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: 2,
-                                shrinkWrap: true,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Resturent(
-                                      resturentData: _resturentData[index],
-                                      coverimgpath: _coverImage,
-                                      latitude: latitude,
-                                      longitude: longitude);
-                                });
-                          } else {
-                            // _resturentData = snapshot.data.errors.restaurants;
-                            // print("resturent...." + _resturentData.toString());
-                            return Center(child: CircularProgressIndicator());
-                          }
-                        },
-                        //child: ,
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.02,
+                          ),
+                          _topPicksLoad == true
+                              ? _popularList.length == 0
+                                  ? SizedBox()
+                                  : Text(
+                                      "Top Picks For You",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.05),
+                                    )
+                              : Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.04,
+                          ),
+                          _topPicksLoad == true
+                              ? _popularList.length == 0
+                                  ? SizedBox()
+                                  : Container(
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              0.45,
+                                      width: MediaQuery.of(context).size.width,
+                                      //color: Colors.amber,
+                                      child: FutureBuilder(
+                                        initialData: null,
+                                        future: _popularResturent,
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot snapshot) {
+                                          print("snapshot...in popular..." +
+                                              snapshot.hasData.toString());
+                                          if (snapshot.hasData) {
+                                            var dataList = snapshot.data.errors;
+                                            print("DAtaList..." +
+                                                dataList.toString());
+                                            var imagePath =
+                                                snapshot.data.coverimgpath;
+                                            print("Datalist..." +
+                                                dataList.toString());
+                                            return ListView.builder(
+                                                //padding: EdgeInsets.only(left: 0, right: 0),
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: dataList.length,
+                                                shrinkWrap: true,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return TopPicks(
+                                                    topArr: dataList[index],
+                                                    imgPath: imagePath,
+                                                    latitude: latitude,
+                                                    longitude: longitude,
+                                                  );
+                                                });
+                                          } else {
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    )
+                              : Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                          // SizedBox(
+                          //   height: MediaQuery.of(context).size.width * 0.02,
+                          // ),
+                          // Container(
+                          //     height: MediaQuery.of(context).size.width * 0.35,
+                          //     width: MediaQuery.of(context).size.width,
+                          //     child: _campaignLoad == false
+                          //         ? Center(
+                          //             child: CircularProgressIndicator(),
+                          //           )
+                          //         : offerSlider1()),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.04,
+                          ),
+                          token == null
+                              ? SizedBox()
+                              : Text(
+                                  "Coupons For You",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.05),
+                                ),
+                          token == null
+                              ? SizedBox()
+                              : SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.03,
+                                ),
+                          token == null
+                              ? SizedBox()
+                              : Container(
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.27,
+                                  width: MediaQuery.of(context).size.width,
+                                  //color: Colors.amber,
+                                  child: FutureBuilder(
+                                    initialData: null,
+                                    future: _getCouponList,
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot snapshot) {
+                                      if (snapshot.hasData) {
+                                        var couponListData =
+                                            snapshot.data.errors;
+                                        var couponImage =
+                                            snapshot.data.coverimg;
+                                        print("Coupon in Future..." +
+                                            couponListData.toString());
+                                        return ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: couponListData.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return CouponList(
+                                                  couponL:
+                                                      couponListData[index],
+                                                  couponImage: couponImage);
+                                            });
+                                      } else {
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.04,
+                          ),
+                          Text(
+                            "Popular Cuisines Around You",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.05),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.03,
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.width * 0.38,
+                            width: MediaQuery.of(context).size.width,
+                            //color: Colors.amber,
+                            child: _popularLoad == false
+                                ? Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemCount: popularList.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return CuisinList(
+                                          cuisin: popularList[index],
+                                          cuisinPath: cuisinImagePath,
+                                          latitude: latitude,
+                                          longitude: longitude,
+                                          zoneId: zoneId);
+                                    }),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.03,
+                          ),
+                          Text(
+                            "All Resturants Nearby",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.05),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.01,
+                          ),
+                          Text(
+                            "Discover unique tastes near you",
+                            style: TextStyle(
+                                //fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.03),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.05,
+                          ),
+                          Container(
+                            //height: MediaQuery.of(context).size.width * 0.75,
+                            width: MediaQuery.of(context).size.width,
+                            //color: Colors.amber,
+                            child: FutureBuilder(
+                              initialData: null,
+                              future: _resturentList,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                print("snapshot... in resturent..." +
+                                    snapshot.hasData.toString());
+                                if (snapshot.hasData) {
+                                  _resturentData =
+                                      snapshot.data.errors.restaurants;
+                                  _coverImage = snapshot.data.coverimgpath;
+                                  print("ResturentData...in future..." +
+                                      _resturentData.toString());
+                                  // print("ResturentData...in future...all..." +
+                                  //     _allResturent.toString());
+                                  return ListView.builder(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: 2,
+                                      shrinkWrap: true,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Resturent(
+                                            resturentData:
+                                                _resturentData[index],
+                                            coverimgpath: _coverImage,
+                                            latitude: latitude,
+                                            longitude: longitude);
+                                      });
+                                } else {
+                                  // _resturentData = snapshot.data.errors.restaurants;
+                                  // print("resturent...." + _resturentData.toString());
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                }
+                              },
+                              //child: ,
+                            ),
+                          ),
+                          // SizedBox(
+                          //   height: MediaQuery.of(context).size.width * 0.02,
+                          // ),
+                          // _bannerLoad == false
+                          //     ? Center(
+                          //         child: CircularProgressIndicator(),
+                          //       )
+                          //     : resturentList.length > 1
+                          //         ?
+                          _resturentLoad == false
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : resturentList.length > 1
+                                  ? Container(
+                                      alignment: Alignment.center,
+                                      // padding:
+                                      //     EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                      //width: MediaQuery.of(context).size.width / 1.5,
+                                      decoration: BoxDecoration(
+                                          color: AppColors.buttonColor,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      50))),
+                                      child: TextButton(
+                                        child: Text(
+                                            "See All Resturants".toUpperCase(),
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold)),
+                                        onPressed: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AllResturant(
+                                                      allResturentData:
+                                                          _resturentData,
+                                                      coverimgpath: _coverImage,
+                                                      latitude: latitude,
+                                                      longitude: longitude,
+                                                      section: "Home",
+                                                      //couponList:_getAllCoupon
+                                                    ))),
+                                      ),
+                                    )
+                                  : SizedBox()
+                        ],
                       ),
                     ),
-                    // SizedBox(
-                    //   height: MediaQuery.of(context).size.width * 0.02,
-                    // ),
-                    // _bannerLoad == false
-                    //     ? Center(
-                    //         child: CircularProgressIndicator(),
-                    //       )
-                    //     : resturentList.length > 1
-                    //         ?
-                    _resturentLoad == false
-                        ? Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : resturentList.length > 1
-                            ? Container(
-                                alignment: Alignment.center,
-                                // padding:
-                                //     EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                                //width: MediaQuery.of(context).size.width / 1.5,
-                                decoration: BoxDecoration(
-                                    color: AppColors.buttonColor,
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                            MediaQuery.of(context).size.width *
-                                                50))),
-                                child: TextButton(
-                                  child: Text(
-                                      "See All Resturants".toUpperCase(),
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold)),
-                                  onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AllResturant(
-                                                allResturentData:
-                                                    _resturentData,
-                                                coverimgpath: _coverImage,
-                                                latitude: latitude,
-                                                longitude: longitude,
-                                                section: "Home",
-                                                //couponList:_getAllCoupon
-                                              ))),
-                                ),
-                              )
-                            : SizedBox()
-                  ],
-                ),
-              ),
-            ),
+                  ),
           )
         : Scaffold(
             body: Center(
