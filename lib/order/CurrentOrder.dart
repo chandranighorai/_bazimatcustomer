@@ -45,12 +45,12 @@ class _CurrentOrderState extends State<CurrentOrder> {
       child: _message.length == 0
           ? FutureBuilder(
               initialData: null,
-              future: _currentOrder(),
+              future: _getOrder,
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 print("snapshotdata.." + snapshot.hasData.toString());
                 if (snapshot.hasData) {
                   var data = snapshot.data;
-                  print("data..." + data.accepted.length.toString());
+                  //print("data..." + data.accepted.length.toString());
                   return ListView.builder(
                     itemCount: 1,
                     itemBuilder: (BuildContext context, int index) {
@@ -82,8 +82,13 @@ class _CurrentOrderState extends State<CurrentOrder> {
       var response = await dio.get(url,
           options: Options(headers: {"Authorization": "Bearer $token"}));
       print("response body in current Order..." + response.data.toString());
+      print("response body in current Order..." +
+          response.data["state"].toString());
+
       if (response.data["state"] == 0) {
-        return CurrentOrderModel.fromJson(response.data);
+       // setState(() {
+          return CurrentOrderModel.fromJson(response.data);
+        //});
       } else {
         setState(() {
           _message = "Have No Order Yet";

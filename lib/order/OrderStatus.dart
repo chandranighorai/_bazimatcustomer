@@ -1,4 +1,5 @@
 import 'package:bazimat/order/CurrentOrderModel.dart';
+import 'package:bazimat/order/DeliveryBoyTrack.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -37,7 +38,12 @@ class _OrderStatusState extends State<OrderStatus> {
   @override
   Widget build(BuildContext context) {
     print("widgetData..." + widget.orderData.accepted.toString());
-    print("widgetData..." + widget.orderData.accepted.toString());
+    print("widgetData..." + widget.orderData.id.toString());
+    print("widgetData..." + widget.orderData.orderStatus.toString());
+    print("widgetData..." +
+        widget.orderData.deliveryAddress.longitude.toString());
+    print(
+        "widgetData..." + widget.orderData.deliveryAddress.latitude.toString());
 
     return Padding(
       padding: const EdgeInsets.all(5.0),
@@ -155,6 +161,7 @@ class _OrderStatusState extends State<OrderStatus> {
         }
       case "Picked Up":
         {
+          //print("orderId..."+widget.orderData.)
           if (widget.orderData.pickedUp.length == 0) {
             setState(() {
               color = Colors.white;
@@ -164,6 +171,18 @@ class _OrderStatusState extends State<OrderStatus> {
               color = Colors.amber;
               dt = DateTime.parse(widget.orderData.pickedUp);
               data = DateFormat('kk:mm a').format(dt);
+              print("data...length in pucked Up..." + data.toString());
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DeliveryBoyTrack(
+                            orderId: widget.orderData.id.toString(),
+                            latitude: widget.orderData.deliveryAddress.latitude
+                                .toString(),
+                            longitude: widget
+                                .orderData.deliveryAddress.longitude
+                                .toString(),
+                          )));
             });
           }
 

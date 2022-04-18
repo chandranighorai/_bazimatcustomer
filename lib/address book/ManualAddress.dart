@@ -206,12 +206,15 @@ class _ManualAddressState extends State<ManualAddress> {
                 height: MediaQuery.of(context).size.width * 0.03,
               ),
               TextButton(
-                onPressed: _addressSubmit,
+                onPressed: _addrText.text.length == 0 ? null : _addressSubmit,
                 child: Text(
                   "Submit",
                   style: TextStyle(color: Colors.white),
                 ),
-                style: TextButton.styleFrom(backgroundColor: Colors.blue),
+                style: TextButton.styleFrom(
+                    backgroundColor: _addrText.text.length == 0
+                        ? Colors.blue.withOpacity(0.2)
+                        : Colors.blue),
               )
             ],
           ),

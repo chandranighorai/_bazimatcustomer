@@ -5,17 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 const double CAMERA_ZOOM = 16;
 const double CAMERA_TILT = 80;
 const double CAMERA_BEARING = 30;
 // const LatLng SOURCE_LOCATION = LatLng(22.5692879, 88.4307626);
-const LatLng DEST_LOCATION =
-    LatLng(22.568957368567034, 88.43185323969915); // Indusnet Technology
+// const LatLng DEST_LOCATION =
+//     LatLng(22.568957368567034, 88.43185323969915); // Indusnet Technology
 //LatLng DEST_LOCATION = LatLng(22.569204060167028, 88.43307748465863); // RDB,
 
 class DeliveryBoyTrack extends StatefulWidget {
-  const DeliveryBoyTrack({Key key}) : super(key: key);
+  String orderId, latitude, longitude;
+  DeliveryBoyTrack({this.orderId, this.latitude, this.longitude, Key key})
+      : super(key: key);
 
   @override
   State<DeliveryBoyTrack> createState() => _DeliveryBoyTrackState();
@@ -38,14 +41,20 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
   // a reference to the destination location
   LocationData currentLocation, destinationLocation;
   LatLng SOURCE_LOCATION;
+  // LatLng DEST_LOCATION = LatLng(22.568957368567034, 88.43185323969915);
+  LatLng DEST_LOCATION;
+  CameraPosition initialCameraPosition;
   // wrapper around the location API
   //Location location;
   bool _pageLoad = false;
+  var orderId, totalItems, totalPrice, boyName, phNo, boyImage;
   @override
   void initState() {
     super.initState();
-    // create an instance of Location
+    // create an instance of LocationcurrentLocation
     print("initState...called...");
+    DEST_LOCATION = LatLng(double.parse(widget.latitude.toString()),
+        double.parse(widget.longitude.toString()));
     //location = new Location();
     polylinePoints = PolylinePoints();
     // subscribe to changes in the user's location
@@ -190,23 +199,26 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
 
   @override
   Widget build(BuildContext context) {
-    CameraPosition initialCameraPosition = CameraPosition(
-        zoom: CAMERA_ZOOM,
-        tilt: CAMERA_TILT,
-        bearing: CAMERA_BEARING,
-        target: SOURCE_LOCATION);
-    if (currentLocation != null) {
-      initialCameraPosition = CameraPosition(
-          target: LatLng(currentLocation.latitude, currentLocation.longitude),
-          zoom: CAMERA_ZOOM,
-          tilt: CAMERA_TILT,
-          bearing: CAMERA_BEARING);
-      Future.delayed(Duration(seconds: 10), () {
-        print("delayed....");
-        getLocation();
-      });
-    }
-    print("CPosition..." + initialCameraPosition.toString());
+    // CameraPosition initialCameraPosition = CameraPosition(
+    //     zoom: CAMERA_ZOOM,
+    //     tilt: CAMERA_TILT,
+    //     bearing: CAMERA_BEARING,
+    //     target: SOURCE_LOCATION);
+    // if (currentLocation != null) {
+    //   initialCameraPosition = CameraPosition(
+    //       target: LatLng(currentLocation.latitude, currentLocation.longitude),
+    //       zoom: CAMERA_ZOOM,
+    //       tilt: CAMERA_TILT,
+    //       bearing: CAMERA_BEARING);
+    //   Future.delayed(Duration(seconds: 10), () {
+    //     print("delayed....");
+    //     getLocation();
+    //   });
+    // }
+    // print("CPosition..." + initialCameraPosition.toString());
+    print("orderId..." + widget.orderId.toString());
+    print("orderId..." + widget.latitude.toString());
+    print("orderId..." + widget.longitude.toString());
 
     return Scaffold(
       appBar: AppBar(
@@ -249,12 +261,12 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                   Container(
                     padding: EdgeInsets.all(
                         MediaQuery.of(context).size.width * 0.01),
-                    child: Text("Order #112209199"),
+                    child: Text("Order $orderId"),
                   ),
                   Container(
                     padding: EdgeInsets.all(
                         MediaQuery.of(context).size.width * 0.01),
-                    child: Text("4 items,\u20B9470"),
+                    child: Text("$totalItems items,\u20B9470"),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.width * 0.02,
@@ -302,24 +314,24 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                                         0.01,
                                   ),
                                   Text(
-                                      "abc is on his way to deliver your delicious Food"),
+                                      "$boyName is on his way to deliver your delicious Food"),
                                   SizedBox(
                                     height: MediaQuery.of(context).size.width *
                                         0.01,
                                   ),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.domain_verification_rounded),
-                                      Text(
-                                        "Fully Vaccinated",
-                                        style: TextStyle(
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.03),
-                                      ),
-                                    ],
-                                  )
+                                  // Row(
+                                  //   children: [
+                                  //     Icon(Icons.domain_verification_rounded),
+                                  //     Text(
+                                  //       "Fully Vaccinated",
+                                  //       style: TextStyle(
+                                  //           fontSize: MediaQuery.of(context)
+                                  //                   .size
+                                  //                   .width *
+                                  //               0.03),
+                                  //     ),
+                                  //   ],
+                                  // )
                                 ],
                               ),
                             ),
@@ -328,10 +340,16 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                               height: MediaQuery.of(context).size.height * 0.07,
                               width: MediaQuery.of(context).size.width * 0.17,
                               decoration: BoxDecoration(
-                                  color: Colors.red,
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 4.0)
+                                  ],
+                                  //color: Colors.red,
                                   //shape: BoxShape.circle,
                                   image: DecorationImage(
-                                      image: AssetImage("images/logo.png"))),
+                                      image: NetworkImage(boyImage))),
                             )
                           ],
                         ),
@@ -339,16 +357,23 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                       Positioned(
                           top: MediaQuery.of(context).size.width * 0.12,
                           right: MediaQuery.of(context).size.width * 0.05,
-                          child: Container(
-                              decoration: BoxDecoration(boxShadow: [
-                                BoxShadow(color: Colors.grey, blurRadius: 0.2)
-                              ], color: Colors.white, shape: BoxShape.circle),
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.width * 0.03),
-                              child: Icon(
-                                Icons.phone,
-                                size: MediaQuery.of(context).size.width * 0.04,
-                              )))
+                          child: InkWell(
+                            onTap: () {
+                              FlutterPhoneDirectCaller.callNumber(
+                                  phNo.toString());
+                            },
+                            child: Container(
+                                decoration: BoxDecoration(boxShadow: [
+                                  BoxShadow(color: Colors.grey, blurRadius: 0.2)
+                                ], color: Colors.white, shape: BoxShape.circle),
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.02),
+                                child: Icon(
+                                  Icons.phone,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.04,
+                                )),
+                          ))
                     ],
                   )
                 ],
@@ -359,23 +384,55 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
 
   getLocation() async {
     try {
-      var params = Const.deliveryBoyTrack + "?order_id=100269";
+      var params = Const.deliveryBoyTrack + "?order_id=${widget.orderId}";
       print("params..." + params.toString());
       var response = await dio.get(params);
       print("params..." + response.data.toString());
       print("params..." + response.data['state'].toString());
       print("params..." + currentLocation.toString());
       if (response.data['state'] == 0) {
+        print("currentLocation..." + currentLocation.toString());
+        orderId = response.data['respData']['location_data'][0]['order_id']
+            .toString();
+        totalItems =
+            response.data['respData']['cart_details'].length.toString();
+        boyName = response.data['respData']['delivery_agent']['f_name'] +
+            " " +
+            response.data['respData']['delivery_agent']['l_name'];
+        phNo = response.data['respData']['delivery_agent']['phone'];
+        boyImage = response.data['respData']['delivery_agent']['image'];
+
         if (currentLocation == null) {
+          if (mounted) {
+            print("mounting in getLocation....");
+          }
           setState(() {
             currentLocation = LocationData.fromMap({
-              "latitude":
-                  double.parse(response.data['respData'][0]['longitude']),
-              "longitude":
-                  double.parse(response.data['respData'][0]['latitude'])
+              "latitude": double.parse(
+                  response.data['respData']['location_data'][0]['longitude']),
+              "longitude": double.parse(
+                  response.data['respData']['location_data'][0]['latitude'])
             });
             SOURCE_LOCATION =
                 LatLng(currentLocation.longitude, currentLocation.latitude);
+            initialCameraPosition = CameraPosition(
+                zoom: CAMERA_ZOOM,
+                tilt: CAMERA_TILT,
+                bearing: CAMERA_BEARING,
+                target: SOURCE_LOCATION);
+            if (currentLocation != null) {
+              initialCameraPosition = CameraPosition(
+                  target: LatLng(
+                      currentLocation.latitude, currentLocation.longitude),
+                  zoom: CAMERA_ZOOM,
+                  tilt: CAMERA_TILT,
+                  bearing: CAMERA_BEARING);
+              Future.delayed(Duration(seconds: 10), () {
+                print("delayed....");
+                getLocation();
+              });
+            }
+            print("CPosition..." + initialCameraPosition.toString());
           });
 
           print("params...in currentLocation..." + currentLocation.toString());
@@ -383,12 +440,34 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
           setState(() {
             currentLocation = LocationData.fromMap({
               "latitude": double.parse(response.data['respData']
-                  [response.data['respData'].length - 1]['longitude']),
+                          ['location_data']
+                      [response.data['respData']['location_data'].length - 1]
+                  ['longitude']),
               "longitude": double.parse(response.data['respData']
-                  [response.data['respData'].length - 1]['latitude'])
+                          ['location_data']
+                      [response.data['respData']['location_data'].length - 1]
+                  ['latitude'])
             });
             SOURCE_LOCATION =
                 LatLng(currentLocation.longitude, currentLocation.latitude);
+            initialCameraPosition = CameraPosition(
+                zoom: CAMERA_ZOOM,
+                tilt: CAMERA_TILT,
+                bearing: CAMERA_BEARING,
+                target: SOURCE_LOCATION);
+            if (currentLocation != null) {
+              initialCameraPosition = CameraPosition(
+                  target: LatLng(
+                      currentLocation.latitude, currentLocation.longitude),
+                  zoom: CAMERA_ZOOM,
+                  tilt: CAMERA_TILT,
+                  bearing: CAMERA_BEARING);
+              Future.delayed(Duration(seconds: 10), () {
+                print("delayed....");
+                getLocation();
+              });
+            }
+            print("CPosition..." + initialCameraPosition.toString());
           });
           print("params...in currentLocation..." + currentLocation.toString());
 
@@ -410,6 +489,11 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
     } on DioError catch (e) {
       print(e.toString());
     }
+  }
+
+  _call() async {
+    print("pho..." + phNo.toString());
+    FlutterPhoneDirectCaller.callNumber(phNo.toString());
   }
 }
 

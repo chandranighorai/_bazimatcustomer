@@ -43,7 +43,8 @@ class CurrentOrderModel {
   int edited;
   int detailsCount;
   Restaurant restaurant;
-  String deliveryMan;
+  List<DeliveryMan> deliveryMan;
+  // String deliveryMan;
   String orderAmountRound;
   List<Cart> cart;
   String foodName;
@@ -149,7 +150,13 @@ class CurrentOrderModel {
     restaurant = json['restaurant'] != null
         ? new Restaurant.fromJson(json['restaurant'])
         : null;
-    deliveryMan = json['delivery_man'];
+    //deliveryMan = json['delivery_man'];
+    if (json['delivery_man'] != null) {
+      deliveryMan = <DeliveryMan>[];
+      json['delivery_man'].forEach((v) {
+        deliveryMan.add(new DeliveryMan.fromJson(v));
+      });
+    }
     orderAmountRound = json['order_amount_round'];
     if (json['cart'] != null) {
       cart = <Cart>[];
@@ -211,7 +218,10 @@ class CurrentOrderModel {
     if (this.restaurant != null) {
       data['restaurant'] = this.restaurant.toJson();
     }
-    data['delivery_man'] = this.deliveryMan;
+    //data['delivery_man'] = this.deliveryMan;
+    if (this.deliveryMan != null) {
+      data['delivery_man'] = this.deliveryMan.map((v) => v.toJson()).toList();
+    }
     data['order_amount_round'] = this.orderAmountRound;
     if (this.cart != null) {
       data['cart'] = this.cart.map((v) => v.toJson()).toList();
@@ -424,6 +434,115 @@ class Restaurant {
     data['rating_count '] = this.ratingCount;
     data['gst_status'] = this.gstStatus;
     data['gst_code'] = this.gstCode;
+    return data;
+  }
+}
+
+class DeliveryMan {
+  int id;
+  String fName;
+  String lName;
+  String phone;
+  String email;
+  String identityNumber;
+  String identityType;
+  String identityImage;
+  String image;
+  Null fcmToken;
+  int zoneId;
+  String createdAt;
+  String updatedAt;
+  bool status;
+  int active;
+  int earning;
+  int currentOrders;
+  String type;
+  Null restaurantId;
+  int avgRating;
+  int ratingCount;
+  String lat;
+  String lng;
+  Null location;
+
+  DeliveryMan(
+      {this.id,
+      this.fName,
+      this.lName,
+      this.phone,
+      this.email,
+      this.identityNumber,
+      this.identityType,
+      this.identityImage,
+      this.image,
+      this.fcmToken,
+      this.zoneId,
+      this.createdAt,
+      this.updatedAt,
+      this.status,
+      this.active,
+      this.earning,
+      this.currentOrders,
+      this.type,
+      this.restaurantId,
+      this.avgRating,
+      this.ratingCount,
+      this.lat,
+      this.lng,
+      this.location});
+
+  DeliveryMan.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    fName = json['f_name'];
+    lName = json['l_name'];
+    phone = json['phone'];
+    email = json['email'];
+    identityNumber = json['identity_number'];
+    identityType = json['identity_type'];
+    identityImage = json['identity_image'];
+    image = json['image'];
+    fcmToken = json['fcm_token'];
+    zoneId = json['zone_id'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    status = json['status'];
+    active = json['active'];
+    earning = json['earning'];
+    currentOrders = json['current_orders'];
+    type = json['type'];
+    restaurantId = json['restaurant_id'];
+    avgRating = json['avg_rating'];
+    ratingCount = json['rating_count'];
+    lat = json['lat'];
+    lng = json['lng'];
+    location = json['location'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['f_name'] = this.fName;
+    data['l_name'] = this.lName;
+    data['phone'] = this.phone;
+    data['email'] = this.email;
+    data['identity_number'] = this.identityNumber;
+    data['identity_type'] = this.identityType;
+    data['identity_image'] = this.identityImage;
+    data['image'] = this.image;
+    data['fcm_token'] = this.fcmToken;
+    data['zone_id'] = this.zoneId;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['status'] = this.status;
+    data['active'] = this.active;
+    data['earning'] = this.earning;
+    data['current_orders'] = this.currentOrders;
+    data['type'] = this.type;
+    data['restaurant_id'] = this.restaurantId;
+    data['avg_rating'] = this.avgRating;
+    data['rating_count'] = this.ratingCount;
+    data['lat'] = this.lat;
+    data['lng'] = this.lng;
+    data['location'] = this.location;
     return data;
   }
 }

@@ -58,6 +58,7 @@ dependencies:
   url_launcher: ^6.0.0
   location: ^4.3.0
   flutter_polyline_points: ^1.0.0
+  flutter_phone_direct_caller: ^2.1.0
   #firebase_core: ^1.11.0
   #flutter_html: ^2.0.0
 
