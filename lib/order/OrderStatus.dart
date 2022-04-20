@@ -172,17 +172,29 @@ class _OrderStatusState extends State<OrderStatus> {
               dt = DateTime.parse(widget.orderData.pickedUp);
               data = DateFormat('kk:mm a').format(dt);
               print("data...length in pucked Up..." + data.toString());
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DeliveryBoyTrack(
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DeliveryBoyTrack(
                             orderId: widget.orderData.id.toString(),
                             latitude: widget.orderData.deliveryAddress.latitude
                                 .toString(),
                             longitude: widget
                                 .orderData.deliveryAddress.longitude
                                 .toString(),
-                          )));
+                            totalAmount: widget.orderData.orderAmountRound)));
+              });
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => DeliveryBoyTrack(
+              //             orderId: widget.orderData.id.toString(),
+              //             latitude: widget.orderData.deliveryAddress.latitude
+              //                 .toString(),
+              //             longitude: widget.orderData.deliveryAddress.longitude
+              //                 .toString(),
+              //             totalAmount: widget.orderData.orderAmountRound)));
             });
           }
 

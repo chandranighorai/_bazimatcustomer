@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,9 @@ const double CAMERA_BEARING = 30;
 //LatLng DEST_LOCATION = LatLng(22.569204060167028, 88.43307748465863); // RDB,
 
 class DeliveryBoyTrack extends StatefulWidget {
-  String orderId, latitude, longitude;
-  DeliveryBoyTrack({this.orderId, this.latitude, this.longitude, Key key})
+  String orderId, latitude, longitude, totalAmount;
+  DeliveryBoyTrack(
+      {this.orderId, this.latitude, this.longitude, this.totalAmount, Key key})
       : super(key: key);
 
   @override
@@ -55,6 +57,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
     print("initState...called...");
     DEST_LOCATION = LatLng(double.parse(widget.latitude.toString()),
         double.parse(widget.longitude.toString()));
+    print("destinationLocation..." + DEST_LOCATION.toString());
     //location = new Location();
     polylinePoints = PolylinePoints();
     // subscribe to changes in the user's location
@@ -222,8 +225,13 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Track"),
-      ),
+          backgroundColor: AppColors.buttonColor.withOpacity(0.2),
+          title: Text("Track"),
+          leading: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(Icons.arrow_back_ios_rounded))),
       body: _pageLoad == false
           ? Center(
               child: CircularProgressIndicator(),
@@ -240,7 +248,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                     width: MediaQuery.of(context).size.width,
                     color: Colors.transparent,
                     child: GoogleMap(
-                      myLocationEnabled: true,
+                      //myLocationEnabled: true,
                       compassEnabled: true,
                       tiltGesturesEnabled: false,
                       markers: _markers,
@@ -261,12 +269,13 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                   Container(
                     padding: EdgeInsets.all(
                         MediaQuery.of(context).size.width * 0.01),
-                    child: Text("Order $orderId"),
+                    child: Text("Order ID:  #${widget.orderId}"),
                   ),
                   Container(
                     padding: EdgeInsets.all(
                         MediaQuery.of(context).size.width * 0.01),
-                    child: Text("$totalItems items,\u20B9470"),
+                    child:
+                        Text("$totalItems items,\u20B9${widget.totalAmount}"),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.width * 0.02,
@@ -409,9 +418,9 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
           setState(() {
             currentLocation = LocationData.fromMap({
               "latitude": double.parse(
-                  response.data['respData']['location_data'][0]['longitude']),
+                  response.data['respData']['location_data'][0]['latitude']),
               "longitude": double.parse(
-                  response.data['respData']['location_data'][0]['latitude'])
+                  response.data['respData']['location_data'][0]['longitude'])
             });
             SOURCE_LOCATION =
                 LatLng(currentLocation.longitude, currentLocation.latitude);
@@ -432,6 +441,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                 getLocation();
               });
             }
+            print("CPosition..." + SOURCE_LOCATION.toString());
             print("CPosition..." + initialCameraPosition.toString());
           });
 

@@ -144,24 +144,34 @@ class _RecommendedState extends State<Recommended> {
                               Spacer(),
                               _dataAdded == true
                                   ? Container(
-                                      padding: EdgeInsets.only(
-                                          left: MediaQuery.of(context).size.width *
-                                              0.04,
-                                          right:
-                                              MediaQuery.of(context).size.width *
-                                                  0.04,
-                                          top: MediaQuery.of(context).size.width *
-                                              0.01,
-                                          bottom:
-                                              MediaQuery.of(context).size.width *
-                                                  0.01),
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              0.08,
+                                      // padding: EdgeInsets.only(
+                                      //     // left: MediaQuery.of(context).size.width *
+                                      //     //     0.02,
+                                      //     // right: MediaQuery.of(context)
+                                      //     //         .size
+                                      //     //         .width *
+                                      //     //     0.04,
+                                      //     top: MediaQuery.of(context)
+                                      //             .size
+                                      //             .width *
+                                      //         0.01,
+                                      //     bottom: MediaQuery.of(context)
+                                      //             .size
+                                      //             .width *
+                                      //         0.01),
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           border:
                                               Border.all(color: Colors.grey),
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(
-                                                  MediaQuery.of(context).size.width * 0.01))),
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.01))),
                                       child: Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -170,41 +180,82 @@ class _RecommendedState extends State<Recommended> {
                                         children: [
                                           InkWell(
                                             onTap: () {
-                                              setState(() {
-                                                itemCount = itemCount - 1;
-                                                _updateload = true;
-                                                if (itemCount < 1) {
-                                                  _deleteFromCart();
-                                                  print("ItemCount..." +
-                                                      itemCount.toString());
-                                                  _dataAdded = false;
-                                                  itemCount = 1;
-                                                  widget.viewCart(
-                                                      _dataAdded,
-                                                      widget.productList.tax
-                                                          .toString(),
-                                                      widget.productList.id
-                                                          .toString(),
-                                                      widget.productList.price
-                                                          .toString(),
-                                                      itemCount.toString());
-                                                } else {
-                                                  _updateCart();
-                                                }
-                                              });
+                                              // setState(() {
+                                              //   itemCount = itemCount - 1;
+                                              //   _updateload = true;
+                                              //   if (itemCount < 1) {
+                                              //     _deleteFromCart();
+                                              //     print("ItemCount..." +
+                                              //         itemCount.toString());
+                                              //     _dataAdded = false;
+                                              //     itemCount = 1;
+                                              //     widget.viewCart(
+                                              //         _dataAdded,
+                                              //         widget.productList.tax
+                                              //             .toString(),
+                                              //         widget.productList.id
+                                              //             .toString(),
+                                              //         widget.productList.price
+                                              //             .toString(),
+                                              //         itemCount.toString());
+                                              //   } else {
+                                              //     _updateCart();
+                                              //   }
+                                              // });
                                             },
                                             child: Container(
-                                              alignment: Alignment.centerRight,
-                                              child: Text(
-                                                "-",
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        MediaQuery.of(context)
+                                              //color: Colors.red,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.06,
+                                              alignment: Alignment.center,
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                    //minimumSize: Size.zero,
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 0.0,
+                                                            bottom: 0.0,
+                                                            left: 2.0,
+                                                            right: 2.0),
+                                                    tapTargetSize:
+                                                        MaterialTapTargetSize
+                                                            .shrinkWrap),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    itemCount = itemCount - 1;
+                                                    _updateload = true;
+                                                    if (itemCount < 1) {
+                                                      _deleteFromCart();
+                                                      print("ItemCount..." +
+                                                          itemCount.toString());
+                                                      _dataAdded = false;
+                                                      itemCount = 1;
+                                                      widget.viewCart(
+                                                          _dataAdded,
+                                                          widget.productList.tax
+                                                              .toString(),
+                                                          widget.productList.id
+                                                              .toString(),
+                                                          widget
+                                                              .productList.price
+                                                              .toString(),
+                                                          itemCount.toString());
+                                                    } else {
+                                                      _updateCart();
+                                                    }
+                                                  });
+                                                },
+                                                child: Text("-",
+                                                    style: TextStyle(
+                                                        fontSize: MediaQuery.of(
+                                                                    context)
                                                                 .size
                                                                 .width *
                                                             0.04,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                        fontWeight:
+                                                            FontWeight.bold)),
                                               ),
                                             ),
                                           ),
@@ -221,21 +272,49 @@ class _RecommendedState extends State<Recommended> {
                                                       AppColors.addTextColor),
                                             ),
                                           ),
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                itemCount = itemCount + 1;
-                                                _updateload = true;
-                                                print("Item..." +
-                                                    itemCount.toString());
-                                                _updateCart();
-                                              });
-                                            },
-                                            child: Container(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text("+"),
-                                            ),
+                                          // InkWell(
+                                          //   onTap: () {
+                                          // setState(() {
+                                          //   itemCount = itemCount + 1;
+                                          //   _updateload = true;
+                                          //   //configData = false;
+                                          //   print("Item..." +
+                                          //       itemCount.toString());
+                                          //   _updateCart();
+                                          // });
+                                          //},
+                                          Container(
+                                            //color: Colors.amber,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.06,
+                                            alignment: Alignment.center,
+                                            child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                    //minimumSize: Size.zero,
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 0.0,
+                                                            bottom: 0.0,
+                                                            left: 2.0,
+                                                            right: 2.0),
+                                                    tapTargetSize:
+                                                        MaterialTapTargetSize
+                                                            .shrinkWrap),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    itemCount = itemCount + 1;
+                                                    _updateload = true;
+                                                    //configData = false;
+                                                    print("Item..." +
+                                                        itemCount.toString());
+                                                    _updateCart();
+                                                  });
+                                                },
+                                                child: Text("+")),
                                           ),
+                                          //),
                                         ],
                                       ))
                                   : InkWell(
@@ -318,6 +397,8 @@ class _RecommendedState extends State<Recommended> {
         showCustomToast(response.data["message"].toString());
         //setState(() {
         _updateload = false;
+        //configData = true;
+
         //});
         // setState(() {
         //   itemCount = int.parse(response.data["respData"]["quantity"]);

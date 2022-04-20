@@ -34,6 +34,7 @@ class _PastOrderListState extends State<PastOrderList> {
   @override
   Widget build(BuildContext context) {
     print("listData..." + widget.listData.toString());
+    print("listData..." + widget.listData.quantity.toString());
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -89,10 +90,10 @@ class _PastOrderListState extends State<PastOrderList> {
               style: TextStyle(color: Colors.black),
             ),
             Divider(),
-            Text(
-              "Qty: ${widget.listData.quantity}",
-              style: TextStyle(color: Colors.grey),
-            ),
+            // Text(
+            //   "Qty: ${widget.listData.quantity}",
+            //   style: TextStyle(color: Colors.grey),
+            // ),
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.02,
             ),
