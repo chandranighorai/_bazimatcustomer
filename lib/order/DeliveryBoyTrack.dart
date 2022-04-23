@@ -1,16 +1,20 @@
 import 'dart:async';
+import 'dart:math';
+// import 'dart:math';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+//import 'package:flutter_animarker/flutter_map_marker_animation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+//import 'package:flutter_compass/flutter_compass.dart';
 
-const double CAMERA_ZOOM = 16;
-const double CAMERA_TILT = 80;
-const double CAMERA_BEARING = 30;
+double CAMERA_ZOOM = 16.8;
+double CAMERA_TILT = 0;
+double CAMERA_BEARING = 0;
 // const LatLng SOURCE_LOCATION = LatLng(22.5692879, 88.4307626);
 // const LatLng DEST_LOCATION =
 //     LatLng(22.568957368567034, 88.43185323969915); // Indusnet Technology
@@ -50,6 +54,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
   //Location location;
   bool _pageLoad = false;
   var orderId, totalItems, totalPrice, boyName, phNo, boyImage;
+  double _direction;
   @override
   void initState() {
     super.initState();
@@ -87,7 +92,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
 
   void setSourceAndDestinationIcon() async {
     sourceIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 0.5), 'images/driving_pin.png');
+        ImageConfiguration(devicePixelRatio: 0.5), 'images/bigb.png');
     destinationIcon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(devicePixelRatio: 2.5),
         'images/destination_map_marker.png');
@@ -124,6 +129,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
     _markers.add(Marker(
         markerId: MarkerId('sourcePin'),
         position: pinPosition,
+        flat: false,
         icon: sourceIcon));
 
     // destination pin
@@ -180,13 +186,18 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
 
     setState(() {
       // updated position
+      double bearing = getBearing(
+          LatLng(currentLocation.latitude, currentLocation.longitude),
+          LatLng(destinationLocation.latitude, destinationLocation.longitude));
+      print("bearing..." + bearing.toString());
       CameraPosition cPosition = CameraPosition(
           zoom: CAMERA_ZOOM,
           tilt: CAMERA_TILT,
-          bearing: CAMERA_BEARING,
+          bearing: bearing,
           target: LatLng(currentLocation.latitude, currentLocation.longitude));
       print("CPosition..." + cPosition.toString());
       controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
+      //controller.moveCamera(CameraUpdate.newCameraPosition(cPosition));
       var pinPosition =
           LatLng(currentLocation.latitude, currentLocation.longitude);
       // the trick is to remove the marker (by id)
@@ -196,6 +207,8 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
       _markers.add(Marker(
           markerId: MarkerId("sourcePin"),
           position: pinPosition,
+          //rotation: 90,
+          //alpha: destinationLocation.heading,
           icon: sourceIcon));
     });
   }
@@ -249,8 +262,14 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                     color: Colors.transparent,
                     child: GoogleMap(
                       //myLocationEnabled: true,
+                      //buildingsEnabled: true,
                       compassEnabled: true,
                       tiltGesturesEnabled: false,
+                      rotateGesturesEnabled: true,
+                      mapToolbarEnabled: false,
+                      myLocationEnabled: false,
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: true,
                       markers: _markers,
                       polylines: _polylines,
                       mapType: MapType.normal,
@@ -261,6 +280,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                         // i'm ready to show the pins on the map
                         showPinsOnMap();
                       },
+                      //onCameraMove: (CameraPosition pos) {},
                     ),
                   ),
                   SizedBox(
@@ -393,7 +413,9 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
 
   getLocation() async {
     try {
+      //var params = Const.deliveryBoyTrack + "?order_id=${widget.orderId}";
       var params = Const.deliveryBoyTrack + "?order_id=${widget.orderId}";
+
       print("params..." + params.toString());
       var response = await dio.get(params);
       print("params..." + response.data.toString());
@@ -422,20 +444,28 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
               "longitude": double.parse(
                   response.data['respData']['location_data'][0]['longitude'])
             });
+            // double bearing = getBearing(
+            //     LatLng(currentLocation.latitude, currentLocation.longitude),
+            //     LatLng(destinationLocation.latitude,
+            //         destinationLocation.longitude));
             SOURCE_LOCATION =
-                LatLng(currentLocation.longitude, currentLocation.latitude);
+                LatLng(currentLocation.latitude, currentLocation.longitude);
             initialCameraPosition = CameraPosition(
                 zoom: CAMERA_ZOOM,
                 tilt: CAMERA_TILT,
-                bearing: CAMERA_BEARING,
+                bearing: 0,
                 target: SOURCE_LOCATION);
             if (currentLocation != null) {
+              // double bearing = getBearing(
+              //     LatLng(currentLocation.latitude, currentLocation.longitude),
+              //     LatLng(destinationLocation.latitude,
+              //         destinationLocation.longitude));
               initialCameraPosition = CameraPosition(
                   target: LatLng(
                       currentLocation.latitude, currentLocation.longitude),
                   zoom: CAMERA_ZOOM,
                   tilt: CAMERA_TILT,
-                  bearing: CAMERA_BEARING);
+                  bearing: 0);
               Future.delayed(Duration(seconds: 10), () {
                 print("delayed....");
                 getLocation();
@@ -452,18 +482,23 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
               "latitude": double.parse(response.data['respData']
                           ['location_data']
                       [response.data['respData']['location_data'].length - 1]
-                  ['longitude']),
+                  ['latitude']),
               "longitude": double.parse(response.data['respData']
                           ['location_data']
                       [response.data['respData']['location_data'].length - 1]
-                  ['latitude'])
+                  ['longitude'])
             });
             SOURCE_LOCATION =
-                LatLng(currentLocation.longitude, currentLocation.latitude);
+                LatLng(currentLocation.latitude, currentLocation.longitude);
+            double bearing = getBearing(
+                LatLng(currentLocation.latitude, currentLocation.longitude),
+                LatLng(destinationLocation.latitude,
+                    destinationLocation.longitude));
+            print("bearing..." + bearing.toString());
             initialCameraPosition = CameraPosition(
                 zoom: CAMERA_ZOOM,
                 tilt: CAMERA_TILT,
-                bearing: CAMERA_BEARING,
+                bearing: bearing,
                 target: SOURCE_LOCATION);
             if (currentLocation != null) {
               initialCameraPosition = CameraPosition(
@@ -471,7 +506,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                       currentLocation.latitude, currentLocation.longitude),
                   zoom: CAMERA_ZOOM,
                   tilt: CAMERA_TILT,
-                  bearing: CAMERA_BEARING);
+                  bearing: bearing);
               Future.delayed(Duration(seconds: 10), () {
                 print("delayed....");
                 getLocation();
@@ -504,6 +539,34 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
   _call() async {
     print("pho..." + phNo.toString());
     FlutterPhoneDirectCaller.callNumber(phNo.toString());
+  }
+
+  double getBearing(LatLng begin, LatLng end) {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((end.latitude - begin.latitude) * p) / 2 +
+        c(begin.latitude * p) *
+            c(end.latitude * p) *
+            (1 - c((end.longitude - begin.longitude) * p)) /
+            2;
+    return 12742 * asin(sqrt(a));
+    // double lat = (begin.latitude - end.latitude).abs();
+    // double lng = (begin.longitude - end.longitude).abs();
+    // if (begin.latitude < end.latitude && begin.longitude < end.longitude) {
+    //   return degrees(atan(lng / lat));
+    // } else if (begin.latitude >= end.latitude &&
+    //     begin.longitude < end.longitude) {
+    //   return (90 - degrees(atan(lng / lat))) + 90;
+    // } else if (begin.latitude >= end.latitude &&
+    //     begin.longitude >= end.longitude) {
+    //   return degrees(atan(lng / lat)) + 180;
+    // } else if (begin.latitude < end.latitude &&
+    //     begin.longitude >= end.longitude) {
+    //   return (90 - degrees(atan(lng / lat))) + 270;
+    // }
+
+    // return -1;
   }
 }
 

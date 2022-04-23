@@ -103,7 +103,7 @@ class FavRestaurant {
   String offertext;
   String availableTimeStarts;
   String availableTimeEnds;
-  int avgRating;
+  String avgRating;
   int ratingCount;
   bool gstStatus;
   String gstCode;

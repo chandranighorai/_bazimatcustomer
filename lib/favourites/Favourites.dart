@@ -63,8 +63,8 @@ class _FavouritesState extends State<Favourites> {
                     return FavouriteList(
                         favouriteData: resturentData[index],
                         imageUrl: imagePath,
-                        latitude:latitude,
-                        longitude:longitude);
+                        latitude: latitude,
+                        longitude: longitude);
                   });
             } else {
               return Center(
@@ -85,12 +85,14 @@ class _FavouritesState extends State<Favourites> {
       var zoneId = pref.getString("zoneId");
       latitude = pref.getString("latitude");
       longitude = pref.getString("longitude");
+      print("Token..." + token.toString());
       //print(object)
       var response = await dio.get(
         Const.getWishList,
         options: Options(
             headers: {"Authorization": "Bearer $token", "zoneId": zoneId}),
       );
+      print("response in favourite..." + response.data.toString());
       if (response.data["state"] == 0) {
         print("response body..." + response.data.toString());
         return FavouriteModel.fromJson(response.data);

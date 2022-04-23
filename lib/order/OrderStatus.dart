@@ -1,3 +1,4 @@
+import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/order/CurrentOrderModel.dart';
 import 'package:bazimat/order/DeliveryBoyTrack.dart';
 import 'package:flutter/material.dart';
@@ -172,6 +173,11 @@ class _OrderStatusState extends State<OrderStatus> {
               dt = DateTime.parse(widget.orderData.pickedUp);
               data = DateFormat('kk:mm a').format(dt);
               print("data...length in pucked Up..." + data.toString());
+              print("data...length in pucked Up..." +
+                  widget.orderData.deliveryAddress.latitude.toString());
+              print("data...length in pucked Up..." +
+                  widget.orderData.deliveryAddress.longitude.toString());
+
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.push(
                     context,
@@ -211,6 +217,12 @@ class _OrderStatusState extends State<OrderStatus> {
               color = Colors.amber;
               dt = DateTime.parse(widget.orderData.delivered);
               data = DateFormat('kk:mm a').format(dt);
+              // WidgetsBinding.instance.addPostFrameCallback((_) {
+              //   Navigator.pushAndRemoveUntil(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => Home()),
+              //       (route) => false);
+              // });
             });
           }
 

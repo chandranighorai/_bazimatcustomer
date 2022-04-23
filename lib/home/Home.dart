@@ -21,6 +21,8 @@ import 'package:bazimat/util/AppConst.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 // import 'package:carousel_slider/carousel_slider.dart';
 //import 'package:carousel_slider/carousel_options.dart';
 import 'package:geolocator/geolocator.dart';
@@ -117,6 +119,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return _serviceAvailable
         ? Scaffold(
             key: scaffFoldState,

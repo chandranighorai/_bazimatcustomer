@@ -287,7 +287,7 @@ class _ManualAddressState extends State<ManualAddress> {
       print("longitude..." + _type.toString());
       if (_nameText.text.length == 0 ||
           _phoneText.text.length == 0 ||
-          _addrText.text.length == 0) {
+          _addrText.text.length == 0) { 
         showCustomToast("Please Fill data properly");
       } else {
         var addressType = _type == AddressType.home ? "home" : "office";

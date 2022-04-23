@@ -79,32 +79,41 @@ class _FavouriteListState extends State<FavouriteList> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "${widget.favouriteData.name}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize:
-                                MediaQuery.of(context).size.width * 0.045),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 1.8,
+                        child: Text(
+                          "${widget.favouriteData.name}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.045),
+                        ),
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.width * 0.01,
                       ),
-                      Text(
-                        "${widget.favouriteData.description}",
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize:
-                                MediaQuery.of(context).size.width * 0.035),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 1.8,
+                        child: Text(
+                          "${widget.favouriteData.description}",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.035),
+                        ),
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.width * 0.01,
                       ),
-                      Text(
-                        "${widget.favouriteData.address} | ${widget.favouriteData.offerprice}",
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize:
-                                MediaQuery.of(context).size.width * 0.035),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 1.8,
+                        child: Text(
+                          "${widget.favouriteData.address} | ${widget.favouriteData.offerprice}",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.035),
+                        ),
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.width * 0.01,
