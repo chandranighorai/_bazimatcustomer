@@ -60,6 +60,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
     super.initState();
     // create an instance of LocationcurrentLocation
     print("initState...called...");
+
     DEST_LOCATION = LatLng(double.parse(widget.latitude.toString()),
         double.parse(widget.longitude.toString()));
     print("destinationLocation..." + DEST_LOCATION.toString());
@@ -124,11 +125,13 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
     var destPosition =
         LatLng(destinationLocation.latitude, destinationLocation.longitude);
     print("set polylines called..." + destPosition.toString());
+    print("set polylines called..." + currentLocation.heading.toString());
 
     // add the initial source location pin
     _markers.add(Marker(
         markerId: MarkerId('sourcePin'),
         position: pinPosition,
+        rotation: 169.970703125,
         flat: false,
         icon: sourceIcon));
 
@@ -186,14 +189,14 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
 
     setState(() {
       // updated position
-      double bearing = getBearing(
-          LatLng(currentLocation.latitude, currentLocation.longitude),
-          LatLng(destinationLocation.latitude, destinationLocation.longitude));
-      print("bearing..." + bearing.toString());
+      // double bearing = getBearing(
+      //     LatLng(currentLocation.latitude, currentLocation.longitude),
+      //     LatLng(destinationLocation.latitude, destinationLocation.longitude));
+      // print("bearing..." + bearing.toString());
       CameraPosition cPosition = CameraPosition(
           zoom: CAMERA_ZOOM,
           tilt: CAMERA_TILT,
-          bearing: bearing,
+          bearing: 0,
           target: LatLng(currentLocation.latitude, currentLocation.longitude));
       print("CPosition..." + cPosition.toString());
       controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
@@ -413,7 +416,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
 
   getLocation() async {
     try {
-      //var params = Const.deliveryBoyTrack + "?order_id=${widget.orderId}";
+      //var params = Const.deliveryBoyTrack + "?order_id=100323";
       var params = Const.deliveryBoyTrack + "?order_id=${widget.orderId}";
 
       print("params..." + params.toString());
@@ -444,6 +447,9 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
               "longitude": double.parse(
                   response.data['respData']['location_data'][0]['longitude'])
             });
+            print("mounting in getLocation....in..." +
+                currentLocation.toString());
+
             // double bearing = getBearing(
             //     LatLng(currentLocation.latitude, currentLocation.longitude),
             //     LatLng(destinationLocation.latitude,
@@ -466,7 +472,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                   zoom: CAMERA_ZOOM,
                   tilt: CAMERA_TILT,
                   bearing: 0);
-              Future.delayed(Duration(seconds: 10), () {
+              Future.delayed(Duration(seconds: 3), () {
                 print("delayed....");
                 getLocation();
               });
@@ -490,15 +496,15 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
             });
             SOURCE_LOCATION =
                 LatLng(currentLocation.latitude, currentLocation.longitude);
-            double bearing = getBearing(
-                LatLng(currentLocation.latitude, currentLocation.longitude),
-                LatLng(destinationLocation.latitude,
-                    destinationLocation.longitude));
-            print("bearing..." + bearing.toString());
+            // double bearing = getBearing(
+            //     LatLng(currentLocation.latitude, currentLocation.longitude),
+            //     LatLng(destinationLocation.latitude,
+            //         destinationLocation.longitude));
+            // print("bearing..." + bearing.toString());
             initialCameraPosition = CameraPosition(
                 zoom: CAMERA_ZOOM,
                 tilt: CAMERA_TILT,
-                bearing: bearing,
+                bearing: 12,
                 target: SOURCE_LOCATION);
             if (currentLocation != null) {
               initialCameraPosition = CameraPosition(
@@ -506,7 +512,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
                       currentLocation.latitude, currentLocation.longitude),
                   zoom: CAMERA_ZOOM,
                   tilt: CAMERA_TILT,
-                  bearing: bearing);
+                  bearing: 12);
               Future.delayed(Duration(seconds: 10), () {
                 print("delayed....");
                 getLocation();
