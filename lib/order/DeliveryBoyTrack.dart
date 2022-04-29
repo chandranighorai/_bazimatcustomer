@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 // import 'dart:math';
+import 'package:bazimat/home/Home.dart';
 import 'package:bazimat/util/AppColors.dart';
 import 'package:bazimat/util/Const.dart';
 import 'package:dio/dio.dart';
@@ -40,6 +41,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
   PolylinePoints polylinePoints;
   String googleAPIKey = "AIzaSyDJ_Ip4XJXlLr4XZZ2i1vm56ClFaaofjDI";
   var dio = Dio();
+  //var idValue;
   // for my custom marker pins
   BitmapDescriptor sourceIcon, destinationIcon;
   // the user's initial location and current location
@@ -115,8 +117,10 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
   showPinsOnMap() {
     // get a LatLng for the source location
     // from the LocationData currentLocation object
-    var pinPosition =
-        LatLng(currentLocation.latitude, currentLocation.longitude);
+    var pinPosition = LatLng(
+      currentLocation.latitude,
+      currentLocation.longitude,
+    );
     print("set polylines called..." + pinPosition.toString());
     print("set polylines called...in destint..." +
         destinationLocation.latitude.toString());
@@ -131,7 +135,8 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
     _markers.add(Marker(
         markerId: MarkerId('sourcePin'),
         position: pinPosition,
-        rotation: 169.970703125,
+        //rotation: 169.970703125,
+        rotation: currentLocation.heading,
         flat: false,
         icon: sourceIcon));
 
@@ -161,7 +166,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
       print("polylines... coordinate..." + polylineCoordinates.toString());
       setState(() {
         _polylines.add(Polyline(
-            width: 5,
+            width: 3,
             polylineId: PolylineId("poly"),
             color: Colors.black,
             points: polylineCoordinates));
@@ -210,6 +215,7 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
       _markers.add(Marker(
           markerId: MarkerId("sourcePin"),
           position: pinPosition,
+          rotation: currentLocation.heading,
           //rotation: 90,
           //alpha: destinationLocation.heading,
           icon: sourceIcon));
@@ -445,7 +451,15 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
               "latitude": double.parse(
                   response.data['respData']['location_data'][0]['latitude']),
               "longitude": double.parse(
-                  response.data['respData']['location_data'][0]['longitude'])
+                  response.data['respData']['location_data'][0]['longitude']),
+              "heading": double.parse(response.data['respData']['location_data']
+                      [0]['heading']
+                  .toString()),
+              "headingAccuracy": double.parse(
+                response.data['respData']['location_data'][0]
+                        ['heading_accuracy']
+                    .toString(),
+              )
             });
             print("mounting in getLocation....in..." +
                 currentLocation.toString());
@@ -492,7 +506,17 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
               "longitude": double.parse(response.data['respData']
                           ['location_data']
                       [response.data['respData']['location_data'].length - 1]
-                  ['longitude'])
+                  ['longitude']),
+              "heading": double.parse(response.data['respData']['location_data']
+                      [response.data['respData']['location_data'].length - 1]
+                      ['heading']
+                  .toString()),
+              "headingAccuracy": double.parse(
+                response.data['respData']['location_data']
+                        [response.data['respData']['location_data'].length - 1]
+                        ['heading_accuracy']
+                    .toString(),
+              )
             });
             SOURCE_LOCATION =
                 LatLng(currentLocation.latitude, currentLocation.longitude);
@@ -521,7 +545,28 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
             print("CPosition..." + initialCameraPosition.toString());
           });
           print("params...in currentLocation..." + currentLocation.toString());
+          //print("params...in currentLocation..." + idValue.toString());
 
+          if (response.data['respData']['is_delivered'].toString() == "yes") {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+                (route) => false);
+          } else {
+            // print("params...in currentLocation..." + idValue.toString());
+            // print("params...in currentLocation..." +
+            //     response.data['respData']['location_data']
+            //             [response.data['respData']['location_data'].length - 1]
+            //             ['id']
+            //         .toString());
+
+            // setState(() {
+            //   idValue = response.data['respData']['location_data']
+            //           [response.data['respData']['location_data'].length - 1]
+            //           ['id']
+            //       .toString();
+            // });
+          }
           updatePinOnMap();
         }
         // currentLocation = LocationData.fromMap({

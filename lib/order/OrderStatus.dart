@@ -225,7 +225,6 @@ class _OrderStatusState extends State<OrderStatus> {
               // });
             });
           }
-
           break;
         }
       case "Cancel":
