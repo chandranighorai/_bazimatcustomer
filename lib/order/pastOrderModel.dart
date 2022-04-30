@@ -486,8 +486,8 @@ class DeliveryMan {
   Null restaurantId;
   int avgRating;
   int ratingCount;
-  Null lat;
-  Null lng;
+  String lat;
+  String lng;
   Null location;
   Null lastLocation;
 

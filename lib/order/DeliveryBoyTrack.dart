@@ -592,33 +592,33 @@ class _DeliveryBoyTrackState extends State<DeliveryBoyTrack> {
     FlutterPhoneDirectCaller.callNumber(phNo.toString());
   }
 
-  double getBearing(LatLng begin, LatLng end) {
-    var p = 0.017453292519943295;
-    var c = cos;
-    var a = 0.5 -
-        c((end.latitude - begin.latitude) * p) / 2 +
-        c(begin.latitude * p) *
-            c(end.latitude * p) *
-            (1 - c((end.longitude - begin.longitude) * p)) /
-            2;
-    return 12742 * asin(sqrt(a));
-    // double lat = (begin.latitude - end.latitude).abs();
-    // double lng = (begin.longitude - end.longitude).abs();
-    // if (begin.latitude < end.latitude && begin.longitude < end.longitude) {
-    //   return degrees(atan(lng / lat));
-    // } else if (begin.latitude >= end.latitude &&
-    //     begin.longitude < end.longitude) {
-    //   return (90 - degrees(atan(lng / lat))) + 90;
-    // } else if (begin.latitude >= end.latitude &&
-    //     begin.longitude >= end.longitude) {
-    //   return degrees(atan(lng / lat)) + 180;
-    // } else if (begin.latitude < end.latitude &&
-    //     begin.longitude >= end.longitude) {
-    //   return (90 - degrees(atan(lng / lat))) + 270;
-    // }
+  // double getBearing(LatLng begin, LatLng end) {
+  //   var p = 0.017453292519943295;
+  //   var c = cos;
+  //   var a = 0.5 -
+  //       c((end.latitude - begin.latitude) * p) / 2 +
+  //       c(begin.latitude * p) *
+  //           c(end.latitude * p) *
+  //           (1 - c((end.longitude - begin.longitude) * p)) /
+  //           2;
+  //   return 12742 * asin(sqrt(a));
+  //   // double lat = (begin.latitude - end.latitude).abs();
+  //   // double lng = (begin.longitude - end.longitude).abs();
+  //   // if (begin.latitude < end.latitude && begin.longitude < end.longitude) {
+  //   //   return degrees(atan(lng / lat));
+  //   // } else if (begin.latitude >= end.latitude &&
+  //   //     begin.longitude < end.longitude) {
+  //   //   return (90 - degrees(atan(lng / lat))) + 90;
+  //   // } else if (begin.latitude >= end.latitude &&
+  //   //     begin.longitude >= end.longitude) {
+  //   //   return degrees(atan(lng / lat)) + 180;
+  //   // } else if (begin.latitude < end.latitude &&
+  //   //     begin.longitude >= end.longitude) {
+  //   //   return (90 - degrees(atan(lng / lat))) + 270;
+  //   // }
 
-    // return -1;
-  }
+  //   // return -1;
+  // }
 }
 
 // import 'dart:async';
