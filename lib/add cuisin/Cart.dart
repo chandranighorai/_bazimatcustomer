@@ -262,6 +262,7 @@ class _CartState extends State<Cart> {
           cartData.toString();
       var url = Const.orderPlace + params;
       print("Url..." + url.toString());
+      print("Token..." + widget.token.toString());
       var response = await dio.post(
         url,
         options: Options(headers: {"Authorization": "Bearer ${widget.token}"}),
@@ -278,6 +279,8 @@ class _CartState extends State<Cart> {
         //   "longitude": widget.addressLng,
         // }
       );
+      print("state..." + response.data["state"].toString());
+      print("Token..." + response.data["message"].toString());
       // print("response data pay..." + response.data.toString());
       if (response.data["state"] == 0) {
         showCustomToast(response.data["message"]);
